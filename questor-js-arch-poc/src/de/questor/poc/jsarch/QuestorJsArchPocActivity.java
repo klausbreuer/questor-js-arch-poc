@@ -17,13 +17,17 @@ public class QuestorJsArchPocActivity extends Activity {
 		wv.getSettings().setJavaScriptEnabled(true);
 		wv.addJavascriptInterface(new Questor(), "questor");
 
-		wv.loadUrl("file:///android_asset/quizstation-static.html");
+		wv.loadUrl("file:///android_asset/main.html");
 	}
 
 	/** Questor class which is accessible from server generated Javascript code */
 	static class Questor {
-		public void test(String msg) {
-			Log.i("questor", msg);
+		public void becomeRenderer() {
+			Log.i("questor", "renderer");
+		}
+
+		public void becomeSimulator() {
+			Log.i("questor", "simulator");
 		}
 
 		public void exit() {
