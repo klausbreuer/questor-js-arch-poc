@@ -3,6 +3,7 @@ package de.questor.poc.jsarch;
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
+import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 
 public class QuestorJsArchPocActivity extends Activity {
@@ -19,7 +20,10 @@ public class QuestorJsArchPocActivity extends Activity {
 		WebView wv = (WebView) findViewById(R.id.webview);
 
 		wv.getSettings().setJavaScriptEnabled(true);
-		wv.addJavascriptInterface(new Questor(), "questor");
+		wv.setWebChromeClient(new WebChromeClient());
+		
+		wv.addJavascriptInterface(new Questor(wv), "questor");
+		
 
 		wv.loadUrl("file:///android_asset/main.html");
 		
@@ -29,7 +33,15 @@ public class QuestorJsArchPocActivity extends Activity {
 
 
 	/** Questor class which is accessible from server generated Javascript code */
-	public class Questor {
+	static class Questor {
+		private WebView wv;
+		
+		private Runtime r;
+		
+		public Questor(WebView wv) {
+			this.wv = wv;
+		}
+		
 		public void becomeRenderer() {
 			Log.i("questor", "renderer");
 			
@@ -42,10 +54,17 @@ public class QuestorJsArchPocActivity extends Activity {
 
 		public void becomeSimulator() {
 			Log.i("questor", "simulator");
+			WebView wv2 = new WebView(wv.getContext());
+			r = new Runtime(wv2, wv.getContext().getAssets());
 		}
 
 		public void exit() {
 			System.exit(0);
 		}
+		
+		public void test() {
+			r.run();
+		}
+		
 	}
 }
