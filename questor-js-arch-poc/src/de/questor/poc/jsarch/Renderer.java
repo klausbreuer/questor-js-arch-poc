@@ -84,7 +84,7 @@ public class Renderer {
 			Log.i(TAG, "reply: " + msg);
 			questorContext.sendMessage(msg);
 		}
-
+		
 	}
 
 	public void setMessageService(MessageService messageService) {
