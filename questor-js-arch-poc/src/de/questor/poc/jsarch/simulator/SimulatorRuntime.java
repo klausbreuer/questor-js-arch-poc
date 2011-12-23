@@ -8,17 +8,17 @@ import android.content.res.AssetManager;
 import android.util.Log;
 import android.webkit.WebView;
 
-public class Runtime {
+public class SimulatorRuntime {
 
 	private WebView wv;
 
-	public Runtime(WebView wv, AssetManager am) {
+	public SimulatorRuntime(WebView wv, AssetManager am) {
 		this.wv = wv;
 
 		wv.getSettings().setJavaScriptEnabled(true);
 		wv.addJavascriptInterface(new Logger("simulator"), "logger");
 
-		wv.loadUrl("file:///android_asset/simulator/empty.html");
+		wv.loadUrl("file:///android_asset/simulator/simulator.html");
 	}
 	
 	/**

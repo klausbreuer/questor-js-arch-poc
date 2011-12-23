@@ -12,12 +12,17 @@ import android.webkit.WebView;
 import android.widget.Toast;
 
 public class Renderer {
+	
+	private static final String TAG = "Renderer";
 
 	private static final int SHOW_STORY_NODE_REQUEST = 0;
 
 	Context mContext;
 	WebView mWebView;
-	String rendererJsLib;
+	
+	MessageService messageService;
+	
+	QuestorContext questorContext;
 
 	public Renderer(Context pContext) {
 
@@ -26,32 +31,22 @@ public class Renderer {
 		mWebView.getSettings().setJavaScriptEnabled(true);
 		mWebView.setWebChromeClient(new WebChromeClient());
 		mWebView.addJavascriptInterface(new JavaScriptRuntimeBridge(), "runtime");
-
-		// we get the renderer lib from the assets:
-		BufferedReader r;
-		try {
-			r = new BufferedReader(new InputStreamReader(mContext.getAssets().open("renderer.js")));
-			StringBuilder total = new StringBuilder();
-			String line;
-			while ((line = r.readLine()) != null) {
-				total.append(line);
-			}
-			rendererJsLib = total.toString();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		// Log.i("klaus", rendererJsLib);
-
+		
+		mWebView.loadUrl("file:///android_asset/renderer/renderer.html");
 	}
 
-	public void onMessage(String pMessage) {
+	public void onMessage(String type, QuestorContext ctx, String msg) {
+		if ("create".equals(type)) {
+			// TODO: Destroy old questor context if it exists
+			questorContext = ctx;
 
-		String command = rendererJsLib + "<script>" + pMessage + "</script>";
-		mWebView.loadData(command, "text/html", null);
-
-		// Log.i("klaus", "onMessage: " + pMessage + " Command: " + command);
-
+			// Runs the creation command.
+			String command = String.format("javascript:(function() { %s })()", msg);
+			Log.i(TAG, "creation: " + command);
+			mWebView.loadUrl(command);
+		} else {
+			Log.w(TAG, "Unexpected message type: " + type);
+		}
 	}
 
 	public class JavaScriptRuntimeBridge {
@@ -72,14 +67,33 @@ public class Renderer {
 		}
 		
 		public void showHtmlStation(String pContent) {
-			Log.i("klaus", "showHTMLStation");
+			Log.i(TAG, "showHTMLStation");
 
 			Intent i = new Intent(mContext, HtmlActivity.class);
 			i.putExtra("content", pContent);
 			mContext.startActivity(i);
 		}
 		
+		/**
+		 * A messaging function that is called from Javascript which allows sending
+		 * a reply to the simulator.
+		 * 
+		 * @param msg
+		 */
+		public void sendReply(String msg) {
+			Log.i(TAG, "reply: " + msg);
+			questorContext.sendMessage(msg);
+		}
 
+	}
+
+	public void setMessageService(MessageService messageService) {
+		this.messageService = messageService;
+	}
+
+	public void joinTest() {
+		// Lets the player join a game and thereby start the whole interaction
+		messageService.sendToSimulator("join", null, "testspieler");
 	}
 
 }

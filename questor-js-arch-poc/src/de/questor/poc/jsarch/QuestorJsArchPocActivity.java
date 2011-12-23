@@ -5,12 +5,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
-import de.questor.poc.jsarch.simulator.Runtime;
+import de.questor.poc.jsarch.simulator.Simulator;
+import de.questor.poc.jsarch.simulator.SimulatorRuntime;
 
 public class QuestorJsArchPocActivity extends Activity {
 
-	Renderer mRenderer ;
-	
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -26,8 +25,6 @@ public class QuestorJsArchPocActivity extends Activity {
 		
 		wv.loadUrl("file:///android_asset/main.html");
 		
-		mRenderer = new Renderer(this);
-		
 	}
 
 
@@ -35,7 +32,8 @@ public class QuestorJsArchPocActivity extends Activity {
 	class Questor {
 		private WebView wv;
 		
-		private Runtime r;
+		Simulator simulator = new Simulator();
+		Renderer mRenderer = new Renderer(QuestorJsArchPocActivity.this);
 		
 		public Questor(WebView wv) {
 			this.wv = wv;
@@ -47,14 +45,12 @@ public class QuestorJsArchPocActivity extends Activity {
 			//mRenderer.onMessage("alert('buh!');showToast('hihi');");
 			//mRenderer.onMessage("var q = new Renderer.QuizStation ('wie hiess die tarent frueher, als alles noch viel frueher war?'); q.onSubmit('cic');");
 			//mRenderer.onMessage("var q = new Renderer.QuizStation ('wie hiess die tarent frueher, als alles noch viel frueher war?');");
-			mRenderer.onMessage("var q = new Renderer.QuizStationHtml (); q.setQuestion('wie spaet ist es?'); q.setButtonText('und los gehts....'); q.show();");
+//			mRenderer.onMessage("var q = new Renderer.QuizStationHtml (); q.setQuestion('wie spaet ist es?'); q.setButtonText('und los gehts....'); q.show();");
 			
 		}
 
 		public void becomeSimulator() {
 			Log.i("questor", "simulator");
-			WebView wv2 = new WebView(wv.getContext());
-			r = new Runtime(wv2, wv.getContext().getAssets());
 		}
 
 		public void exit() {
@@ -62,7 +58,8 @@ public class QuestorJsArchPocActivity extends Activity {
 		}
 		
 		public void test() {
-			r.run();
+			MessageService ms = new MessageService(simulator, mRenderer);
+			mRenderer.joinTest();
 		}
 		
 	}
