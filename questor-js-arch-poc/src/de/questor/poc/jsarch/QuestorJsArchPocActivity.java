@@ -24,7 +24,6 @@ public class QuestorJsArchPocActivity extends Activity {
 		
 		wv.addJavascriptInterface(new Questor(wv), "questor");
 		
-
 		wv.loadUrl("file:///android_asset/main.html");
 		
 		mRenderer = new Renderer(this);
