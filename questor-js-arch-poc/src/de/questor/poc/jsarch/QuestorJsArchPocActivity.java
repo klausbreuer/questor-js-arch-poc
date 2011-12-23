@@ -5,11 +5,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
+import de.questor.poc.jsarch.simulator.Runtime;
 
 public class QuestorJsArchPocActivity extends Activity {
 
 	Renderer mRenderer ;
-	
 	
 	/** Called when the activity is first created. */
 	@Override
@@ -32,7 +32,7 @@ public class QuestorJsArchPocActivity extends Activity {
 
 
 	/** Questor class which is accessible from server generated Javascript code */
-	static class Questor {
+	class Questor {
 		private WebView wv;
 		
 		private Runtime r;
