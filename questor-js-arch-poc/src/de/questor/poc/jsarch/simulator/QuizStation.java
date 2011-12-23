@@ -1,6 +1,12 @@
 package de.questor.poc.jsarch.simulator;
 
-
+/** Server sided QuizStation.
+ * 
+ * TODO: To be implemented in Javascript at some point.
+ * 
+ * @author rschus
+ *
+ */
 public class QuizStation {
 
 	private Simulator sim;
