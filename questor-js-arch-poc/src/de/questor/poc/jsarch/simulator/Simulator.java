@@ -5,6 +5,12 @@ import java.util.HashMap;
 import android.util.Log;
 import de.questor.poc.jsarch.MessageService;
 
+/*
+ * The Simulator.
+ * 
+ * TODO: This needs to become Javascript at some point.
+ * 
+ */
 public class Simulator {
 	
 	private static String TAG = "Simulator";
