@@ -136,7 +136,23 @@ Renderer.HtmlStation.prototype.setContent = function (pContent) {
 
 Renderer.HtmlStation.prototype.show = function () {
 	
-	// We replace the <choice target="xx"> tags by a call to 
+	// We replace the <choice target="xx"> tags by a call to runtime.sendReply
+	// not finished yet...
+	var dom;
+	dom = document.implementation.createHTMLDocument('');
+	dom.write(this.content);
+	
+	//alert (new XMLSerializer().serializeToString(dom));   
+
+	var arrChoices = dom.getElementsByTagName("choice");
+	for( var i=0; i < arrChoices.length; i++ ) {
+		alert (arrChoices[i].getAttribute("target"));
+		
+	}
+	
+
+	
+	
 	
 }
 
