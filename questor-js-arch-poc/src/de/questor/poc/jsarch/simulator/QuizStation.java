@@ -64,7 +64,7 @@ public class QuizStation {
 			sim.sendCreateStation(session, msg);
 		}
 
-		public void performTransition(Session session, String newStation) {
+		public void performTransition(String newStation) {
 			sim.performTransition(session, newStation);
 		}
 
