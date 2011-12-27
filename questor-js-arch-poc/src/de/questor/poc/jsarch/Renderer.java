@@ -1,15 +1,9 @@
 package de.questor.poc.jsarch;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-
 import android.content.Context;
-import android.content.Intent;
 import android.util.Log;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
-import android.widget.Toast;
 
 public class Renderer {
 	
@@ -30,7 +24,8 @@ public class Renderer {
 		mWebView = new WebView(mContext);
 		mWebView.getSettings().setJavaScriptEnabled(true);
 		mWebView.setWebChromeClient(new WebChromeClient());
-		mWebView.addJavascriptInterface(new JavaScriptRuntimeBridge(), "runtime");
+		//mWebView.addJavascriptInterface(new JavaScriptRuntimeBridge(), "runtime");
+		mWebView.addJavascriptInterface(new RendererRuntime(mContext), "runtime");
 		
 		mWebView.loadUrl("file:///android_asset/renderer/renderer.html");
 	}
@@ -49,6 +44,8 @@ public class Renderer {
 		}
 	}
 
+	
+	/*
 	public class JavaScriptRuntimeBridge {
 
 		public JavaScriptRuntimeBridge() {
@@ -74,18 +71,14 @@ public class Renderer {
 			mContext.startActivity(i);
 		}
 		
-		/**
-		 * A messaging function that is called from Javascript which allows sending
-		 * a reply to the simulator.
-		 * 
-		 * @param msg
-		 */
 		public void sendReply(String msg) {
 			Log.i(TAG, "reply: " + msg);
 			questorContext.sendMessage(msg);
 		}
 		
+		
 	}
+	*/
 
 	public void setMessageService(MessageService messageService) {
 		this.messageService = messageService;
