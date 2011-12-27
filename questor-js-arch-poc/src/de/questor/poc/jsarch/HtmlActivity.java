@@ -24,6 +24,7 @@ public class HtmlActivity extends Activity {
 		mWebView = new WebView(this);
 		mWebView.getSettings().setJavaScriptEnabled(true);
 		mWebView.setWebChromeClient(new WebChromeClient());
+		mWebView.addJavascriptInterface(new Callback(), "callback");
 		mWebView.loadData(mContent, "text/html", null);
 		
 		setContentView(mWebView);
@@ -40,6 +41,12 @@ public class HtmlActivity extends Activity {
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
+	}
+	
+	class Callback {
+		public void onSubmit(String value) {
+			Renderer.INSTANCE.stationOnSubmit(value);
+		}
 	}
 
 }

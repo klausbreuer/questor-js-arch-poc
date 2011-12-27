@@ -1,9 +1,5 @@
 package de.questor.poc.jsarch;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
@@ -12,6 +8,8 @@ import android.webkit.WebView;
 import android.widget.Toast;
 
 public class Renderer {
+	
+	public static Renderer INSTANCE;
 	
 	private static final String TAG = "Renderer";
 
@@ -25,14 +23,20 @@ public class Renderer {
 	QuestorContext questorContext;
 
 	public Renderer(Context pContext) {
+		INSTANCE = this;
 
 		mContext = pContext;
 		mWebView = new WebView(mContext);
 		mWebView.getSettings().setJavaScriptEnabled(true);
 		mWebView.setWebChromeClient(new WebChromeClient());
 		mWebView.addJavascriptInterface(new JavaScriptRuntimeBridge(), "runtime");
+		mWebView.addJavascriptInterface(new Logger("Renderer"), "logger");
 		
 		mWebView.loadUrl("file:///android_asset/renderer/renderer.html");
+	}
+	
+	public void stationOnSubmit(String value) {
+		mWebView.loadUrl(String.format("javascript:(function() { station.answer = '%s'; station.onSubmit() })()", value));
 	}
 
 	public void onMessage(String type, QuestorContext ctx, String msg) {

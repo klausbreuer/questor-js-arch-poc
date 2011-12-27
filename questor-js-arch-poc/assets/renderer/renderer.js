@@ -1,11 +1,13 @@
 var Renderer = new Object;
+var station;
 
 Renderer.QuizStation = function (pQuestion) {    
 	this.question = pQuestion;
 	runtime.showQuizStation(pQuestion);
 };
 
-Renderer.QuizStationHtml = function () {    
+Renderer.QuizStationHtml = function () {
+	station = this;    
 	this.dom = document.implementation.createHTMLDocument('');
 	this.serializer = new XMLSerializer();
 	this.question = '';
@@ -14,12 +16,10 @@ Renderer.QuizStationHtml = function () {
 	content = '<div id="divQuestion"></div>';
 	content += '<div id="divInput"><input id="inputAnswer"></div>';
 	
-	// TODO: The fact that this Javascript is being put into a completely different WebView instance gives us no possibility
-	// to call back in onClick().
-	// Possible solution: Why not have a known 'root' div which contains the station HTML. Everytime
-	// a station is made visible we can remove the elements below the div and replace it
-	// with new code. 
-	content += '<div id="divButton"><input id="btnAnswer" type="button" value="Antwort einloggen" onClick="this.station.onSubmit();"></div>';
+	// The receiving station knows a 'callback' element that allows calling back into this WebView instance. As the station.onSubmit() code needs
+	// the field value this is extracted here and set in the callback method's implementation.
+	// Not very clean ... 
+	content += '<div id="divButton"><input id="btnAnswer" type="button" value="Antwort einloggen" onClick="callback.onSubmit(document.getElementById(\'inputAnswer\').value);"></div>';
 	content += '';
 		 
 	this.dom.write(content);
@@ -45,7 +45,8 @@ Renderer.QuizStationHtml.prototype.setButtonText = function (pText) {
 
 // Retrieves the text field's information.
 Renderer.QuizStationHtml.prototype.getFieldText = function() {
-	return this.dom.getElementById('inputAnswer').getAttribute("value"); 
+	// This value is supposed to be set by the callback function.
+	return this.answer; 
 };
 
 Renderer.QuizStationHtml.prototype.onSubmit = function () {

@@ -1,4 +1,4 @@
-package de.questor.poc.jsarch.simulator;
+package de.questor.poc.jsarch;
 
 import android.util.Log;
 
