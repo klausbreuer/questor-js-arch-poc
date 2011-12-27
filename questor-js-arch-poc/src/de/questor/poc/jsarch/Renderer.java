@@ -10,25 +10,24 @@ public class Renderer {
 	public static Renderer INSTANCE;
 	private static final String TAG = "Renderer";
 
-	Context mContext;
-	WebView mWebView;
+	private Context mContext;
+	private WebView mWebView;
 	
-	MessageService messageService;
-	QuestorContext questorContext;
-	RendererRuntime rendererRuntime;
+	private MessageService messageService;
+	private QuestorContext questorContext;
+	private RendererRuntime rendererRuntime;
 
 	public Renderer(Context pContext) {
 		INSTANCE = this;
 
 		mContext = pContext;
-		rendererRuntime = new RendererRuntime(mContext);
+		rendererRuntime = RendererRuntime.getInstance();
+		rendererRuntime.setContext(mContext);
 		
 		mWebView = new WebView(mContext);
 		mWebView.getSettings().setJavaScriptEnabled(true);
 		mWebView.setWebChromeClient(new WebChromeClient());
 		mWebView.addJavascriptInterface(rendererRuntime, "runtime");
-		mWebView.addJavascriptInterface(new Logger("Renderer"), "logger");
-		
 		mWebView.loadUrl("file:///android_asset/renderer/renderer.html");
 	}
 	

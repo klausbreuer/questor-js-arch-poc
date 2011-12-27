@@ -12,6 +12,8 @@ public class HtmlActivity extends Activity {
 
 	private WebView mWebView;
 	private String mContent;
+	private RendererRuntime rendererRuntime;
+	
 
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -21,10 +23,14 @@ public class HtmlActivity extends Activity {
 		Intent i = getIntent();
 		mContent = (String) i.getSerializableExtra("content");
 		
+		rendererRuntime = RendererRuntime.getInstance();
+		rendererRuntime.setContext(this);
+		
 		mWebView = new WebView(this);
 		mWebView.getSettings().setJavaScriptEnabled(true);
 		mWebView.setWebChromeClient(new WebChromeClient());
-		mWebView.addJavascriptInterface(new Callback(), "callback");
+		//mWebView.addJavascriptInterface(new Callback(), "callback");
+		mWebView.addJavascriptInterface(rendererRuntime, "runtime");
 		mWebView.loadData(mContent, "text/html", null);
 		
 		setContentView(mWebView);
@@ -42,11 +48,12 @@ public class HtmlActivity extends Activity {
 	protected void onDestroy() {
 		super.onDestroy();
 	}
-	
+	/*
 	class Callback {
 		public void onSubmit(String value) {
 			Renderer.INSTANCE.stationOnSubmit(value);
 		}
 	}
+	*/
 
 }

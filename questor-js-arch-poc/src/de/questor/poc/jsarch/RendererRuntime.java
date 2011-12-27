@@ -6,20 +6,27 @@ import android.util.Log;
 import android.widget.Toast;
 
 public class RendererRuntime {
-		
-	
+
+	private static RendererRuntime INSTANCE = null;
+
 	private static final String TAG = "Renderer";
-	Context mContext;
-	QuestorContext mQuestorContext;
-	
-	public RendererRuntime(Context pContext) {
-		mContext = pContext;
-	}
-	
-	public void setQuestorContext(QuestorContext mQuestorContext) {
-		this.mQuestorContext = mQuestorContext;
+	private static Context mContext;
+	private static QuestorContext mQuestorContext;
+
+	public static RendererRuntime getInstance() {
+		if (INSTANCE == null) {
+			INSTANCE = new RendererRuntime();
+		}
+		return INSTANCE;
 	}
 
+	public void setContext(Context pContext) {
+		mContext = pContext;
+	}
+
+	public void setQuestorContext(QuestorContext pQuestorContext) {
+		mQuestorContext = pQuestorContext;
+	}
 
 	public void showToast(String toast) {
 		Toast.makeText(mContext, toast, Toast.LENGTH_SHORT).show();
@@ -31,15 +38,14 @@ public class RendererRuntime {
 		i.putExtra("question", pQuestion);
 		mContext.startActivity(i);
 	}
-	
+
 	public void showHtmlStation(String pContent) {
 		Log.i(TAG, "showHTMLStation");
-
 		Intent i = new Intent(mContext, HtmlActivity.class);
 		i.putExtra("content", pContent);
 		mContext.startActivity(i);
 	}
-	
+
 	/**
 	 * A messaging function that is called from Javascript which allows sending
 	 * a reply to the simulator.
@@ -48,8 +54,13 @@ public class RendererRuntime {
 	 */
 	public void sendReply(String msg) {
 		Log.i(TAG, "reply: " + msg);
-		mQuestorContext.sendMessage(msg);
+		if (mQuestorContext == null) {
+			Log.i(TAG, "error: mQuestorContext is null!");
+			
+		}
+		else {
+			mQuestorContext.sendMessage(msg);
+		}
 	}
-	
 
 }

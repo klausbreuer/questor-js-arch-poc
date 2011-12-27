@@ -45,7 +45,8 @@ public class QuestorJsArchPocActivity extends Activity {
 			//mRenderer.onMessage("create", null, "alert('buh!');showToast('hihi');");
 			//mRenderer.onMessage("create", null, "var q = new Renderer.QuizStation ('wie hiess die tarent frueher, als alles noch viel frueher war?'); q.onSubmit('cic');");
 			//mRenderer.onMessage("create", null, "var q = new Renderer.QuizStation ('wie hiess die tarent frueher, als alles noch viel frueher war?');");
-			mRenderer.onMessage("create", null, "var q = new Renderer.QuizStationHtml (); q.setQuestion('wie spaet ist es?'); q.setButtonText('und los gehts....'); q.show();");
+			//mRenderer.onMessage("create", null, "var q = new Renderer.QuizStationHtml (); q.setQuestion('wie spaet ist es?'); q.setButtonText('und los gehts....'); q.show();");
+			mRenderer.onMessage("create", null, "var q = new Renderer.QuizStationHtml2 (); q.setQuestion('QuizStationHtml2: wie spaet ist es?'); q.setButtonText('push me!'); q.show();");
 			
 		}
 
