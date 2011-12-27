@@ -22,14 +22,11 @@ QuizStation.prototype.onMessage = function(msg) {
 };
 
 QuizStation.prototype.generateJavascript = function() {
-	var submitCode = "runtime.sendReply(this.getFieldText()); ";
-		
 	var generatorCode = 
 		("var q = new Renderer.QuizStationHtml ();"
 		+ "q.setQuestion('{0}'); "
 		+ "q.setButtonText('{1}'); "
-		+ "q.onSubmit = function() { {2} };"
-		+ "q.show();").format(this.question, this.buttonText, this.submitCode);
+		+ "q.show();").format(this.question, this.buttonText);
 	return generatorCode;
 };
 
