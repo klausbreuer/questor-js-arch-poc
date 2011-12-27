@@ -1,13 +1,27 @@
 <html>
-<body>
+<head>
 
 <script type="text/javascript">
-	function testStatic() {
-		logger.i("testStatic");
+       String.prototype.format = function() {
+           var formatted = this;
+           for (arg = 0; arg < arguments.length; arg++) {
+               formatted = formatted.replace("{" + arg + "}", arguments[arg]);
+           }
+           return formatted;
+       };
+
+	function createNewScript(newscript) {
+	    var ss = document.createElement("script");
+		var scr = newscript;
+	    var tt = document.createTextNode(scr);
+	    ss.appendChild(tt);
+	    var hh = document.getElementsByTagName('head')[0];
+	    hh.appendChild(ss);
 	}
 </script>
 
 <script type="text/javascript" src="file:///android_asset/simulator/simulator.js" />
-
+</head>
+<body>
 </body>
 </html>

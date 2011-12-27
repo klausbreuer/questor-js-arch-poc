@@ -1,60 +1,80 @@
 package de.questor.poc.jsarch.simulator;
 
-/** Server sided QuizStation.
+import android.content.Context;
+import android.webkit.WebChromeClient;
+import android.webkit.WebView;
+import de.questor.poc.jsarch.Logger;
+import de.questor.poc.jsarch.simulator.Simulator.Session;
+
+/**
+ * Server sided QuizStation.
  * 
  * TODO: To be implemented in Javascript at some point.
  * 
  * @author rschus
- *
+ * 
  */
 public class QuizStation {
 
 	private Simulator sim;
 
-	private String question;
+	private Session session;
 
-	private String buttonText;
+	private WebView wv;
 
-	private String answer;
+	private Runnable runnable;
 
-	private String stationSuccess;
-
-	private String stationFail;
-
-	QuizStation(Simulator sim, String question, String buttonText,
-			String answer, String stationSuccess, String stationFail) {
+	QuizStation(Context ctx, Simulator sim, final String question, final String buttonText,
+			final String answer, final String stationSuccess, final String stationFail) {
 		this.sim = sim;
-		this.question = question;
-		this.buttonText = buttonText;
-		this.answer = answer;
-		this.stationSuccess = stationSuccess;
-		this.stationFail = stationFail;
+
+		wv = new WebView(ctx);
+
+		wv.getSettings().setJavaScriptEnabled(true);
+		wv.setWebChromeClient(new WebChromeClient());
+		wv.addJavascriptInterface(new Logger("QuizStation"), "logger");
+		wv.addJavascriptInterface(new Callback(), "sim");
+
+		wv.loadUrl("file:///android_asset/simulator/simulator.html");
+		
+		// Initializes a station instance.
+		runnable = new Runnable() {
+			public void run() {
+				wv.loadUrl(String
+						.format("javascript:(function() { var q = new QuizStation('%s', '%s', '%s', '%s', '%s'); })()",
+								question, buttonText, answer, stationSuccess,
+								stationFail));
+			}
+		};
 	}
 
 	public void onEnter(Simulator.Session session) {
-		sim.sendCreateStation(session, generateJavascript());
+		this.session = session;
+		wv.loadUrl("javascript:(function() { station.onEnter(); })()");
 	}
 
 	public void onMessage(Simulator.Session session, String msg) {
-		if (answer.equals(msg)) {
-			sim.performTransition(session, stationSuccess);
-		} else
-		{
-			sim.performTransition(session, stationFail);
+		wv.loadUrl(String.format(
+				"javascript:(function() { station.onMessage('%s'); })()", msg));
+	}
+
+	class Callback {
+
+		public void sendCreateStation(String msg) {
+			sim.sendCreateStation(session, msg);
+		}
+
+		public void performTransition(Session session, String newStation) {
+			sim.performTransition(session, newStation);
+		}
+
+		/**
+		 * This method is implicitly called when parsing of the QuizStation code is
+		 * finished. After this any Javascript URLs can be called.
+		 */
+		public void finished() {
+			runnable.run();
 		}
 	}
 
-	private String generateJavascript() {
-		String submitCode = "runtime.sendReply(this.getFieldText()); ";
-		
-		String generatorCode = String.format(
-				"var q = new Renderer.QuizStationHtml ();"
-				+ "q.setQuestion('%s'); "
-				+ "q.setButtonText('%s'); "
-				+ "q.onSubmit = function() { %s };"
-				+ "q.show();", question, buttonText, submitCode);
-		
-		return generatorCode;
-	}
-	
 }

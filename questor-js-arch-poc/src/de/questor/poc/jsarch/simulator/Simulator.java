@@ -2,6 +2,7 @@ package de.questor.poc.jsarch.simulator;
 
 import java.util.HashMap;
 
+import android.content.Context;
 import android.util.Log;
 import de.questor.poc.jsarch.MessageService;
 
@@ -19,11 +20,14 @@ public class Simulator {
 	
 	MessageService messageService;
 	
-	public Simulator() {
+	public Simulator(Context ctx) {
 		// TODO: This needs to be loaded from somewhere
-		stations.put("start", new QuizStation(this,
+		stations.put("start", new QuizStation(ctx, this,
 				"Wie hiess die tarent frueher, als alles noch viel frueher war?",
-				"Antworten", "cic", "success", "fail"));
+				"Antworten", "cic", "next", "fail"));
+		stations.put("next", new QuizStation(ctx, this,
+				"5 + 5 = ?",
+				"Antworten", "10", "success", "fail"));
 	}
 	
 	public void onMessage(String type, Object ctx, String msg) {
