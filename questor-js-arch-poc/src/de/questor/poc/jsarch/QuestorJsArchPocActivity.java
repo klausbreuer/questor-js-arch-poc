@@ -46,7 +46,8 @@ public class QuestorJsArchPocActivity extends Activity {
 			//mRenderer.onMessage("create", null, "var q = new Renderer.QuizStation ('wie hiess die tarent frueher, als alles noch viel frueher war?'); q.onSubmit('cic');");
 			//mRenderer.onMessage("create", null, "var q = new Renderer.QuizStation ('wie hiess die tarent frueher, als alles noch viel frueher war?');");
 			//mRenderer.onMessage("create", null, "var q = new Renderer.QuizStationHtml (); q.setQuestion('wie spaet ist es?'); q.setButtonText('und los gehts....'); q.show();");
-			mRenderer.onMessage("create", null, "var q = new Renderer.QuizStationHtml (); q.setQuestion('QuizStationHtml2: wie spaet ist es?'); q.setButtonText('push me!'); q.show();");
+			//mRenderer.onMessage("create", null, "var q = new Renderer.QuizStationHtml (); q.setQuestion('QuizStationHtml: wie spaet ist es?'); q.setButtonText('push me!'); q.show();");
+			mRenderer.onMessage("create", null, "var q = new Renderer.HtmlStation (); q.setContent('<p>At the foot of the hill, the path splits into two directions, both leading into a large wood. You can take the <choice target=\"85\">right</choice> or <choice target=\"999\">left</choice> track into the wood.</p>'); q.show();");			
 			
 		}
 
