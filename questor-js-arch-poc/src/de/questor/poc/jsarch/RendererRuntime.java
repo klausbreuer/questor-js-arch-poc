@@ -6,13 +6,20 @@ import android.util.Log;
 import android.widget.Toast;
 
 public class RendererRuntime {
+		
 	
 	private static final String TAG = "Renderer";
 	Context mContext;
+	QuestorContext mQuestorContext;
 	
 	public RendererRuntime(Context pContext) {
 		mContext = pContext;
 	}
+	
+	public void setQuestorContext(QuestorContext mQuestorContext) {
+		this.mQuestorContext = mQuestorContext;
+	}
+
 
 	public void showToast(String toast) {
 		Toast.makeText(mContext, toast, Toast.LENGTH_SHORT).show();
@@ -22,7 +29,6 @@ public class RendererRuntime {
 		Log.i(TAG, "showQuizStation");
 		Intent i = new Intent(mContext, QuizActivity.class);
 		i.putExtra("question", pQuestion);
-		//((Activity)mContext).startActivityForResult(i, SHOW_STORY_NODE_REQUEST);
 		mContext.startActivity(i);
 	}
 	
@@ -42,7 +48,7 @@ public class RendererRuntime {
 	 */
 	public void sendReply(String msg) {
 		Log.i(TAG, "reply: " + msg);
-		//questorContext.sendMessage(msg);
+		mQuestorContext.sendMessage(msg);
 	}
 	
 

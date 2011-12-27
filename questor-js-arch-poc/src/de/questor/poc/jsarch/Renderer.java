@@ -8,26 +8,25 @@ import android.webkit.WebView;
 public class Renderer {
 	
 	public static Renderer INSTANCE;
-	
 	private static final String TAG = "Renderer";
-
-	private static final int SHOW_STORY_NODE_REQUEST = 0;
 
 	Context mContext;
 	WebView mWebView;
 	
 	MessageService messageService;
-	
 	QuestorContext questorContext;
+	RendererRuntime rendererRuntime;
 
 	public Renderer(Context pContext) {
 		INSTANCE = this;
 
 		mContext = pContext;
+		rendererRuntime = new RendererRuntime(mContext);
+		
 		mWebView = new WebView(mContext);
 		mWebView.getSettings().setJavaScriptEnabled(true);
 		mWebView.setWebChromeClient(new WebChromeClient());
-		mWebView.addJavascriptInterface(new RendererRuntime(mContext), "runtime");
+		mWebView.addJavascriptInterface(rendererRuntime, "runtime");
 		mWebView.addJavascriptInterface(new Logger("Renderer"), "logger");
 		
 		mWebView.loadUrl("file:///android_asset/renderer/renderer.html");
@@ -39,8 +38,7 @@ public class Renderer {
 
 	public void onMessage(String type, QuestorContext ctx, String msg) {
 		if ("create".equals(type)) {
-			// TODO: Destroy old questor context if it exists
-			questorContext = ctx;
+			rendererRuntime.setQuestorContext(ctx);
 
 			// Runs the creation command.
 			String command = String.format("javascript:(function() { %s })()", msg);
@@ -52,41 +50,6 @@ public class Renderer {
 	}
 
 	
-	/*
-	public class JavaScriptRuntimeBridge {
-
-		public JavaScriptRuntimeBridge() {
-		}
-
-		public void showToast(String toast) {
-			Toast.makeText(mContext, toast, Toast.LENGTH_SHORT).show();
-
-		}
-
-		public void showQuizStation(String pQuestion) {
-			Intent i = new Intent(mContext, QuizActivity.class);
-			i.putExtra("question", pQuestion);
-			//((Activity)mContext).startActivityForResult(i, SHOW_STORY_NODE_REQUEST);
-			mContext.startActivity(i);
-		}
-		
-		public void showHtmlStation(String pContent) {
-			Log.i(TAG, "showHTMLStation");
-
-			Intent i = new Intent(mContext, HtmlActivity.class);
-			i.putExtra("content", pContent);
-			mContext.startActivity(i);
-		}
-		
-		public void sendReply(String msg) {
-			Log.i(TAG, "reply: " + msg);
-			questorContext.sendMessage(msg);
-		}
-		
-		
-	}
-	*/
-
 	public void setMessageService(MessageService messageService) {
 		this.messageService = messageService;
 	}
