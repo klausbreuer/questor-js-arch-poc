@@ -31,7 +31,8 @@ public class RendererRuntime {
 	public void showToast(String toast) {
 		Toast.makeText(mContext, toast, Toast.LENGTH_SHORT).show();
 	}
-
+	
+	
 	public void showQuizStation(String pQuestion) {
 		Log.i(TAG, "showQuizStation");
 		Intent i = new Intent(mContext, QuizActivity.class);

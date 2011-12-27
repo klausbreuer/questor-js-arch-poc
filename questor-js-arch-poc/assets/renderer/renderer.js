@@ -16,13 +16,13 @@ Renderer.QuizStation = function (pQuestion) {
 
 
 /*****************************************************
- * QuizStationHtml
+ * QuizStationHtmlOLD
  * 
  * example for an implementation of a station in pure HTML
  * 
  */
 
-Renderer.QuizStationHtml = function () {
+Renderer.QuizStationHtmlOLD = function () {
 	station = this;    
 	this.dom = document.implementation.createHTMLDocument('');
 	this.serializer = new XMLSerializer();
@@ -46,7 +46,7 @@ Renderer.QuizStationHtml = function () {
 };
 
 
-Renderer.QuizStationHtml.prototype.setQuestion = function (pQuestion) {    
+Renderer.QuizStationHtmlOLD.prototype.setQuestion = function (pQuestion) {    
 
 	this.question = pQuestion;
 	this.dom.getElementById('divQuestion').appendChild(this.dom.createTextNode(this.question)); 
@@ -55,23 +55,23 @@ Renderer.QuizStationHtml.prototype.setQuestion = function (pQuestion) {
 };
 
 
-Renderer.QuizStationHtml.prototype.setButtonText = function (pText) {    
+Renderer.QuizStationHtmlOLD.prototype.setButtonText = function (pText) {    
 
 	this.dom.getElementById('btnAnswer').setAttribute("value", pText); 
 	 
 };
 
 // Retrieves the text field's information.
-Renderer.QuizStationHtml.prototype.getFieldText = function() {
+Renderer.QuizStationHtmlOLD.prototype.getFieldText = function() {
 	// This value is supposed to be set by the callback function.
 	return this.answer; 
 };
 
-Renderer.QuizStationHtml.prototype.onSubmit = function () {
+Renderer.QuizStationHtmlOLD.prototype.onSubmit = function () {
 	showToast (this.getFieldText());
 };
 
-Renderer.QuizStationHtml.prototype.show = function () {
+Renderer.QuizStationHtmlOLD.prototype.show = function () {
 	
 	runtime.showHtmlStation(this.serializer.serializeToString(this.dom));
 	
@@ -80,29 +80,29 @@ Renderer.QuizStationHtml.prototype.show = function () {
 
 
 /*****************************************************
- * QuizStationHtml2
+ * QuizStationHtml
  * 
- * new version of QuizStationHtml, an implementation of a station in pure HTML.
+ * latest version of the QuizStation, an implementation of a station in pure HTML.
  * Simpler and clearer.
  * 
  */
 
 
-Renderer.QuizStationHtml2 = function () {
+Renderer.QuizStationHtml = function () {
 	this.question = '';
 	this.buttonText = '';
 };
 
-Renderer.QuizStationHtml2.prototype.setQuestion = function (pQuestion) {    
+Renderer.QuizStationHtml.prototype.setQuestion = function (pQuestion) {    
 	this.question = pQuestion;
 }
 
-Renderer.QuizStationHtml2.prototype.setButtonText = function (pButtonText) {    
+Renderer.QuizStationHtml.prototype.setButtonText = function (pButtonText) {    
 	this.buttonText = pButtonText;
 }
 
 
-Renderer.QuizStationHtml2.prototype.show = function () {
+Renderer.QuizStationHtml.prototype.show = function () {
 	
 	var content;
 	content  = '<div id="divQuestion">' + this.question + '</div>';
@@ -117,6 +117,28 @@ Renderer.QuizStationHtml2.prototype.show = function () {
 	
 }
 
+
+
+/*****************************************************
+ * HtmlStation
+ * 
+ * The simple HtmlStation 
+ * 
+ */
+
+Renderer.HtmlStation = function () {
+	this.content = "";
+};
+
+Renderer.HtmlStation.prototype.setContent = function (pContent) {    
+	this.content = pContent;
+}
+
+Renderer.HtmlStation.prototype.show = function () {
+	
+	// We replace the <choice target="xx"> tags by a call to 
+	
+}
 
 
 

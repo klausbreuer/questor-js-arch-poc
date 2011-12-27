@@ -31,9 +31,11 @@ public class Renderer {
 		mWebView.loadUrl("file:///android_asset/renderer/renderer.html");
 	}
 	
+	/*
 	public void stationOnSubmit(String value) {
 		mWebView.loadUrl(String.format("javascript:(function() { station.answer = '%s'; station.onSubmit() })()", value));
 	}
+	*/
 
 	public void onMessage(String type, QuestorContext ctx, String msg) {
 		if ("create".equals(type)) {

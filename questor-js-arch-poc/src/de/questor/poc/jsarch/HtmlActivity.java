@@ -13,13 +13,12 @@ public class HtmlActivity extends Activity {
 	private WebView mWebView;
 	private String mContent;
 	private RendererRuntime rendererRuntime;
-	
 
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-		// Get the content from the intent:
+		// Get the html content from the intent:
 		Intent i = getIntent();
 		mContent = (String) i.getSerializableExtra("content");
 		
@@ -35,7 +34,7 @@ public class HtmlActivity extends Activity {
 		
 		setContentView(mWebView);
 		
-		Log.i("klaus", mContent);
+		//Log.i("klaus", mContent);
 
 	}
 
