@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import de.questor.poc.jsarch.Logger;
+
 import android.content.res.AssetManager;
 import android.util.Log;
 import android.webkit.WebView;

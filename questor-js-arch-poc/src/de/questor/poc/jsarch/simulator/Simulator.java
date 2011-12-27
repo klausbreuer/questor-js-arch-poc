@@ -30,7 +30,7 @@ public class Simulator {
 		if ("join".equals(type)) {
 			Session session = new Session(msg); 
 			performTransition(session, "start");
-		} else if ("reply".equals("type")) {
+		} else if ("reply".equals(type)) {
 			// This is a placeholder operation of how the publicly known context
 			// object can be internally resolved into something the Simulator knows
 			// how to access a player and her current station.

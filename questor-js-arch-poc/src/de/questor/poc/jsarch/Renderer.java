@@ -7,6 +7,8 @@ import android.webkit.WebView;
 
 public class Renderer {
 	
+	public static Renderer INSTANCE;
+	
 	private static final String TAG = "Renderer";
 
 	private static final int SHOW_STORY_NODE_REQUEST = 0;
@@ -19,15 +21,20 @@ public class Renderer {
 	QuestorContext questorContext;
 
 	public Renderer(Context pContext) {
+		INSTANCE = this;
 
 		mContext = pContext;
 		mWebView = new WebView(mContext);
 		mWebView.getSettings().setJavaScriptEnabled(true);
 		mWebView.setWebChromeClient(new WebChromeClient());
-		//mWebView.addJavascriptInterface(new JavaScriptRuntimeBridge(), "runtime");
 		mWebView.addJavascriptInterface(new RendererRuntime(mContext), "runtime");
+		mWebView.addJavascriptInterface(new Logger("Renderer"), "logger");
 		
 		mWebView.loadUrl("file:///android_asset/renderer/renderer.html");
+	}
+	
+	public void stationOnSubmit(String value) {
+		mWebView.loadUrl(String.format("javascript:(function() { station.answer = '%s'; station.onSubmit() })()", value));
 	}
 
 	public void onMessage(String type, QuestorContext ctx, String msg) {
