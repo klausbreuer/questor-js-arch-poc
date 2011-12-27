@@ -32,7 +32,7 @@ public class QuestorJsArchPocActivity extends Activity {
 	class Questor {
 		private WebView wv;
 		
-		Simulator simulator = new Simulator();
+		Simulator simulator = new Simulator(QuestorJsArchPocActivity.this);
 		Renderer mRenderer = new Renderer(QuestorJsArchPocActivity.this);
 		
 		public Questor(WebView wv) {
