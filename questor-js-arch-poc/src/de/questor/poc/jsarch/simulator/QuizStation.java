@@ -22,8 +22,10 @@ public class QuizStation {
 
 	private WebView wv;
 
-	QuizStation(Context ctx, Simulator sim, String question, String buttonText,
-			String answer, String stationSuccess, String stationFail) {
+	private Runnable runnable;
+
+	QuizStation(Context ctx, Simulator sim, final String question, final String buttonText,
+			final String answer, final String stationSuccess, final String stationFail) {
 		this.sim = sim;
 
 		wv = new WebView(ctx);
@@ -34,12 +36,16 @@ public class QuizStation {
 		wv.addJavascriptInterface(new Callback(), "sim");
 
 		wv.loadUrl("file:///android_asset/simulator/simulator.html");
-		wv.loadUrl("javascript:(function() { test(); })()");
 		
-		wv.loadUrl(String
-				.format("javascript:(function() { var q = new QuizStation('%s', '%s', '%s', '%s', '%s'); })()",
-						question, buttonText, answer, stationSuccess,
-						stationFail));
+		// Initializes a station instance.
+		runnable = new Runnable() {
+			public void run() {
+				wv.loadUrl(String
+						.format("javascript:(function() { var q = new QuizStation('%s', '%s', '%s', '%s', '%s'); })()",
+								question, buttonText, answer, stationSuccess,
+								stationFail));
+			}
+		};
 	}
 
 	public void onEnter(Simulator.Session session) {
@@ -54,12 +60,20 @@ public class QuizStation {
 
 	class Callback {
 
-		void sendCreateStation(String msg) {
+		public void sendCreateStation(String msg) {
 			sim.sendCreateStation(session, msg);
 		}
 
-		void performTransition(Session session, String newStation) {
+		public void performTransition(Session session, String newStation) {
 			sim.performTransition(session, newStation);
+		}
+
+		/**
+		 * This method is implicitly called when parsing of the QuizStation code is
+		 * finished. After this any Javascript URLs can be called.
+		 */
+		public void finished() {
+			runnable.run();
 		}
 	}
 

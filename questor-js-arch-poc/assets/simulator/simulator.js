@@ -1,15 +1,8 @@
 var station;
 	
-function test() {
-	logger.i("test");
-}
-	
-QuizStation = function(pQuestion, pButtonText, pAnswer, pStationsSuccess, pStationFail) {
+QuizStation = function(pQuestion, pButtonText, pAnswer, pStationSuccess, pStationFail) {
 	station = this;
-	logger.i("station: " + station);
-	 
 	this.question = pQuestion;
-	logger.i(question);
 	this.buttonText = pButtonText;
 	this.answer = pAnswer;
 	this.stationSuccess = pStationSuccess;
@@ -22,9 +15,9 @@ QuizStation.prototype.onEnter = function() {
 
 QuizStation.prototype.onMessage = function(msg) {
 	if (this.answer == msg) {
-		sim.performTransition(stationSuccess);
+		sim.performTransition(this.stationSuccess);
 	} else {
-		sim.performTransition(stationFail);
+		sim.performTransition(this.stationFail);
 	}
 };
 
@@ -32,11 +25,12 @@ QuizStation.prototype.generateJavascript = function() {
 	var submitCode = "runtime.sendReply(this.getFieldText()); ";
 		
 	var generatorCode = 
-		"var q = new Renderer.QuizStationHtml ();"
+		("var q = new Renderer.QuizStationHtml ();"
 		+ "q.setQuestion('{0}'); "
 		+ "q.setButtonText('{1}'); "
 		+ "q.onSubmit = function() { {2} };"
-		+ "q.show();".format(this.question, this.buttonText, this.submitCode);
-		
+		+ "q.show();").format(this.question, this.buttonText, this.submitCode);
 	return generatorCode;
 };
+
+sim.finished();

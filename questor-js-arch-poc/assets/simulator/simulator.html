@@ -1,14 +1,14 @@
 <html>
-<body>
+<head>
 
 <script type="text/javascript">
-	String.prototype.format = function(arguments) {
-	    var formatted = this;
-	    for(arg in arguments) {
-	        formatted = formatted.replace("{" + arg + "}", arguments[arg]);
-	    }
-	    return formatted;
-	};
+       String.prototype.format = function() {
+           var formatted = this;
+           for (arg = 0; arg < arguments.length; arg++) {
+               formatted = formatted.replace("{" + arg + "}", arguments[arg]);
+           }
+           return formatted;
+       };
 
 	function createNewScript(newscript) {
 	    var ss = document.createElement("script");
@@ -21,6 +21,7 @@
 </script>
 
 <script type="text/javascript" src="file:///android_asset/simulator/simulator.js" />
-
+</head>
+<body>
 </body>
 </html>
