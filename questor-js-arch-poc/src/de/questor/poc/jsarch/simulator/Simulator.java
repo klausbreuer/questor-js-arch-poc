@@ -27,7 +27,7 @@ public class Simulator {
 				"Antworten", "cic", "next", "fail"));
 		stations.put("next", new QuizStation(ctx, this,
 				"5 + 5 = ?",
-				"Antworten", "10", "success", "fail"));
+				"Antworten", "10", "success", "start"));
 	}
 	
 	public void onMessage(String type, Object ctx, String msg) {
