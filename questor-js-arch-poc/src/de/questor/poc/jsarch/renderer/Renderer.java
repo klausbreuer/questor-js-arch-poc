@@ -31,8 +31,13 @@ public class Renderer {
 		mWebView.setWebChromeClient(new WebChromeClient());
 		mWebView.addJavascriptInterface(rendererRuntime, "runtime");
 		mWebView.loadUrl("file:///android_asset/renderer/renderer.html");
-
 	}
+	
+	/*
+	public void stationOnSubmit(String value) {
+		mWebView.loadUrl(String.format("javascript:(function() { station.answer = '%s'; station.onSubmit() })()", value));
+	}
+	*/
 
 	public void onMessage(String type, QuestorContext ctx, String msg) {
 		if ("create".equals(type)) {
@@ -43,8 +48,8 @@ public class Renderer {
 			Log.i(TAG, "creation: " + command);
 			mWebView.loadUrl(command);
 		} else if ("poiPos".equals(type)) {
-			// Klaus: hier kommt eine Positionsmeldung fŸr ein POI der  Compass-Station an.
-			// Eigentlich mŸsste die jetzt an den js-core (renderer.js) weitergeleitet werden, der dann wiederum runtime.sendMessageToCompassStation aufrufen wŸrde.
+			// Klaus: hier kommt eine Positionsmeldung fï¿½r ein POI der  Compass-Station an.
+			// Eigentlich mï¿½sste die jetzt an den js-core (renderer.js) weitergeleitet werden, der dann wiederum runtime.sendMessageToCompassStation aufrufen wï¿½rde.
 			// Dies js-Schleife spare ich mir jetzt mal und rufe direkt sendMessageToCompassStation auf.
 			// (erst wenn die Compass-Logik in js realisiert ist, macht es wieder Sinn, diese Message an den js core weiter zu reichen... )
 			rendererRuntime.sendMessageToCompassStation(type, msg);
