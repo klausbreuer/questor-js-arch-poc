@@ -15,11 +15,15 @@ Simulator = function() {
 	// What follows is an actual 'game' configuration.
 	this.stations["1st_question"] = new QuizStation(
 				"Wie hiess die tarent frueher, als alles noch viel frueher war?",
+<<<<<<< HEAD
 				"Antworten", "cic", "1st_compass", "fail");
 	
 
 	this.stations["1st_compass"] = new CompassStation("2nd_question", "fail");
 	
+=======
+				"Antworten", "cic", "2nd_question", "fail");
+>>>>>>> - implemented the htmlstation on the simulator side
 	
 	this.stations["2nd_question"] = new QuizStation(
 				"5 + 5 = ?",
