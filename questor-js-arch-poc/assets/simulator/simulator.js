@@ -16,9 +16,24 @@ Simulator = function() {
 	this.stations["1st_question"] = new QuizStation(
 				"Wie hiess die tarent frueher, als alles noch viel frueher war?",
 				"Antworten", "cic", "2nd_question", "fail");
+	
 	this.stations["2nd_question"] = new QuizStation(
 				"5 + 5 = ?",
-				"Antworten", "10", "success", "1st_question");
+				"Antworten", "10", "1st_html", "1st_question");
+	
+	this.stations["1st_html"] = new HtmlStation(
+				"<p>At the foot of the hill, the path splits into two directions, " +
+				"both leading into a large wood. " +
+				"You can take " +
+				"the <choice target=\"1st_question\">right</choice> " +
+				"or <choice target=\"2nd_question\">left</choice> " +
+				"or <choice target=\"1st_html\">up</choice> " +
+				"or <choice target=\"2nd_html\">down</choice> track into the wood.</p>");
+
+	this.stations["2nd_html"] = new HtmlStation(
+				"<p>Hey!! Super! Du hast den Ausgang gefunden!!! " +
+				"<br><choice target=\"success\">Hier</choice> gehts raus...</p>");
+
 	this.stations["success"] = new EndStation(0);
 	this.stations["fail"] = new EndStation(1);
 	
@@ -65,42 +80,4 @@ Simulator.prototype.toSession = function(context) {
 	return this.sessions[context];
 };
 	
-QuizStation = function(pQuestion, pButtonText, pAnswer, pStationSuccess, pStationFail) {
-	station = this;
-	this.question = pQuestion;
-	this.buttonText = pButtonText;
-	this.answer = pAnswer;
-	this.stationSuccess = pStationSuccess;
-	this.stationFail = pStationFail;
-};
-
-QuizStation.prototype.onEnter = function(session) {
-	simulator.sendCreateStation(session, this.generateJavascript());
-};
-
-QuizStation.prototype.onMessage = function(session, msg) {
-	if (this.answer == msg) {
-		simulator.performTransition(session, this.stationSuccess);
-	} else {
-		simulator.performTransition(session, this.stationFail);
-	}
-};
-
-QuizStation.prototype.generateJavascript = function() {
-	var generatorCode = 
-		("var q = new Renderer.QuizStationHtml ();"
-		+ "q.setQuestion('{0}'); "
-		+ "q.setButtonText('{1}'); "
-		+ "q.show();").format(this.question, this.buttonText);
-	return generatorCode;
-};
-
-EndStation = function(returnCode) {
-	this.returnCode = returnCode;
-};
-
-EndStation.prototype.onEnter = function(session) {
-	logger.i("endstation: " + session.stationId);
-	runtime.exit(this.returnCode);
-};
 

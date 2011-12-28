@@ -102,7 +102,7 @@ Renderer.HtmlStation.prototype.show = function () {
 		// 2. create a new <a>, fill the href and the onClick attributes and add a textnode with the text:
 		newA = dom.createElement("a");
 		newA.setAttribute("href","#");
-		newA.setAttribute("onClick","runtime.sendReply('target=' + " + choiceVal  + "); return false;");
+		newA.setAttribute("onClick","runtime.sendReply('" + choiceVal  + "'); return false;");
 		newA.appendChild(dom.createTextNode(choiceTxt))
 		
 		// 3. replace the <choice> with the new <a>:

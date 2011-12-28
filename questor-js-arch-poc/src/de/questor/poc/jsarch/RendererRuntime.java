@@ -57,7 +57,6 @@ public class RendererRuntime {
 		Log.i(TAG, "reply: " + msg);
 		if (mQuestorContext == null) {
 			Log.i(TAG, "error: mQuestorContext is null!");
-			
 		}
 		else {
 			mQuestorContext.sendMessage(msg);
