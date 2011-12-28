@@ -137,20 +137,39 @@ Renderer.HtmlStation.prototype.setContent = function (pContent) {
 Renderer.HtmlStation.prototype.show = function () {
 	
 	// We replace the <choice target="xx"> tags by a call to runtime.sendReply
-	// not finished yet...
 	var dom;
 	dom = document.implementation.createHTMLDocument('');
 	dom.write(this.content);
-	
-	//alert (new XMLSerializer().serializeToString(dom));   
 
 	var arrChoices = dom.getElementsByTagName("choice");
+	var choiceNode, choiceVal, choiceTxt, newA, parent;
 	for( var i=0; i < arrChoices.length; i++ ) {
-		alert (arrChoices[i].getAttribute("target"));
+		
+		choiceNode = arrChoices[i];
+		
+		// 1. get the target and the text of the <choice>:
+		choiceVal = choiceNode.getAttribute("target");
+		choiceTxt = choiceNode.firstChild.nodeValue;
+		alert (choiceTxt);
+
+		// 2. create a new <a>, fill the href and the onClick attributes and add a textnode with the text ;-:
+		newA = dom.createElement("a");
+		newA.setAttribute("href","");
+		newA.setAttribute("onClick","alert('kicher:' + " + choiceVal  + ");");
+		newA.appendChild(dom.createTextNode(choiceTxt))
+		
+		
+		// 3. put the new <a> in the dom and remove the <choice>:
+		parent = choiceNode.parentNode;
+		parent.appendChild(newA);
+		//parent.removeChild (choiceNode);
+		
+		//alert (new XMLSerializer().serializeToString(dom));
 		
 	}
 	
 
+	runtime.showHtmlStation(new XMLSerializer().serializeToString(dom));
 	
 	
 	

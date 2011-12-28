@@ -6,7 +6,6 @@ import android.util.Log;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import de.questor.poc.jsarch.simulator.SimulatorRuntime;
-import de.questor.poc.jsarch.simulator.SimulatorRuntime;
 
 public class QuestorJsArchPocActivity extends Activity {
 
@@ -28,7 +27,7 @@ public class QuestorJsArchPocActivity extends Activity {
 	}
 
 
-	/** Questor class which is accessible from server generated Javascript code */
+	/** Questor class which is accessible from Javascript code */
 	class Questor {
 		private WebView wv;
 		
@@ -39,8 +38,8 @@ public class QuestorJsArchPocActivity extends Activity {
 			this.wv = wv;
 		}
 		
-		public void becomeRenderer() {
-			Log.i("questor", "renderer");
+		public void testKlaus() {
+			Log.i("questor", "testKlaus");
 			
 			//mRenderer.onMessage("create", null, "alert('buh!');showToast('hihi');");
 			//mRenderer.onMessage("create", null, "var q = new Renderer.QuizStation ('wie hiess die tarent frueher, als alles noch viel frueher war?'); q.onSubmit('cic');");
@@ -51,16 +50,14 @@ public class QuestorJsArchPocActivity extends Activity {
 			
 		}
 
-		public void becomeSimulator() {
-			Log.i("questor", "simulator");
-		}
 
 		public void exit() {
 			System.exit(0);
 		}
 		
 		public void test() {
-			MessageService ms = new MessageService(simulator, mRenderer);
+			// Initializes a local message service and runs a game.
+			MessageService ms = new LocalMessageService(simulator, mRenderer);
 			mRenderer.joinTest();
 		}
 		
