@@ -5,7 +5,7 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import de.questor.poc.jsarch.Logger;
 import de.questor.poc.jsarch.MessageService;
-import de.questor.poc.jsarch.Renderer;
+import de.questor.poc.jsarch.renderer.Renderer;
 
 /*
  * The Simulator's runtime.

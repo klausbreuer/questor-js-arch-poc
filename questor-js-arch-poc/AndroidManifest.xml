@@ -23,8 +23,8 @@
             </intent-filter>
         </activity>
         
-    	<activity android:noHistory="true" android:name="QuizActivity" />
-    	<activity android:noHistory="true" android:name="HtmlActivity" />
+    	<activity android:noHistory="true" android:name=".renderer.QuizActivity" />
+    	<activity android:noHistory="true" android:name=".renderer.HtmlActivity" />
         
         
     </application>

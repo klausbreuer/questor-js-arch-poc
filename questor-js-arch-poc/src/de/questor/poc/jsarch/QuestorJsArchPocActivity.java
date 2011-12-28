@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
+import de.questor.poc.jsarch.renderer.Renderer;
 import de.questor.poc.jsarch.simulator.SimulatorRuntime;
 
 public class QuestorJsArchPocActivity extends Activity {

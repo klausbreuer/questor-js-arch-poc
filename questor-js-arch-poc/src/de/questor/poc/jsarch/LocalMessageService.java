@@ -1,5 +1,6 @@
 package de.questor.poc.jsarch;
 
+import de.questor.poc.jsarch.renderer.Renderer;
 import de.questor.poc.jsarch.simulator.SimulatorRuntime;
 
 /**

@@ -1,4 +1,4 @@
-package de.questor.poc.jsarch;
+package de.questor.poc.jsarch.renderer;
 
 import android.app.Activity;
 import android.content.Intent;
