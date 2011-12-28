@@ -16,74 +16,9 @@ Renderer.QuizStation = function (pQuestion) {
 
 
 /*****************************************************
- * QuizStationHtmlOLD
- * 
- * example for an implementation of a station in pure HTML
- * 
- */
-
-Renderer.QuizStationHtmlOLD = function () {
-	station = this;    
-	this.dom = document.implementation.createHTMLDocument('');
-	this.serializer = new XMLSerializer();
-	this.question = '';
-	
-	var content;
-	content = '<div id="divQuestion"></div>';
-	content += '<div id="divInput"><input id="inputAnswer"></div>';
-	
-	// The receiving station knows a 'callback' element that allows calling back into this WebView instance. As the station.onSubmit() code needs
-	// the field value this is extracted here and set in the callback method's implementation.
-	// Not very clean ... 
-	//content += '<div id="divButton"><input id="btnAnswer" type="button" value="Antwort einloggen" onClick="callback.onSubmit(document.getElementById(\'inputAnswer\').value);"></div>';
-
-	content += '<div id="divButton"><input id="btnAnswer" type="button" value="Antwort einloggen" onClick="runtime.sendReply(document.getElementById(\'inputAnswer\').value);"></div>';
-	content += '';
-		 
-	this.dom.write(content);
-
-	 /* alert (this.serializer.serializeToString(this.dom)); */  
-};
-
-
-Renderer.QuizStationHtmlOLD.prototype.setQuestion = function (pQuestion) {    
-
-	this.question = pQuestion;
-	this.dom.getElementById('divQuestion').appendChild(this.dom.createTextNode(this.question)); 
-	 
-	/* alert (this.serializer.serializeToString(this.dom)); */ 
-};
-
-
-Renderer.QuizStationHtmlOLD.prototype.setButtonText = function (pText) {    
-
-	this.dom.getElementById('btnAnswer').setAttribute("value", pText); 
-	 
-};
-
-// Retrieves the text field's information.
-Renderer.QuizStationHtmlOLD.prototype.getFieldText = function() {
-	// This value is supposed to be set by the callback function.
-	return this.answer; 
-};
-
-Renderer.QuizStationHtmlOLD.prototype.onSubmit = function () {
-	showToast (this.getFieldText());
-};
-
-Renderer.QuizStationHtmlOLD.prototype.show = function () {
-	
-	runtime.showHtmlStation(this.serializer.serializeToString(this.dom));
-	
-};
-
-
-
-/*****************************************************
  * QuizStationHtml
  * 
- * latest version of the QuizStation, an implementation of a station in pure HTML.
- * Simpler and clearer.
+ * example for an implementation of a station in pure HTML.
  * 
  */
 
@@ -122,7 +57,8 @@ Renderer.QuizStationHtml.prototype.show = function () {
 /*****************************************************
  * HtmlStation
  * 
- * The simple HtmlStation 
+ * The normal, simple HtmlStation 
+ * <choice> tags are replaced by calls to runtime.sendReply()
  * 
  */
 
@@ -141,38 +77,41 @@ Renderer.HtmlStation.prototype.show = function () {
 	dom = document.implementation.createHTMLDocument('');
 	dom.write(this.content);
 
-	var arrChoices = dom.getElementsByTagName("choice");
 	var choiceNode, choiceVal, choiceTxt, newA, parent;
-	for( var i=0; i < arrChoices.length; i++ ) {
+
+	var arrChoices = dom.getElementsByTagName("choice");
+	//for( var i=0; i < arrChoices.length; i++ ) {
+	while (arrChoices.length > 0) {
 		
-		choiceNode = arrChoices[i];
+		/* Klaus: Found a strange behavior about getElementsByTagName here!
+		 * I assumed arrChoices is a simple array, containing a list of references to <choice> nodes.
+		 * But when I processed them in for-loop and removed them at the end of the loop, the arrChoices array was updated!!
+		 * In each loop, one element was removed from my array!
+		 * getElementsByTagName returns a "live NodeList" (https://developer.mozilla.org/en/DOM/document.getElementsByTagName)
+		 * So my for-loop always only processed half of the <choice> nodes!
+		 * Using "while (arrChoices.length > 0)" instead of the for-loop solved the problem.
+		 */
+		
+		//choiceNode = arrChoices[i];
+		choiceNode = arrChoices[0];
 		
 		// 1. get the target and the text of the <choice>:
 		choiceVal = choiceNode.getAttribute("target");
 		choiceTxt = choiceNode.firstChild.nodeValue;
-		alert (choiceTxt);
 
-		// 2. create a new <a>, fill the href and the onClick attributes and add a textnode with the text ;-:
+		// 2. create a new <a>, fill the href and the onClick attributes and add a textnode with the text:
 		newA = dom.createElement("a");
-		newA.setAttribute("href","");
-		newA.setAttribute("onClick","alert('kicher:' + " + choiceVal  + ");");
+		newA.setAttribute("href","#");
+		newA.setAttribute("onClick","runtime.sendReply('target=' + " + choiceVal  + "); return false;");
 		newA.appendChild(dom.createTextNode(choiceTxt))
 		
-		
-		// 3. put the new <a> in the dom and remove the <choice>:
+		// 3. replace the <choice> with the new <a>:
 		parent = choiceNode.parentNode;
-		parent.appendChild(newA);
-		//parent.removeChild (choiceNode);
-		
-		//alert (new XMLSerializer().serializeToString(dom));
+		parent.replaceChild(newA, choiceNode);
 		
 	}
-	
 
 	runtime.showHtmlStation(new XMLSerializer().serializeToString(dom));
-	
-	
-	
 }
 
 
