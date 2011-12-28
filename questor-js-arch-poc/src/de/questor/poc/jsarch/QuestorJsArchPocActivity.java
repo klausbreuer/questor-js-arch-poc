@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
-import de.questor.poc.jsarch.simulator.Simulator;
+import de.questor.poc.jsarch.simulator.SimulatorRuntime;
 import de.questor.poc.jsarch.simulator.SimulatorRuntime;
 
 public class QuestorJsArchPocActivity extends Activity {
@@ -32,7 +32,7 @@ public class QuestorJsArchPocActivity extends Activity {
 	class Questor {
 		private WebView wv;
 		
-		Simulator simulator = new Simulator(QuestorJsArchPocActivity.this);
+		SimulatorRuntime simulator = new SimulatorRuntime(QuestorJsArchPocActivity.this);
 		Renderer mRenderer = new Renderer(QuestorJsArchPocActivity.this);
 		
 		public Questor(WebView wv) {
