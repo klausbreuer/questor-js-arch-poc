@@ -103,7 +103,7 @@ Renderer.HtmlStation.prototype.show = function () {
 		newA = dom.createElement("a");
 		newA.setAttribute("href","#");
 		newA.setAttribute("onClick","runtime.sendReply('" + choiceVal  + "'); return false;");
-		newA.appendChild(dom.createTextNode(choiceTxt))
+		newA.appendChild(dom.createTextNode(choiceTxt));
 		
 		// 3. replace the <choice> with the new <a>:
 		parent = choiceNode.parentNode;

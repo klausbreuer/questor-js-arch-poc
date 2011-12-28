@@ -3,14 +3,14 @@ package de.questor.poc.jsarch.renderer;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Window;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
+import de.questor.poc.jsarch.QWebView;
 
 public class HtmlActivity extends Activity {
 
-	private WebView mWebView;
+	private QWebView mWebView;
 	private String mContent;
 	private RendererRuntime rendererRuntime;
 
@@ -25,7 +25,7 @@ public class HtmlActivity extends Activity {
 		rendererRuntime = RendererRuntime.getInstance();
 		rendererRuntime.setContext(this);
 		
-		mWebView = new WebView(this);
+		mWebView = new QWebView(this);
 		mWebView.getSettings().setJavaScriptEnabled(true);
 		mWebView.setWebChromeClient(new WebChromeClient());
 		mWebView.addJavascriptInterface(rendererRuntime, "runtime");

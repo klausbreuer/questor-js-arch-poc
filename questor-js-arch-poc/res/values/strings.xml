@@ -3,5 +3,10 @@
 
     <string name="hello">Hello World, QuestorJsArchPocActivity!</string>
     <string name="app_name">QuestorJsArchPoc</string>
+    
+    <!-- 
+    <string name="weinreLink">http://192.168.2.103:8080/target/target-script-min.js#anonymous</string>
+ 	-->
+    <string name="weinreLink"></string>
 
 </resources>
