@@ -21,7 +21,9 @@ Simulator = function() {
 				"5 + 5 = ?",
 				"Antworten", "10", "success", "start");
 };
-	
+
+/** This method handles the messages send from the renderer.
+*/	
 Simulator.prototype.onMessage = function(type, ctx, msg) {
 	if ("join" == type) {
 		session = this.newSession(msg);
