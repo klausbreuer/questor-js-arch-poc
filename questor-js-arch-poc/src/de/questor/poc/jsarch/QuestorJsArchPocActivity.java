@@ -39,26 +39,12 @@ public class QuestorJsArchPocActivity extends Activity {
 			this.wv = wv;
 		}
 		
-		public void becomeRenderer() {
-			Log.i("questor", "renderer");
-			
-			//mRenderer.onMessage("create", null, "alert('buh!');showToast('hihi');");
-			//mRenderer.onMessage("create", null, "var q = new Renderer.QuizStation ('wie hiess die tarent frueher, als alles noch viel frueher war?'); q.onSubmit('cic');");
-			//mRenderer.onMessage("create", null, "var q = new Renderer.QuizStation ('wie hiess die tarent frueher, als alles noch viel frueher war?');");
-			//mRenderer.onMessage("create", null, "var q = new Renderer.QuizStationHtml (); q.setQuestion('wie spaet ist es?'); q.setButtonText('und los gehts....'); q.show();");
-			mRenderer.onMessage("create", null, "var q = new Renderer.QuizStationHtml2 (); q.setQuestion('QuizStationHtml2: wie spaet ist es?'); q.setButtonText('push me!'); q.show();");
-			
-		}
-
-		public void becomeSimulator() {
-			Log.i("questor", "simulator");
-		}
-
 		public void exit() {
 			System.exit(0);
 		}
 		
 		public void test() {
+			// Initializes a local message service and runs a game.
 			MessageService ms = new MessageService(simulator, mRenderer);
 			mRenderer.joinTest();
 		}
