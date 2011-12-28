@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Window;
 import android.webkit.WebChromeClient;
+import android.webkit.WebView;
 import de.questor.poc.jsarch.QWebView;
 
 public class HtmlActivity extends Activity {

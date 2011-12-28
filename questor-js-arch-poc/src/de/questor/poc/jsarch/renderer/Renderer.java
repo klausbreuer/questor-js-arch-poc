@@ -1,7 +1,5 @@
 package de.questor.poc.jsarch.renderer;
 
-import de.questor.poc.jsarch.MessageService;
-import de.questor.poc.jsarch.QuestorContext;
 import android.content.Context;
 import android.util.Log;
 import android.webkit.WebChromeClient;
@@ -16,7 +14,7 @@ public class Renderer {
 
 	private Context mContext;
 	private QWebView mWebView;
-
+	
 	private MessageService messageService;
 	private QuestorContext questorContext;
 	private RendererRuntime rendererRuntime;
@@ -27,19 +25,15 @@ public class Renderer {
 		mContext = pContext;
 		rendererRuntime = RendererRuntime.getInstance();
 		rendererRuntime.setContext(mContext);
-
+		
 		mWebView = new QWebView(mContext);
 		mWebView.getSettings().setJavaScriptEnabled(true);
 		mWebView.setWebChromeClient(new WebChromeClient());
 		mWebView.addJavascriptInterface(rendererRuntime, "runtime");
 		mWebView.loadUrl("file:///android_asset/renderer/renderer.html");
+
 	}
 	
-	/*
-	public void stationOnSubmit(String value) {
-		mWebView.loadUrl(String.format("javascript:(function() { station.answer = '%s'; station.onSubmit() })()", value));
-	}
-	*/
 
 	public void onMessage(String type, QuestorContext ctx, String msg) {
 		if ("create".equals(type)) {
