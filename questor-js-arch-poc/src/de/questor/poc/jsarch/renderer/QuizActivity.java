@@ -1,5 +1,9 @@
 package de.questor.poc.jsarch.renderer;
 
+import de.questor.poc.jsarch.R;
+import de.questor.poc.jsarch.R.drawable;
+import de.questor.poc.jsarch.R.id;
+import de.questor.poc.jsarch.R.layout;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;

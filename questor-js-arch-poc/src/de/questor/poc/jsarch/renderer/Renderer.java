@@ -1,5 +1,7 @@
 package de.questor.poc.jsarch.renderer;
 
+import de.questor.poc.jsarch.MessageService;
+import de.questor.poc.jsarch.QuestorContext;
 import android.content.Context;
 import android.util.Log;
 import android.webkit.WebChromeClient;

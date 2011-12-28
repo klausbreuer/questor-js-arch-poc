@@ -1,5 +1,6 @@
 package de.questor.poc.jsarch.renderer;
 
+import de.questor.poc.jsarch.QuestorContext;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
