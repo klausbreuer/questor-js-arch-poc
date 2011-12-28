@@ -1,6 +1,3 @@
-var simulator;
-var station;
-
 /** Session class
  * Holds the player and his/her current station.
  */
@@ -107,4 +104,3 @@ EndStation.prototype.onEnter = function(session) {
 	runtime.exit(this.returnCode);
 };
 
-runtime.finished();

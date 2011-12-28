@@ -18,9 +18,20 @@
 	    var hh = document.getElementsByTagName('head')[0];
 	    hh.appendChild(ss);
 	}
+	
+	// Global variable to be initialized by the runtime.
+	var simulator;
 </script>
 
 <script type="text/javascript" src="file:///android_asset/simulator/simulator.js" />
+
+<script type="text/javascript" src="file:///android_asset/simulator/quizstation.js" />
+<script type="text/javascript" src="file:///android_asset/simulator/endstation.js" />
+
+<script type="text/javascript">
+	runtime.finished();
+</script>
+
 </head>
 <body>
 </body>
