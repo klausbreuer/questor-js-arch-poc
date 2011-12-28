@@ -1,43 +1,39 @@
 package de.questor.poc.jsarch;
 
-import de.questor.poc.jsarch.simulator.SimulatorRuntime;
-
-public class MessageService {
+/**
+ * The {@link MessageService} manages the transfer of messages between the 
+ * renderer and the simulator.
+ * 
+ * <p>Depending on the actual implementation this involves network transfer or
+ * not.</p>
+ * 
+ * @author Robert Schuster <r.schuster@tarent.de>
+ *
+ */
+public interface MessageService {
 	
-	private SimulatorRuntime simulator;
+	/**
+	 * Sends a message to the renderer.
+	 * 
+	 * <p>The <code>contextKey</code> argument allows the renderer
+	 * to send replies to the origin of this message.</p>
+	 * 
+	 * @param type
+	 * @param contextKey
+	 * @param msg
+	 */
+	void sendToRenderer(String type, Object contextKey, String msg);
 	
-	private Renderer renderer;
-
-	public MessageService(SimulatorRuntime s, Renderer r) {
-		simulator = s;
-		renderer = r;
-		
-		// Make message service globally available
-		simulator.setMessageService(this);
-		renderer.setMessageService(this);
-	}
+	/**
+	 * Sends a message to the simulator.
+	 * 
+	 * <p>The <code>contextKey</code> argument needs to valid in the
+	 * simulator for the message to have a meaningful effect.</p>
+	 * 
+	 * @param type
+	 * @param contextKey
+	 * @param msg
+	 */
+	void sendToSimulator(String type, Object contextKey, String msg);
 	
-	public void sendToRenderer(String type, Object contextKey, String msg) {
-		QuestorContext ctx = new AnswerContext(contextKey);
-		renderer.onMessage(type, ctx, msg);
-	}
-	
-	public void sendToSimulator(String type, Object contextKey, String msg) {
-		simulator.onMessage(type, contextKey, msg);
-	}
-	
-	private class AnswerContext implements QuestorContext {
-		
-		private Object contextKey;
-		
-		AnswerContext(Object contextKey) {
-			this.contextKey = contextKey;
-		}
-
-		@Override
-		public void sendMessage(String msg) {
-			MessageService.this.sendToSimulator("reply", contextKey, msg);
-		}
-		
-	}
 }

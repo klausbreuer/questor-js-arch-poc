@@ -28,7 +28,7 @@ public class QuestorJsArchPocActivity extends Activity {
 	}
 
 
-	/** Questor class which is accessible from server generated Javascript code */
+	/** Questor class which is accessible from Javascript code */
 	class Questor {
 		private WebView wv;
 		
@@ -45,7 +45,7 @@ public class QuestorJsArchPocActivity extends Activity {
 		
 		public void test() {
 			// Initializes a local message service and runs a game.
-			MessageService ms = new MessageService(simulator, mRenderer);
+			MessageService ms = new LocalMessageService(simulator, mRenderer);
 			mRenderer.joinTest();
 		}
 		
