@@ -1,14 +1,14 @@
 package de.questor.poc.jsarch;
 
-import de.questor.poc.jsarch.simulator.Simulator;
+import de.questor.poc.jsarch.simulator.SimulatorRuntime;
 
 public class MessageService {
 	
-	private Simulator simulator;
+	private SimulatorRuntime simulator;
 	
 	private Renderer renderer;
 
-	public MessageService(Simulator s, Renderer r) {
+	public MessageService(SimulatorRuntime s, Renderer r) {
 		simulator = s;
 		renderer = r;
 		
