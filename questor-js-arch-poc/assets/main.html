@@ -1,14 +1,49 @@
 <!-- This is supposed to contain the code for a quizstation -->
 
 <html>
+<head>
+
+</head>
 <body>
 <p>Willlkommen zum Questor Javascript Proof-Of-Concept!</p>
 
 <p><a href="javascript:questor.testKlaus();">Test Klaus</a></p>
 
+
+<p><a href="#" onClick="recursion(1000);" >Test Rekursion</a> <span id=recCount></span></p>
+
+
 <p><a href="javascript:questor.exit();">beende Anwendung</a></p>
 
 <p><a href="javascript:questor.test();">starte ein Spiel</a></p>
+
+
+<script>
+
+var recCount = document.getElementById("recCount");
+
+
+function recursion(pDepth) {
+
+	// 128 A's:
+	var bigString= "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+	// 8.192 Arrayelement * 128 = 1 MB 
+	var bigArray = new Array(8192);
+	for (i=0; i<bigArray.length; i++) bigArray[i] = bigString;
+	
+	
+	//console.log("recursion in: " + pDepth);
+	recCount.textContent="recursion in: " + pDepth;
+	
+	pDepth--;
+	if (pDepth > 0) recursion(pDepth);
+
+	//console.log("recursion out: " + pDepth); 
+	recCount.textContent="recursion out: " + pDepth;
+	
+}
+</script>
+
 
 </body>
 </html>

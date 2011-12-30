@@ -1,11 +1,12 @@
 package de.questor.poc.jsarch;
 
 import android.content.Context;
+import android.util.Log;
 import android.webkit.WebView;
 
 public class QWebView extends WebView {
 	
-	String weinreLink = null;
+	String weinreLink = "";
 	String weinreLinkInScriptTag  = "";
 	String addWeinreScript = ";";  
 
@@ -14,13 +15,15 @@ public class QWebView extends WebView {
 		//weinreLink = "http://192.168.2.103:8080/target/target-script-min.js#anonymous";
 		weinreLink = context.getString(R.string.weinreLink);
 		
-		if (weinreLink != null) {
+		if (!("".equals(weinreLink))) {
+			Log.i("klaus", "soso");
 			weinreLinkInScriptTag = "<script src='" + weinreLink + "'></script>";
 			addWeinreScript = 
 					" var snode = document.createElement('script');" +  
 					" snode.setAttribute('type','text/javascript');" +  
 					" snode.setAttribute('src','" + weinreLink + "');" +   
-					" document.getElementsByTagName('head')[0].appendChild(snode);";  
+					" var head = document.getElementsByTagName('head')[0];" +  
+					" if (head) head.appendChild(snode);";  
 		}
 	}
 
@@ -34,7 +37,9 @@ public class QWebView extends WebView {
 	@Override
 	public void loadUrl(String url) {
 		super.loadUrl(url);
-		super.loadUrl("javascript:" + addWeinreScript);		
+		// Das hier klappt noch nicht richtig: wenn dasselbe webview zum zweiten mal loadUrl aufruft, würde weinre noch mal includiert...
+		// mit der Folge, dass es nicht mehr funktioniert...
+		//super.loadUrl("javascript:" + addWeinreScript);		
 	}
 	
 }
