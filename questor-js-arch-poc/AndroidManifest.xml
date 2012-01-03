@@ -29,7 +29,9 @@
         
     	<activity android:noHistory="true" android:name=".renderer.QuizActivity" />
     	<activity android:noHistory="true" android:name=".renderer.HtmlActivity" />
-        
+    	<activity android:noHistory="true" android:name=".renderer.CompassActivity" />
+    	
+		<uses-library android:name="com.google.android.maps"/>
         
     </application>
 

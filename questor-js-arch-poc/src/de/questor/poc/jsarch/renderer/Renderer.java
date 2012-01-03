@@ -14,7 +14,7 @@ public class Renderer {
 
 	private Context mContext;
 	private QWebView mWebView;
-	
+
 	private MessageService messageService;
 	private QuestorContext questorContext;
 	private RendererRuntime rendererRuntime;
@@ -25,7 +25,7 @@ public class Renderer {
 		mContext = pContext;
 		rendererRuntime = RendererRuntime.getInstance();
 		rendererRuntime.setContext(mContext);
-		
+
 		mWebView = new QWebView(mContext);
 		mWebView.getSettings().setJavaScriptEnabled(true);
 		mWebView.setWebChromeClient(new WebChromeClient());
@@ -33,7 +33,6 @@ public class Renderer {
 		mWebView.loadUrl("file:///android_asset/renderer/renderer.html");
 
 	}
-	
 
 	public void onMessage(String type, QuestorContext ctx, String msg) {
 		if ("create".equals(type)) {
