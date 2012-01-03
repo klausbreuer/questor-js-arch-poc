@@ -1,9 +1,5 @@
 package de.questor.poc.jsarch.renderer;
 
-import de.questor.poc.jsarch.R;
-import de.questor.poc.jsarch.R.drawable;
-import de.questor.poc.jsarch.R.id;
-import de.questor.poc.jsarch.R.layout;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -13,6 +9,7 @@ import android.view.Window;
 import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.EditText;
+import de.questor.poc.jsarch.R;
 
 public class QuizActivity extends Activity {
 

@@ -1,10 +1,10 @@
 package de.questor.poc.jsarch.renderer;
 
-import de.questor.poc.jsarch.QuestorContext;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 import android.widget.Toast;
+import de.questor.poc.jsarch.QuestorContext;
 
 public class RendererRuntime {
 
@@ -48,6 +48,20 @@ public class RendererRuntime {
 		mContext.startActivity(i);
 	}
 
+	public void showCompassStation() {
+		Log.i(TAG, "showCompassStation");
+		Intent i = new Intent(mContext, CompassActivity.class);
+		mContext.startActivity(i);
+	}
+
+	public void sendMessageToCompassStation(String pType, String pMsg) {
+		Log.i(TAG, "sendMessageToCompassStation: " + pType + " / " + pMsg);		
+		Intent i = new Intent("de.questor.poc.jsarch." + pType);
+		i.putExtra(pType, pMsg);
+		mContext.sendBroadcast(i);
+	}
+	
+	
 	/**
 	 * A messaging function that is called from Javascript which allows sending
 	 * a reply to the simulator.

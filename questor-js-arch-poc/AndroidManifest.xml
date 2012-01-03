@@ -7,6 +7,10 @@
     <uses-sdk android:minSdkVersion="7" />
     
     <uses-permission android:name="android.permission.INTERNET" />
+	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+	<uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    
     
     <application
         android:icon="@drawable/ic_launcher"
@@ -25,7 +29,9 @@
         
     	<activity android:noHistory="true" android:name=".renderer.QuizActivity" />
     	<activity android:noHistory="true" android:name=".renderer.HtmlActivity" />
-        
+    	<activity android:noHistory="true" android:name=".renderer.CompassActivity" />
+    	
+		<uses-library android:name="com.google.android.maps"/>
         
     </application>
 

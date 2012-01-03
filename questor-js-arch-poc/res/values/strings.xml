@@ -4,8 +4,11 @@
     <string name="hello">Hello World, QuestorJsArchPocActivity!</string>
     <string name="app_name">QuestorJsArchPoc</string>
     
+    <string name="StoryServerUrl">http://test1-kbQuestorServer.rhcloud.com/</string>
+    
     <!-- 
     <string name="weinreLink">http://192.168.2.103:8080/target/target-script-min.js#anonymous</string>
+    <string name="weinreLink">http://172.26.2.155:8080/target/target-script-min.js#anonymous</string>
  	-->
     <string name="weinreLink"></string>
 

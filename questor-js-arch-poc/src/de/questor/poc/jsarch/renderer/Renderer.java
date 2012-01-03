@@ -8,13 +8,13 @@ import de.questor.poc.jsarch.QWebView;
 import de.questor.poc.jsarch.QuestorContext;
 
 public class Renderer {
-	
+
 	public static Renderer INSTANCE;
 	private static final String TAG = "Renderer";
 
 	private Context mContext;
 	private QWebView mWebView;
-	
+
 	private MessageService messageService;
 	private QuestorContext questorContext;
 	private RendererRuntime rendererRuntime;
@@ -25,7 +25,7 @@ public class Renderer {
 		mContext = pContext;
 		rendererRuntime = RendererRuntime.getInstance();
 		rendererRuntime.setContext(mContext);
-		
+
 		mWebView = new QWebView(mContext);
 		mWebView.getSettings().setJavaScriptEnabled(true);
 		mWebView.setWebChromeClient(new WebChromeClient());
@@ -33,7 +33,6 @@ public class Renderer {
 		mWebView.loadUrl("file:///android_asset/renderer/renderer.html");
 
 	}
-	
 
 	public void onMessage(String type, QuestorContext ctx, String msg) {
 		if ("create".equals(type)) {
@@ -43,12 +42,17 @@ public class Renderer {
 			String command = String.format("javascript:(function() { %s })()", msg);
 			Log.i(TAG, "creation: " + command);
 			mWebView.loadUrl(command);
+		} else if ("poiPos".equals(type)) {
+			// Klaus: hier kommt eine Positionsmeldung für ein POI der  Compass-Station an.
+			// Eigentlich müsste die jetzt an den js-core (renderer.js) weitergeleitet werden, der dann wiederum runtime.sendMessageToCompassStation aufrufen würde.
+			// Dies js-Schleife spare ich mir jetzt mal und rufe direkt sendMessageToCompassStation auf.
+			// (erst wenn die Compass-Logik in js realisiert ist, macht es wieder Sinn, diese Message an den js core weiter zu reichen... )
+			rendererRuntime.sendMessageToCompassStation(type, msg);
 		} else {
 			Log.w(TAG, "Unexpected message type: " + type);
 		}
 	}
 
-	
 	public void setMessageService(MessageService messageService) {
 		this.messageService = messageService;
 	}
