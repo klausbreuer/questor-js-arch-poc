@@ -26,14 +26,13 @@ Renderer.QuizStationHtml = function () {
 
 Renderer.QuizStationHtml.prototype.setQuestion = function (pQuestion) {    
 	this.question = pQuestion;
-}
+};
 
 Renderer.QuizStationHtml.prototype.setButtonText = function (pButtonText) {    
 	this.buttonText = pButtonText;
-}
+};
 
 Renderer.QuizStationHtml.prototype.show = function () {
-	
 	var content;
 	content  = '<div id="divQuestion">' + this.question + '</div>';
 	content += '<div id="divInput"><input id="inputAnswer"></div>';
@@ -43,7 +42,8 @@ Renderer.QuizStationHtml.prototype.show = function () {
 	content += ' onClick="runtime.sendReply(document.getElementById(\'inputAnswer\').value);">';
 	content += '</div>';
 	
+	makeCurrent(this);
 	runtime.showHtmlStation(content);
 
-}
+};
 

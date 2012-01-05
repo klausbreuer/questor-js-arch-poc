@@ -59,7 +59,9 @@ public class QuestorJsArchPocActivity extends Activity {
 		public void test() {
 			// Initializes a local message service and runs a game.
 			MessageService ms = new LocalMessageService(simulator, mRenderer);
-			mRenderer.joinTest();
+			
+			// Starts a game by letting a player join the game ... 
+			ms.sendToSimulator("join", null, "testspieler");
 		}
 		
 	}

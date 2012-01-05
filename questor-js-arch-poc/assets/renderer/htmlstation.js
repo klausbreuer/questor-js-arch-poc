@@ -12,7 +12,7 @@ Renderer.HtmlStation = function () {
 
 Renderer.HtmlStation.prototype.setContent = function (pContent) {    
 	this.content = pContent;
-}
+};
 
 Renderer.HtmlStation.prototype.show = function () {
 	
@@ -58,5 +58,6 @@ Renderer.HtmlStation.prototype.show = function () {
 		
 	}
 
+	makeCurrent(this);
 	runtime.showHtmlStation(new XMLSerializer().serializeToString(dom));
-}
+};

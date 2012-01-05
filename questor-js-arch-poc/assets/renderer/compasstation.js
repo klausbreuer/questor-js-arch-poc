@@ -10,10 +10,11 @@ Renderer.CompassStation = function () {
 
 
 Renderer.CompassStation.prototype.show = function () {
+	makeCurrent(this);
 	runtime.showCompassStation();
-}
+};
 
 Renderer.CompassStation.prototype.sendMessage = function (pType, pMsg) {
 	runtime.sendMessageToCompassStation(pType, pMsg);
-}
+};
 

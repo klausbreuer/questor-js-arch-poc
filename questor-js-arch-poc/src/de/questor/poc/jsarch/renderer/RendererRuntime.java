@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.util.Log;
 import android.webkit.WebChromeClient;
 import android.widget.Toast;
+import de.questor.poc.jsarch.Logger;
 import de.questor.poc.jsarch.MessageService;
 import de.questor.poc.jsarch.QWebView;
 import de.questor.poc.jsarch.QuestorContext;
@@ -29,6 +30,7 @@ public class RendererRuntime {
 		mWebView = new QWebView(mContext);
 		mWebView.getSettings().setJavaScriptEnabled(true);
 		mWebView.setWebChromeClient(new WebChromeClient());
+		mWebView.addJavascriptInterface(new Logger(TAG), "logger");
 		mWebView.addJavascriptInterface(this, "runtime");
 		mWebView.loadUrl("file:///android_asset/renderer/renderer.html");
 
@@ -63,11 +65,6 @@ public class RendererRuntime {
 
 	public void setMessageService(MessageService messageService) {
 		this.messageService = messageService;
-	}
-
-	public void joinTest() {
-		// Lets the player join a game and thereby start the whole interaction
-		messageService.sendToSimulator("join", null, "testspieler");
 	}
 
 	public void showToast(String toast) {
@@ -118,6 +115,6 @@ public class RendererRuntime {
 	}
 
 	public void finished() {
-		Log.i(TAG, "finished loading renderer.js");
+		Log.i(TAG, "finished loading renderer.html");
 	}
 }
