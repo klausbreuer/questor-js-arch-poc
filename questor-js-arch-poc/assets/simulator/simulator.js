@@ -16,11 +16,8 @@ Simulator = function() {
 	this.stations["1st_question"] = new QuizStation(
 				"Wie hiess die tarent frueher, als alles noch viel frueher war?",
 				"Antworten", "cic", "1st_compass", "fail");
-	
 
 	this.stations["1st_compass"] = new CompassStation("2nd_question", "fail");
-	
-				"Antworten", "cic", "2nd_question", "fail");
 	
 	this.stations["2nd_question"] = new QuizStation(
 				"5 + 5 = ?",
@@ -48,6 +45,8 @@ Simulator = function() {
 /** This method handles the messages send from the renderer.
 */	
 Simulator.prototype.onMessage = function(type, ctx, msg) {
+	logger.i("onMessage: " + type);
+	
 	if ("join" == type) {
 		session = this.newSession(msg);
 		this.performTransition(session, this.start);
