@@ -29,15 +29,17 @@ public class SimulatorRuntime {
 		wv.addJavascriptInterface(new Logger("Simulator"), "logger");
 		wv.addJavascriptInterface(this, "runtime");
 
-		wv.loadUrl("file:///android_asset/simulator/simulator.html");
-		
 		// Initializes the global simulator instance in Javascript.
 		runnable = new Runnable() {
 			public void run() {
 				wv.loadUrl("javascript:(function() { simulator = new Simulator(); })()");
+				
+				// Makes sure that everything has been initialized correctly.
+				wv.loadUrl("javascript:checkSimulator()");
 			}
 		};
 
+		wv.loadUrl("file:///android_asset/simulator/simulator.html");
 	}
 
 	/**
