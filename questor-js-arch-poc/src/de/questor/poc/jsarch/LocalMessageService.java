@@ -1,6 +1,7 @@
 package de.questor.poc.jsarch;
 
-import de.questor.poc.jsarch.renderer.Renderer;
+import android.opengl.GLSurfaceView.Renderer;
+import de.questor.poc.jsarch.renderer.RendererRuntime;
 import de.questor.poc.jsarch.simulator.SimulatorRuntime;
 
 /**
@@ -14,9 +15,9 @@ public class LocalMessageService implements MessageService {
 	
 	private SimulatorRuntime simulator;
 	
-	private Renderer renderer;
+	private RendererRuntime renderer;
 
-	public LocalMessageService(SimulatorRuntime s, Renderer r) {
+	public LocalMessageService(SimulatorRuntime s, RendererRuntime r) {
 		simulator = s;
 		renderer = r;
 		

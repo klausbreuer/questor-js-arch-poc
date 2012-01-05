@@ -3,36 +3,76 @@ package de.questor.poc.jsarch.renderer;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
+import android.webkit.WebChromeClient;
 import android.widget.Toast;
+import de.questor.poc.jsarch.MessageService;
+import de.questor.poc.jsarch.QWebView;
 import de.questor.poc.jsarch.QuestorContext;
 
 public class RendererRuntime {
 
-	private static RendererRuntime INSTANCE = null;
-
 	private static final String TAG = "Renderer";
-	private static Context mContext;
-	private static QuestorContext mQuestorContext;
+	
+	private static RendererRuntime INSTANCE;
 
+	private Context mContext;
+	private QWebView mWebView;
+
+	private MessageService messageService;
+	
+	private QuestorContext mQuestorContext;
+	
+	public RendererRuntime(Context pContext) {
+		INSTANCE = this;
+		mContext = pContext;
+
+		mWebView = new QWebView(mContext);
+		mWebView.getSettings().setJavaScriptEnabled(true);
+		mWebView.setWebChromeClient(new WebChromeClient());
+		mWebView.addJavascriptInterface(this, "runtime");
+		mWebView.loadUrl("file:///android_asset/renderer/renderer.html");
+
+	}
+	
 	public static RendererRuntime getInstance() {
 		if (INSTANCE == null) {
-			INSTANCE = new RendererRuntime();
+			throw new IllegalStateException("RendererRuntime not initialized yet.");
 		}
+		
 		return INSTANCE;
 	}
+	
+	public void onMessage(String type, QuestorContext ctx, String msg) {
+		if ("create".equals(type)) {
+			mQuestorContext = ctx;
 
-	public void setContext(Context pContext) {
-		mContext = pContext;
+			// Runs the creation command.
+			String command = String.format("javascript:(function() { %s })()", msg);
+			Log.i(TAG, "creation: " + command);
+			mWebView.loadUrl(command);
+		} else if ("poiPos".equals(type)) {
+			// Klaus: hier kommt eine Positionsmeldung f�r ein POI der  Compass-Station an.
+			// Eigentlich m�sste die jetzt an den js-core (renderer.js) weitergeleitet werden, der dann wiederum runtime.sendMessageToCompassStation aufrufen w�rde.
+			// Dies js-Schleife spare ich mir jetzt mal und rufe direkt sendMessageToCompassStation auf.
+			// (erst wenn die Compass-Logik in js realisiert ist, macht es wieder Sinn, diese Message an den js core weiter zu reichen... )
+			sendMessageToCompassStation(type, msg);
+		} else {
+			Log.w(TAG, "Unexpected message type: " + type);
+		}
 	}
 
-	public void setQuestorContext(QuestorContext pQuestorContext) {
-		mQuestorContext = pQuestorContext;
+	public void setMessageService(MessageService messageService) {
+		this.messageService = messageService;
+	}
+
+	public void joinTest() {
+		// Lets the player join a game and thereby start the whole interaction
+		messageService.sendToSimulator("join", null, "testspieler");
 	}
 
 	public void showToast(String toast) {
 		Toast.makeText(mContext, toast, Toast.LENGTH_SHORT).show();
 	}
-	
 	
 	public void showQuizStation(String pQuestion) {
 		Log.i(TAG, "showQuizStation");
@@ -60,7 +100,6 @@ public class RendererRuntime {
 		i.putExtra(pType, pMsg);
 		mContext.sendBroadcast(i);
 	}
-	
 	
 	/**
 	 * A messaging function that is called from Javascript which allows sending

@@ -22,7 +22,6 @@ public class HtmlActivity extends Activity {
 		mContent = (String) i.getSerializableExtra("content");
 		
 		rendererRuntime = RendererRuntime.getInstance();
-		rendererRuntime.setContext(this);
 		
 		mWebView = new QWebView(this);
 		mWebView.getSettings().setJavaScriptEnabled(true);
