@@ -13,17 +13,37 @@ CompassStation = function(pStationSuccess, pStationFail) {
 	station = this;
 	this.stationSuccess = pStationSuccess;
 	this.stationFail = pStationFail;
+	
+	// Keeps the player sessions and their locations
+	this.attendees = new Array();
+	
+	this.updateCount = 0;
+
+	var helper = this;
+	
+	this.interval = setInterval (
+			function() {
+				if (helper.updateCount > 3)
+					{
+						helper.sendAttendeePositions();
+					}
+				
+				// TEST CODE: Send random positions to all players.
+				for (i in helper.attendees) {
+					var a = helper.attendees[i];
+					if (a != null) {
+						helper.sendPoiPositions(a.session);
+					}
+				}
+			}, 5000 );	
 };
 
 
 CompassStation.prototype.onEnter = function(session) {
 	simulator.sendCreateStation(session, this.generateJavascript());
 	
-	// for testing only: sending periodically positions of POIs to testspieler:
-	var self = this;
-	setInterval ( function(){self.sendPoiPosition(simulator.sessions['testspieler']);}, 5000 );	
+	addAttendee(session);
 };
-
 
 CompassStation.prototype.sendPoiPosition = function(session) {
 	// testing: sends random positions for up to four POIs:
@@ -47,7 +67,13 @@ CompassStation.prototype.sendPoiPosition = function(session) {
 
 
 CompassStation.prototype.onMessage = function(session, msg) {
-	simulator.performTransition(session, msg);
+	if (msg == "playerPos") {
+		
+	} else if (msg = "cheatOut") {
+		
+		clearInterval(this.interval);
+		simulator.performTransition(session, msg);
+	}
 };
 
 CompassStation.prototype.generateJavascript = function() {
@@ -55,4 +81,63 @@ CompassStation.prototype.generateJavascript = function() {
 		"var c = new Renderer.CompassStation ();"
 		+ "c.show();";
 	return generatorCode;
+};
+
+CompassStation.prototype.sendAttendeePositions = function() {
+	var h = this;
+	var helper = function(attendees, current) {
+		for (i in attendees) {
+			a = attendees[i];
+			if (a != null && a != current) {
+				
+				msg = a.session.playerId + "," + a.lat + "," + a.lon;
+				simulator.sendMessage("playerPos", current.session, msg);
+			}
+		}
+	}
+	
+	for (i in this.attendees) {
+		a = this.attendees[i];
+		
+		if (a != null) {
+			helper(this.attendees, a);
+		}
+	}
+};
+
+CompassStation.prototype.addAttendee = function(session) {
+	if (this.attendees[session] == null) {
+		logger.i("new player attending compassstation '{0}'".format(session.sessionId));
+	} else {
+		logger.i("new player attending compassstation '{0}' but was already in attendee list".format(session.sessionId));
+	}
+	
+	var newattendee = this.attendees[session] = new Object();
+	newattendee.session = session;
+	newattendee.lon = null;
+	newattendee.lat = null;
+};
+
+CompassStation.prototype.updateAttendee = function(session, lat, lon) {
+	if (this.attendees[session] == null) {
+		logger.i("updating player attending compass station '{0}' but did not enter before".format(session.sessionId));
+		return;
+	} else {
+		logger.i("updating player attending compass station '{0}'".format(session.sessionId));
+	}
+	
+	var attendee = this.attendees[session];
+	attendee.lat = lat;
+	attendee.lon = lon;
+};
+
+CompassStation.prototype.removeAttendee = function(session, lat, lon) {
+	if (this.attendees[session] == null) {
+		logger.i("removing player attending compass station '{0}' but did not enter before".format(session.sessionId));
+		return;
+	} else {
+		logger.i("removing player attending compass station '{0}'".format(session.sessionId));
+	}
+	
+	this.attendees[session] = null;
 };
