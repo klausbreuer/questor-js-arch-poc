@@ -78,4 +78,7 @@ public class RendererRuntime {
 		}
 	}
 
+	public void finished() {
+		Log.i(TAG, "finished loading renderer.js");
+	}
 }

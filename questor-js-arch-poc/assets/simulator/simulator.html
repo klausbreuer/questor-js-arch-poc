@@ -19,6 +19,14 @@
 	    hh.appendChild(ss);
 	}
 	
+	function checkSimulator() {
+		if (simulator != null) {
+			logger.i("simulator ready");
+		} else {
+			logger.e("simulator instance does not exist. Check constructor!"); 
+		}
+	}
+	
 	// Global variable to be initialized by the runtime.
 	var simulator;
 </script>
