@@ -29,10 +29,10 @@ CompassStation = function(pStationSuccess, pStationFail) {
 					}
 
 				// TEST CODE: Send random positions to all players.
-				for (i in helper.attendees) {
+				for (var i in helper.attendees) {
 					var a = helper.attendees[i];
 					if (a != null) {
-						helper.sendPoiPositions(a.session);
+						helper.sendPoiPosition(a.session);
 					}
 				}
 			}, 5000 );	
@@ -108,27 +108,24 @@ CompassStation.prototype.sendAttendeePositions = function() {
 };
 
 CompassStation.prototype.addAttendee = function(session) {
-	logger.i("add1");
 	if (this.attendees[session.playerId] == null) {
-		logger.i("new player attending compassstation '{0}'".format(session.sessionId));
+		logger.i("new player attending compassstation '{0}'".format(session.stationId));
 	} else {
-		logger.i("new player attending compassstation '{0}' but was already in attendee list".format(session.sessionId));
+		logger.i("new player attending compassstation '{0}' but was already in attendee list".format(session.stationId));
 	}
-	logger.i("add2");
 	
 	var newattendee = this.attendees[session.playerId] = new Object();
 	newattendee.session = session;
 	newattendee.lon = null;
 	newattendee.lat = null;
-	logger.i("add3");
 };
 
 CompassStation.prototype.updateAttendee = function(session, lat, lon) {
 	if (this.attendees[session.playerId] == null) {
-		logger.i("updating player attending compass station '{0}' but did not enter before".format(session.sessionId));
+		logger.i("updating player attending compass station '{0}' but did not enter before".format(session.stationId));
 		return;
 	} else {
-		logger.i("updating player attending compass station '{0}'".format(session.sessionId));
+		logger.i("updating player attending compass station '{0}'".format(session.stationId));
 	}
 	
 	var attendee = this.attendees[session.playerId];
