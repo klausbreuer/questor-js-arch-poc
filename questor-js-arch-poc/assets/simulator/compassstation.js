@@ -109,14 +109,27 @@ CompassStation.prototype.generateJavascript = function() {
 CompassStation.prototype.sendAttendeePositions = function() {
 	var h = this;
 	var helper = function(attendees, current) {
+		var list = new Array();
+		
+		logger.i("sendAttendeePositions");
 		for (i in attendees) {
 			a = attendees[i];
 			if (a != null && a != current) {
+				var obj = {
+						playerId:a.session.playerId,
+						lon:a.lon,
+						lat:a.lat
+				};
 				
-				msg = a.session.playerId + "," + a.lat + "," + a.lon;
-				simulator.sendMessage("playerPos", current.session, msg);
+				list.push(obj);
 			}
 		}
+		
+		if (list.length > 0) {
+			var msg = JSON.stringify(list);
+			simulator.sendMessage("playerPos", current.session, msg);
+		}
+
 	}
 	
 	for (i in this.attendees) {
