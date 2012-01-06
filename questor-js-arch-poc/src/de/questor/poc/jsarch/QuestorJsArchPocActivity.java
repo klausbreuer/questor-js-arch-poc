@@ -10,6 +10,9 @@ import de.questor.poc.jsarch.simulator.SimulatorRuntime;
 
 public class QuestorJsArchPocActivity extends Activity {
 
+	SimulatorRuntime simulator;
+	RendererRuntime mRenderer;
+
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -25,15 +28,25 @@ public class QuestorJsArchPocActivity extends Activity {
 		
 		wv.loadUrl("file:///android_asset/main.html");
 		
+		simulator = new SimulatorRuntime(this);
+		mRenderer = new RendererRuntime(this);
+	}
+	
+	@Override
+	protected void onPause() {
+		super.onPause();
+		mRenderer.onPause();
 	}
 
+	@Override
+	protected void onResume() {
+		super.onResume();
+		mRenderer.onResume();
+	}
 
 	/** Questor class which is accessible from Javascript code */
 	class Questor {
 		private WebView wv;
-		
-		SimulatorRuntime simulator = new SimulatorRuntime(QuestorJsArchPocActivity.this);
-		RendererRuntime mRenderer = new RendererRuntime(QuestorJsArchPocActivity.this);
 		
 		public Questor(WebView wv) {
 			this.wv = wv;

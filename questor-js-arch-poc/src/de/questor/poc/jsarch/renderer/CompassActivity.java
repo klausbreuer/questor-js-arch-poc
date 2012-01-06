@@ -131,21 +131,48 @@ public class CompassActivity extends Activity implements OnChoiceListener {
 
 	}
 
-	private final BroadcastReceiver myReceiver = new BroadcastReceiver() {
+	private final BroadcastReceiver poiReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent i) {
 			
 			GeoPoint myPoint;
 			
 			poiPos = (String) i.getSerializableExtra("poiPos");
-			Log.i("klaus", "CompassActivity: " + poiPos);
 
 			String[] values = poiPos.split(",");
 			myPoint = new GeoPoint(Integer.parseInt(values[1]), Integer.parseInt(values[2]));
-			mCompass.updateTarget(1, values[0], myPoint, (int) Long.parseLong(values[3], 16));
+			mCompass.updateTarget(1, values[0], myPoint, (int) Long.parseLong("FFFF0000", 16));
 
 		}
 	};
+
+	private final BroadcastReceiver playerReceiver = new BroadcastReceiver() {
+		@Override
+		public void onReceive(Context context, Intent i) {
+			
+			GeoPoint myPoint;
+			
+			String pos = (String) i.getSerializableExtra("playerPos");
+
+			String[] values = pos.split(",");
+			myPoint = new GeoPoint(Integer.parseInt(values[1]), Integer.parseInt(values[2]));
+			
+			mCompass.updateTarget(2, values[0], myPoint, (int) Long.parseLong("0000FF", 16));
+
+		}
+	};
+	
+	private final void sendLocation(int lon, int lat) {
+		String msg = String.format("{ \"type\":\"playerPos\", \"lon\":\"%s\", \"lat\":\"%s\" } ", lon, lat);
+
+		/* TODO: The Android-friendly way doesn't seem to work.
+		Intent i = new Intent("de.questor.poc.jsarch.reply");
+		i.putExtra("data", msg);
+		sendBroadcast(i);
+		*/
+		
+		RendererRuntime.getInstance().sendReply(msg);
+	}
 
 	public class ControllerThread extends Thread {
 
@@ -167,52 +194,9 @@ public class CompassActivity extends Activity implements OnChoiceListener {
 				if (currentLocationPoint != null) {
 
 					// 1. we send the own position to the server:
+					sendLocation(currentLocationPoint.getLongitudeE6(), currentLocationPoint.getLatitudeE6());
 
-					try {
-						HttpGet request = new HttpGet(myUpdatePositionUrl + "&id=" + imei + "&lat="
-								+ ((Integer) currentLocationPoint.getLatitudeE6()).toString() + "&lon="
-								+ ((Integer) currentLocationPoint.getLongitudeE6()).toString());
-						HttpClient client = new DefaultHttpClient(httpParameters);
-						client.execute(request);
-						// Log.i("klaus", "sending position...");
-					} catch (Exception e) {
-						mCompass.setErrorMessage("http timeout!");
-						Log.i("klaus", "error sending position: " + e.toString());
-					}
-
-					// 2. get the positions of all the other players from the
-					// server and show them
-					// in the compass:
-					try {
-						HttpGet request = new HttpGet(myGetTargetsUrl);
-						HttpClient client = new DefaultHttpClient(httpParameters);
-						HttpResponse response = client.execute(request);
-						in = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
-						String line = "";
-						line = in.readLine();
-						// Log.i("klaus", line);
-						// we hide all the other player-targets in the compass
-						// by "deactivting" them:
-						mCompass.deactivateAllTargets(2);
-						// we insert all targets we got from the sever
-						// (id,lat,lon,col~id,lat,lon,col...)
-						String[] targets = line.split("~");
-						for (int i = 0; i < targets.length; i++) {
-							String[] values = targets[i].split(",");
-							if (!values[0].equals(imei)) {
-								myPoint = new GeoPoint(Integer.parseInt(values[1]), Integer.parseInt(values[2]));
-								mCompass.updateTarget(2, values[0], myPoint, (int) Long.parseLong(values[3], 16));
-							}
-						}
-					} catch (Exception e) {
-						// if we have a problem with the connection, we
-						// deactivate all other players.
-						// Otherwise we would have them hanging around somewhere
-						// on the screen, where they may not be any more...
-						mCompass.deactivateAllTargets(2);
-						mCompass.setErrorMessage("http timeout!");
-						Log.i("klaus", "error getting positions: " + e.toString());
-					}
+					// 2. location of other players arrives via Android messaging
 
 					mCompass.calcDistanceAndBearingOfTargets();
 
@@ -235,7 +219,9 @@ public class CompassActivity extends Activity implements OnChoiceListener {
 	protected void onResume() {
 		super.onResume();
 
-		registerReceiver(myReceiver, new IntentFilter("de.questor.poc.jsarch.poiPos"));
+		registerReceiver(poiReceiver, new IntentFilter("de.questor.poc.jsarch.poiPos"));
+		
+		registerReceiver(playerReceiver, new IntentFilter("de.questor.poc.jsarch.playerPos"));
 
 		mSensorManager.registerListener(mCompass, SensorManager.SENSOR_ORIENTATION, SensorManager.SENSOR_DELAY_GAME);
 		// mSensorManager.registerListener(mCompass, mAccelerometer,
@@ -266,7 +252,8 @@ public class CompassActivity extends Activity implements OnChoiceListener {
 	protected void onPause() {
 		controllerTreadCanRun = false;
 
-		unregisterReceiver(myReceiver);
+		unregisterReceiver(poiReceiver);
+		unregisterReceiver(playerReceiver);
 
 		mSensorManager.unregisterListener(mCompass);
 		mLocationManager.removeUpdates(mCompass);

@@ -1,7 +1,11 @@
 package de.questor.poc.jsarch.renderer;
 
+import com.google.android.maps.GeoPoint;
+
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.util.Log;
 import android.webkit.WebChromeClient;
 import android.widget.Toast;
@@ -23,6 +27,15 @@ public class RendererRuntime {
 	
 	private QuestorContext mQuestorContext;
 	
+	private BroadcastReceiver br = new BroadcastReceiver() {
+		@Override
+		public void onReceive(Context context, Intent i) {
+			String msg = (String) i.getSerializableExtra("data");
+			
+			sendReply(msg);
+		}
+	}; 
+	
 	public RendererRuntime(Context pContext) {
 		INSTANCE = this;
 		mContext = pContext;
@@ -33,7 +46,14 @@ public class RendererRuntime {
 		mWebView.addJavascriptInterface(new Logger(TAG), "logger");
 		mWebView.addJavascriptInterface(this, "runtime");
 		mWebView.loadUrl("file:///android_asset/renderer/renderer.html");
-
+	}
+	
+	public void onResume() {
+		mContext.registerReceiver(br, new IntentFilter("de.questor.poc.jsarch.reply"));
+	}
+	
+	public void onPause() {
+		mContext.unregisterReceiver(br);
 	}
 	
 	public static RendererRuntime getInstance() {
@@ -54,7 +74,6 @@ public class RendererRuntime {
 			mWebView.loadUrl(command);
 		} else {
 			// Assume message is for current station
-			Log.i(TAG, "received message: " + type);
 			mWebView.loadUrl(String.format("javascript:(function() { station.onMessage('%s', '%s'); }) ()", type, msg)); 
 		}
 	}
@@ -88,7 +107,7 @@ public class RendererRuntime {
 	}
 
 	public void sendMessageToCompassStation(String pType, String pMsg) {
-		Log.i(TAG, "sendMessageToCompassStation: " + pType + " / " + pMsg);		
+		//Log.i(TAG, "sendMessageToCompassStation: " + pType + " / " + pMsg);		
 		Intent i = new Intent("de.questor.poc.jsarch." + pType);
 		i.putExtra(pType, pMsg);
 		mContext.sendBroadcast(i);

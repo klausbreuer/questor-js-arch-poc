@@ -7,8 +7,6 @@
  * - a station for success and a station for fail 
  * 
  */
-
-
 CompassStation = function(pStationSuccess, pStationFail) {
 	station = this;
 	this.stationSuccess = pStationSuccess;
@@ -21,12 +19,26 @@ CompassStation = function(pStationSuccess, pStationFail) {
 
 	var helper = this;
 	
+	// Testcode: Hardcodes another 2 players who are in this station as well.
+	try {
+		var testsession = new Session("testsession1");
+		testsession.station = this;
+		testsession.stationId = "test";
+		this.addAttendee(testsession);
+		this.updateAttendee(testsession, 4921875, 45644768);
+
+		testsession = new Session("testsession2");
+		testsession.station = this;
+		testsession.stationId = "test";
+		this.addAttendee(testsession);
+		this.updateAttendee(testsession, 4921875, 56365250);
+	} catch (e) {
+		logger.i("exception: " + e);
+	}
+	
 	this.interval = setInterval (
 			function() {
-				if (helper.updateCount > 3)
-					{
-						helper.sendAttendeePositions();
-					}
+				helper.sendAttendeePositions();
 
 				// TEST CODE: Send random positions to all players.
 				for (var i in helper.attendees) {
@@ -35,7 +47,7 @@ CompassStation = function(pStationSuccess, pStationFail) {
 						helper.sendPoiPosition(a.session);
 					}
 				}
-			}, 5000 );	
+			}, 5000 );
 };
 
 
@@ -59,23 +71,32 @@ CompassStation.prototype.sendPoiPosition = function(session) {
 	id  = randomFromTo(0, 3);
 	lat = randomFromTo(45644768, 56365250);
 	lon = randomFromTo(4921875, 15732422);
-	col = "FFFF0000";
 	
-	msg = id + "," + lat + "," + lon + "," + col;
+	msg = id + "," + lat + "," + lon;
 	simulator.sendMessage("poiPos", session, msg);
 };
 
-
 CompassStation.prototype.onMessage = function(session, msg) {
-	if (msg == "playerPos") {
-		updateAttendee(session, 5, 10);
-		
-	} else if (msg = "cheatOut") {
-		
-		removeAttendee(session);
-		clearInterval(this.interval);
-		simulator.performTransition(session, msg);
+	var msgObj = null;
+	try {
+		// Unpack the message string and make a JavaScript object
+		// out of it before handing it over to the station
+		msgObj = JSON.parse(msg);
+	} catch (e) {
+		logger.e("some problem: " + e);
+		return;
 	}
+	
+	if (msgObj.type == "cheatOut") {
+		
+		this.removeAttendee(session);
+		clearInterval(this.interval);
+		simulator.performTransition(session, this.stationSuccess);
+		
+	} else if(msgObj.type == "playerPos") {
+		this.updateAttendee(session, msgObj.lon, msgObj.lat);
+	}
+	
 };
 
 CompassStation.prototype.generateJavascript = function() {
@@ -120,7 +141,7 @@ CompassStation.prototype.addAttendee = function(session) {
 	newattendee.lat = null;
 };
 
-CompassStation.prototype.updateAttendee = function(session, lat, lon) {
+CompassStation.prototype.updateAttendee = function(session, lon, lat) {
 	if (this.attendees[session.playerId] == null) {
 		logger.i("updating player attending compass station '{0}' but did not enter before".format(session.stationId));
 		return;
@@ -129,8 +150,8 @@ CompassStation.prototype.updateAttendee = function(session, lat, lon) {
 	}
 	
 	var attendee = this.attendees[session.playerId];
-	attendee.lat = lat;
 	attendee.lon = lon;
+	attendee.lat = lat;
 };
 
 CompassStation.prototype.removeAttendee = function(session, lat, lon) {

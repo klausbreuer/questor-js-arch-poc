@@ -2,6 +2,7 @@ package de.questor.poc.jsarch.simulator;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView.Renderer;
+import android.util.Log;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import de.questor.poc.jsarch.Logger;
@@ -74,7 +75,15 @@ public class SimulatorRuntime {
 	 * @param msg
 	 */
 	public void sendToRenderer(String type, String contextKey, String msg) {
-		messageService.sendToRenderer(type, (Object) contextKey, msg);
+		// player names starting with 'testsession' are fake only and should not result
+		// in real data being send.
+		if (contextKey.startsWith("testsession"))
+		{
+			return;
+		}
+		
+		if (messageService != null)
+			messageService.sendToRenderer(type, (Object) contextKey, msg);
 	}
 	
 	/** This method is being called by the {@link MessageService} each time there is a
@@ -85,6 +94,12 @@ public class SimulatorRuntime {
 	 * @param msg
 	 */
 	public void onMessage(String type, Object ctx, String msg) {
+		// msg is not supposed to contain ' (single quote) chars otherwise
+		// the call is not going to work.
+		if (msg.contains("'")) {
+			throw new IllegalStateException("Message contains single-quotes. You need to fix that!");
+		}
+		
 		wv.loadUrl(String.format("javascript:simulator.onMessage('%s', '%s', '%s')", type, (String) ctx, msg));
 	}
 

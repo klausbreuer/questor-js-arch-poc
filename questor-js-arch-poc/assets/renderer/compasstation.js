@@ -15,7 +15,13 @@ Renderer.CompassStation.prototype.show = function () {
 };
 
 Renderer.CompassStation.prototype.onMessage = function (type, msg) {
-	logger.i("onMessage: " + type + ", " + msg);
+	if (type == "poiPos") {
+		// tell poi positions to CompassView
+		this.sendMessage(type, msg);
+	} else if (type == "playerPos") {
+		// tell player positions to CompassView
+		this.sendMessage(type, msg);
+	}
 }
 
 Renderer.CompassStation.prototype.sendMessage = function (pType, pMsg) {
