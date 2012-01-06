@@ -14,6 +14,10 @@ Renderer.CompassStation.prototype.show = function () {
 	runtime.showCompassStation();
 };
 
+Renderer.CompassStation.prototype.onMessage = function (type, msg) {
+	logger.i("onMessage: " + type + ", " + msg);
+}
+
 Renderer.CompassStation.prototype.sendMessage = function (pType, pMsg) {
 	runtime.sendMessageToCompassStation(pType, pMsg);
 };

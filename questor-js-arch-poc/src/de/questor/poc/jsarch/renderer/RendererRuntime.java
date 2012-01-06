@@ -52,14 +52,10 @@ public class RendererRuntime {
 			String command = String.format("javascript:(function() { %s })()", msg);
 			Log.i(TAG, "creation: " + command);
 			mWebView.loadUrl(command);
-		} else if ("poiPos".equals(type)) {
-			// Klaus: hier kommt eine Positionsmeldung f�r ein POI der  Compass-Station an.
-			// Eigentlich m�sste die jetzt an den js-core (renderer.js) weitergeleitet werden, der dann wiederum runtime.sendMessageToCompassStation aufrufen w�rde.
-			// Dies js-Schleife spare ich mir jetzt mal und rufe direkt sendMessageToCompassStation auf.
-			// (erst wenn die Compass-Logik in js realisiert ist, macht es wieder Sinn, diese Message an den js core weiter zu reichen... )
-			sendMessageToCompassStation(type, msg);
 		} else {
-			Log.w(TAG, "Unexpected message type: " + type);
+			// Assume message is for current station
+			Log.i(TAG, "received message: " + type);
+			mWebView.loadUrl(String.format("javascript:(function() { station.onMessage('%s', '%s'); }) ()", type, msg)); 
 		}
 	}
 
