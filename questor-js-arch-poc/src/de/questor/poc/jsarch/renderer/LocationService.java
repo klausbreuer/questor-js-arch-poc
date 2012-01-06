@@ -9,6 +9,8 @@ import de.questor.poc.jsarch.Interpreter;
 
 public class LocationService implements LocationListener {
 	
+	private static LocationService INSTANCE;
+	
 	/**
 	 * Names of the javascript object that will receive the
 	 * coordinates through its 'onLocationChanged'() method.
@@ -18,7 +20,16 @@ public class LocationService implements LocationListener {
 	Interpreter interpreter;
 	
 	public LocationService(Interpreter interpreter) {
+		INSTANCE = this;
 		this.interpreter = interpreter;
+	}
+	
+	public static LocationService getInstance() {
+		if (INSTANCE == null) {
+			throw new IllegalStateException("Accessing the class too early.");
+		}
+		
+		return INSTANCE;
 	}
 	
 	public void addTarget(String target) {
@@ -36,7 +47,7 @@ public class LocationService implements LocationListener {
 		
 		for (String t : targets)
 		{
-			interpreter.eval(String.format("%s.onLocationChanged(%s, %s);", lon, lat));
+			interpreter.eval(String.format("%s.onLocationChanged(%s, %s);", t, lon, lat));
 		}
 		
 	}

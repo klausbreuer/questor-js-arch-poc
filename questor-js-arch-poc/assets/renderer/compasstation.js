@@ -8,9 +8,15 @@
 Renderer.CompassStation = function () {
 };
 
+Renderer.CompassStation.prototype.onLocationChanged = function(lon, lat) {
+	logger.i("CompassStation::onLocationChanged({0}, {1})".format(lon, lat));
+}
 
 Renderer.CompassStation.prototype.show = function () {
 	makeCurrent(this);
+	
+	locationService.addTarget("station");
+	
 	runtime.showCompassStation();
 };
 

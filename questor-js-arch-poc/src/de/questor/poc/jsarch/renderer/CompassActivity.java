@@ -238,6 +238,8 @@ public class CompassActivity extends Activity implements OnChoiceListener {
 		mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, mCompass);
 		mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, mCompass);
 
+		mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, LocationService.getInstance());
+
 		if (compassMode.equals("serverTargets") || compassMode.equals("poiTeamConquest")) {
 			if (controllerThread.getState() == Thread.State.TERMINATED) {
 				controllerTreadCanRun = true;
@@ -257,6 +259,7 @@ public class CompassActivity extends Activity implements OnChoiceListener {
 
 		mSensorManager.unregisterListener(mCompass);
 		mLocationManager.removeUpdates(mCompass);
+		mLocationManager.removeUpdates(LocationService.getInstance());
 
 		// Stop animating the compass screen
 		mCompass.stopSweep();
