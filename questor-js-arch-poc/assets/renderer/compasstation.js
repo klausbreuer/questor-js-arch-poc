@@ -10,6 +10,15 @@ Renderer.CompassStation = function () {
 
 Renderer.CompassStation.prototype.onLocationChanged = function(lon, lat) {
 	logger.i("CompassStation::onLocationChanged({0}, {1})".format(lon, lat));
+	
+	var pos = {
+			type:"playerPos",
+			lon:lon,
+			lat:lat
+	};
+
+	var msg = JSON.stringify(pos);
+	runtime.sendReply(msg);
 }
 
 Renderer.CompassStation.prototype.show = function () {

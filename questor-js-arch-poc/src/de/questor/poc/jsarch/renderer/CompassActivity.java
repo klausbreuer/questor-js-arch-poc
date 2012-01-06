@@ -161,18 +161,6 @@ public class CompassActivity extends Activity implements OnChoiceListener {
 
 		}
 	};
-	
-	private final void sendLocation(int lon, int lat) {
-		String msg = String.format("{ \"type\":\"playerPos\", \"lon\":\"%s\", \"lat\":\"%s\" } ", lon, lat);
-
-		/* TODO: The Android-friendly way doesn't seem to work.
-		Intent i = new Intent("de.questor.poc.jsarch.reply");
-		i.putExtra("data", msg);
-		sendBroadcast(i);
-		*/
-		
-		RendererRuntime.getInstance().sendReply(msg);
-	}
 
 	public class ControllerThread extends Thread {
 
@@ -194,7 +182,7 @@ public class CompassActivity extends Activity implements OnChoiceListener {
 				if (currentLocationPoint != null) {
 
 					// 1. we send the own position to the server:
-					sendLocation(currentLocationPoint.getLongitudeE6(), currentLocationPoint.getLatitudeE6());
+					// Note: Done through JavaScript already ... 
 
 					// 2. location of other players arrives via Android messaging
 
