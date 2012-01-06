@@ -30,12 +30,9 @@ Renderer.CompassStation.prototype.show = function () {
 };
 
 Renderer.CompassStation.prototype.onMessage = function (type, msg) {
-	if (type == "poiPos") {
-		// tell poi positions to CompassViews
-		this.sendMessage(type, msg);
-	} else if (type == "playerPos") {
-		// tell player positions to CompassView
-		//this.sendMessage(type, msg);
+	// As the format for player and poi position is identical we can use the same
+	// parsing code.
+	if (type == "poiPos" || type == "playerPos") {
 		try {
 			var list = JSON.parse(msg);
 			for (var i in list) {
@@ -43,13 +40,14 @@ Renderer.CompassStation.prototype.onMessage = function (type, msg) {
 				
 				// TODO: Find a way to send to CompassStation directly, so that we do not
 				// have to transform the values again into something
-				var formatted = "{0},{1},{2}".format(pos.playerId, pos.lon, pos.lat);
-				runtime.sendMessageToCompassStation("playerPos", formatted);
+				var formatted = "{0},{1},{2}".format(pos.id, pos.lon, pos.lat);
+				runtime.sendMessageToCompassStation(type, formatted);
 			}
 		} catch (e) {
 			logger.e("error parsing message to object: " + e);
 		}
 	}
+	
 }
 
 Renderer.CompassStation.prototype.sendMessage = function (pType, pMsg) {

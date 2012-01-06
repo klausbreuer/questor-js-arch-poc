@@ -60,20 +60,32 @@ CompassStation.prototype.onEnter = function(session) {
 CompassStation.prototype.sendPoiPosition = function(session) {
 	// testing: sends random positions for up to four POIs:
 	
-	var msg;
-	var id, lat, lon, col;
-	
 	//helping function to generate a random number:
 	function randomFromTo(from, to){
 		return Math.floor(Math.random() * (to - from + 1) + from);
 	}	
 	
-	id  = randomFromTo(0, 3);
-	lat = randomFromTo(45644768, 56365250);
-	lon = randomFromTo(4921875, 15732422);
+	var amount  = randomFromTo(1, 4);
 	
-	msg = id + "," + lat + "," + lon;
-	simulator.sendMessage("poiPos", session, msg);
+	var list = new Array();
+	for (var i = 0; i < amount; i++) {
+		var lon = randomFromTo(4921875, 15732422);
+		var lat = randomFromTo(45644768, 56365250);
+		
+		var obj = {
+				id:i,
+				lon:lon,
+				lat:lat
+		};
+		
+		list.push(obj);
+	}
+	
+	if (list.length > 0) {
+		var msg = JSON.stringify(list);
+		simulator.sendMessage("poiPos", session, msg);
+	}
+	
 };
 
 CompassStation.prototype.onMessage = function(session, msg) {
@@ -116,7 +128,7 @@ CompassStation.prototype.sendAttendeePositions = function() {
 			a = attendees[i];
 			if (a != null && a != current) {
 				var obj = {
-						playerId:a.session.playerId,
+						id:a.session.playerId,
 						lon:a.lon,
 						lat:a.lat
 				};
