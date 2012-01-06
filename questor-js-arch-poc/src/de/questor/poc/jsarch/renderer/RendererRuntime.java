@@ -9,6 +9,7 @@ import android.content.IntentFilter;
 import android.util.Log;
 import android.webkit.WebChromeClient;
 import android.widget.Toast;
+import de.questor.poc.jsarch.Interpreter;
 import de.questor.poc.jsarch.Logger;
 import de.questor.poc.jsarch.MessageService;
 import de.questor.poc.jsarch.QWebView;
@@ -21,11 +22,13 @@ public class RendererRuntime {
 	private static RendererRuntime INSTANCE;
 
 	private Context mContext;
-	private QWebView mWebView;
+	private Interpreter interpreter;
 
 	private MessageService messageService;
 	
 	private QuestorContext mQuestorContext;
+	
+	private LocationService locationService;
 	
 	private BroadcastReceiver br = new BroadcastReceiver() {
 		@Override
@@ -40,11 +43,18 @@ public class RendererRuntime {
 		INSTANCE = this;
 		mContext = pContext;
 
-		mWebView = new QWebView(mContext);
+		QWebView mWebView = new QWebView(mContext);
+		interpreter = new Interpreter(mWebView);
+		
 		mWebView.getSettings().setJavaScriptEnabled(true);
 		mWebView.setWebChromeClient(new WebChromeClient());
 		mWebView.addJavascriptInterface(new Logger(TAG), "logger");
 		mWebView.addJavascriptInterface(this, "runtime");
+
+		// Creates location service which can receive and distribute location information
+		locationService = new LocationService(interpreter);
+		mWebView.addJavascriptInterface(locationService, "locationService");
+		
 		mWebView.loadUrl("file:///android_asset/renderer/renderer.html");
 	}
 	
@@ -69,12 +79,11 @@ public class RendererRuntime {
 			mQuestorContext = ctx;
 
 			// Runs the creation command.
-			String command = String.format("javascript:(function() { %s })()", msg);
-			Log.i(TAG, "creation: " + command);
-			mWebView.loadUrl(command);
+			Log.i(TAG, "creation: " + msg);
+			interpreter.eval(msg);
 		} else {
 			// Assume message is for current station
-			mWebView.loadUrl(String.format("javascript:(function() { station.onMessage('%s', '%s'); }) ()", type, msg)); 
+			interpreter.eval(String.format("station.onMessage('%s', '%s');", type, msg)); 
 		}
 	}
 
