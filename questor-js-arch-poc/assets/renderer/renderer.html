@@ -6,6 +6,13 @@
 </script>
 
 <script type="text/javascript">
+       String.prototype.format = function() {
+           var formatted = this;
+           for (arg = 0; arg < arguments.length; arg++) {
+               formatted = formatted.replace("{" + arg + "}", arguments[arg]);
+           }
+           return formatted;
+       };
 
 	function createNewScript(newscript) {
 	    var ss = document.createElement("script");
