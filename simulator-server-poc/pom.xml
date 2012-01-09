@@ -1,0 +1,78 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>de.questor</groupId>
+	<artifactId>simulator-server-poc</artifactId>
+	<version>1.0-SNAPSHOT</version>
+	<packaging>war</packaging>
+
+	<name>simulator-server-poc</name>
+
+	<properties>
+		<spring.version>3.0.6.RELEASE</spring.version>
+	</properties>
+
+	<!-- Source Code Management -->
+	<scm>
+	</scm>
+	<build>
+		<finalName>${project.artifactId}-${profile}</finalName>
+
+		<plugins>
+
+			<plugin>
+				<artifactId>maven-eclipse-plugin</artifactId>
+				<version>2.7</version>
+				<configuration>
+					<downloadSources>true</downloadSources>
+					<downloadJavadocs>true</downloadJavadocs>
+					<useProjectReferences>false</useProjectReferences>
+
+					<!-- Workaround for AspectJ dependency not showing up -->
+					<ajdtVersion>none</ajdtVersion>
+
+					<additionalProjectnatures>
+						<projectnature>org.eclipse.wst.common.project.facet.core.nature</projectnature>
+					</additionalProjectnatures>
+
+					<additionalProjectFacets>
+						<jst.java>6.0</jst.java>
+						<jst.web>2.5</jst.web>
+					</additionalProjectFacets>
+
+					<wtpdefaultserver>tomcat-6</wtpdefaultserver>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<!-- Dependencies -->
+	<dependencies>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-beans</artifactId>
+			<version>${spring.version}</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>rhino</groupId>
+			<artifactId>js</artifactId>
+			<version>1.7R2</version>
+		</dependency>
+
+	</dependencies>
+
+	<!-- Repositories -->
+	<repositories>
+		<!-- Without this repository parent POMs cannot be resolved. -->
+		<repository>
+			<id>evolvis-release-repository</id>
+			<name>evolvis.org release repository</name>
+			<url>http://maven-repo.evolvis.org/releases</url>
+		</repository>
+	</repositories>
+
+</project>
