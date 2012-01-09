@@ -1,0 +1,1 @@
+This directory will contain a proper applicationContext.xml and web.xml later.
