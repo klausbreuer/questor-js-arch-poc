@@ -1,4 +1,4 @@
-package de.questor.poc.jsarch.renderer;
+package de.questor.poc.jsarch.renderer.html;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.Window;
 import android.webkit.WebChromeClient;
 import de.questor.poc.jsarch.QWebView;
+import de.questor.poc.jsarch.renderer.RendererRuntime;
 
 public class HtmlActivity extends Activity {
 

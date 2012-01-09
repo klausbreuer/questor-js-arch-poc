@@ -7,6 +7,10 @@
  */
 
 Renderer.HtmlStation = function () {
+	if (htmlDelegate == null) {
+		logger.e("HtmlDelegate not initialized. HtmlStation *WILL NOT* work!");
+	}
+	
 	this.content = "";
 };
 
@@ -59,5 +63,5 @@ Renderer.HtmlStation.prototype.show = function () {
 	}
 
 	makeCurrent(this);
-	runtime.showHtmlStation(new XMLSerializer().serializeToString(dom));
+	htmlDelegate.show(new XMLSerializer().serializeToString(dom));
 };

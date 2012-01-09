@@ -10,6 +10,11 @@ public class CompassDelegate {
 	public CompassDelegate(Context ctx) {
 		context = ctx;
 	}
+
+	public void show() {
+		Intent i = new Intent(context, CompassActivity.class);
+		context.startActivity(i);
+	}
 	
 	public void updatePlayerPosition(String playerId, int lonE6, int latE6, int color) {
 		Intent i = new Intent(CompassActivity.UPDATE_PLAYER_POSITION_INTENT);

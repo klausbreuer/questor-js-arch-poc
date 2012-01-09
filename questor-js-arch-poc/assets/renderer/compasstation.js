@@ -33,7 +33,7 @@ Renderer.CompassStation.prototype.show = function () {
 	
 	locationService.addTarget("station");
 	
-	runtime.showCompassStation();
+	compassDelegate.show();
 };
 
 Renderer.CompassStation.prototype.onMessage = function (type, msg) {

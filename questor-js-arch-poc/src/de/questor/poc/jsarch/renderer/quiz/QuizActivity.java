@@ -1,4 +1,4 @@
-package de.questor.poc.jsarch.renderer;
+package de.questor.poc.jsarch.renderer.quiz;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -10,6 +10,7 @@ import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.EditText;
 import de.questor.poc.jsarch.R;
+import de.questor.poc.jsarch.renderer.RendererRuntime;
 
 public class QuizActivity extends Activity {
 
@@ -43,10 +44,8 @@ public class QuizActivity extends Activity {
 
 		mButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				String inputUpcase = mEdittext.getText().toString().toUpperCase();
-				Intent i = new Intent();
-				i.putExtra("answer", inputUpcase);
-				setResult(RESULT_OK, i);
+				String inputUpcase = mEdittext.getText().toString();
+				RendererRuntime.getInstance().sendReply(inputUpcase);
 				finish();
 			}
 		});

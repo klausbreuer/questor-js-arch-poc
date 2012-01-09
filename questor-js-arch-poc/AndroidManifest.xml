@@ -27,8 +27,8 @@
             </intent-filter>
         </activity>
         
-    	<activity android:noHistory="true" android:name=".renderer.QuizActivity" />
-    	<activity android:noHistory="true" android:name=".renderer.HtmlActivity" />
+    	<activity android:noHistory="true" android:name=".renderer.quiz.QuizActivity" />
+    	<activity android:noHistory="true" android:name=".renderer.html.HtmlActivity" />
     	<activity android:noHistory="true" android:name=".renderer.compass.CompassActivity" />
     	
 		<uses-library android:name="com.google.android.maps"/>

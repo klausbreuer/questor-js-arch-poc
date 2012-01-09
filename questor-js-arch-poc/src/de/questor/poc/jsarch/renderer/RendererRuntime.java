@@ -15,8 +15,9 @@ import de.questor.poc.jsarch.Logger;
 import de.questor.poc.jsarch.MessageService;
 import de.questor.poc.jsarch.QWebView;
 import de.questor.poc.jsarch.QuestorContext;
-import de.questor.poc.jsarch.renderer.compass.CompassActivity;
 import de.questor.poc.jsarch.renderer.compass.CompassDelegate;
+import de.questor.poc.jsarch.renderer.html.HtmlDelegate;
+import de.questor.poc.jsarch.renderer.quiz.QuizDelegate;
 
 public class RendererRuntime {
 
@@ -51,7 +52,9 @@ public class RendererRuntime {
 		// Implementation note: This would be done elsewhere through a central
 		// registry file or whatever
 		delegateManager = new DelegateManager();
-		delegateManager.registerDelegate("compassDelegate", new CompassDelegate(mContext));		
+		delegateManager.registerDelegate("compassDelegate", new CompassDelegate(mContext));
+		delegateManager.registerDelegate("htmlDelegate", new HtmlDelegate(mContext));
+		delegateManager.registerDelegate("quizDelegate", new QuizDelegate(mContext));
 		// End of registration
 		
 		QWebView mWebView = new QWebView(mContext);
@@ -112,27 +115,7 @@ public class RendererRuntime {
 	public void showToast(String toast) {
 		Toast.makeText(mContext, toast, Toast.LENGTH_SHORT).show();
 	}
-	
-	public void showQuizStation(String pQuestion) {
-		Log.i(TAG, "showQuizStation");
-		Intent i = new Intent(mContext, QuizActivity.class);
-		i.putExtra("question", pQuestion);
-		mContext.startActivity(i);
-	}
 
-	public void showHtmlStation(String pContent) {
-		Log.i(TAG, "showHTMLStation");
-		Intent i = new Intent(mContext, HtmlActivity.class);
-		i.putExtra("content", pContent);
-		mContext.startActivity(i);
-	}
-
-	public void showCompassStation() {
-		Log.i(TAG, "showCompassStation");
-		Intent i = new Intent(mContext, CompassActivity.class);
-		mContext.startActivity(i);
-	}
-	
 	/**
 	 * A messaging function that is called from Javascript which allows sending
 	 * a reply to the simulator.
