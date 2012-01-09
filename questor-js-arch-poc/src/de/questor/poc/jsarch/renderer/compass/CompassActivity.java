@@ -1,9 +1,7 @@
 package de.questor.poc.jsarch.renderer.compass;
 
 import java.io.BufferedReader;
-import java.io.InputStreamReader;
 
-import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -45,12 +43,6 @@ public class CompassActivity extends Activity implements OnChoiceListener {
 
 	static final String UPDATE_POI_POSITION_INTENT = "de.questor.poc.jsarch.UpdatePoiPosition";
 
-	private static final String IMG_NAME_BACKGROUND = "background";
-
-	private static final int TIMEOUTCONNECTION = 3000;
-	private static final int TIMEOUTSOCKET = 3000;
-
-	private static final int LOCATION_UPDATE_INTERVAL_MILLIS = 1000;
 	private static final int MENU_STANDARD = Menu.FIRST + 1;
 	private static final int MENU_METRIC = Menu.FIRST + 2;
 	private static final String COMPASS = "compass";
@@ -68,12 +60,6 @@ public class CompassActivity extends Activity implements OnChoiceListener {
 	private String poiPos;
 
 	private String imei;
-
-	private String myUpdatePositionUrl;
-	private String myRemovePositionUrl;
-	private String myGetTargetsUrl;
-
-	private HttpParams httpParameters = new BasicHttpParams();
 
 	private Thread controllerThread;
 	private boolean controllerTreadCanRun = false;
@@ -118,18 +104,11 @@ public class CompassActivity extends Activity implements OnChoiceListener {
 		 * mStation, IMG_NAME_BACKGROUND));
 		 */
 
-		myUpdatePositionUrl = getResources().getString(R.string.StoryServerUrl) + "?mode=updateLocation";
-		myRemovePositionUrl = getResources().getString(R.string.StoryServerUrl) + "?mode=removeLocation";
-		myGetTargetsUrl = getResources().getString(R.string.StoryServerUrl) + "?mode=getLocations";
-
 		if (compassMode.equals("serverTargets") || compassMode.equals("poiTeamConquest")) {
 			// shows the positions of the other players
 			TelephonyManager tManager = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
 			imei = tManager.getDeviceId();
 			// Log.i("klaus", imei);
-
-			HttpConnectionParams.setConnectionTimeout(httpParameters, TIMEOUTCONNECTION);
-			HttpConnectionParams.setSoTimeout(httpParameters, TIMEOUTSOCKET);
 
 			controllerTreadCanRun = true;
 			controllerThread = new Thread(new ControllerThread());
@@ -256,37 +235,6 @@ public class CompassActivity extends Activity implements OnChoiceListener {
 
 		// Stop animating the compass screen
 		mCompass.stopSweep();
-
-		if (compassMode.equals("serverTargets") || compassMode.equals("poiTeamConquest")) {
-
-			// If we are in poiTeamConquest mode, we first send our last
-			// position to the server:
-			GeoPoint currentLocationPoint = null;
-			currentLocationPoint = mCompass.getCurrentLocationPoint();
-			if (currentLocationPoint != null) {
-				try {
-					HttpGet request = new HttpGet(myUpdatePositionUrl + "&id=" + imei + "&lat="
-							+ ((Integer) currentLocationPoint.getLatitudeE6()).toString() + "&lon="
-							+ ((Integer) currentLocationPoint.getLongitudeE6()).toString());
-					HttpClient client = new DefaultHttpClient(httpParameters);
-					client.execute(request);
-					// Log.i("klaus", "sending position for the last time...");
-				} catch (Exception e) {
-					Log.i("klaus", "error sending position: " + e.toString());
-				}
-			}
-
-			// After that, we send a remove-position-request to the server.
-			// The position will be delete from the server some seconds later..
-			try {
-				HttpGet request = new HttpGet(myRemovePositionUrl + "&id=" + imei);
-				HttpClient client = new DefaultHttpClient(httpParameters);
-				client.execute(request);
-				// Log.i("klaus", "sending delete request...");
-			} catch (Exception e) {
-				Log.i("klaus", "error removing position: " + e.toString());
-			}
-		}
 
 		super.onStop();
 	}
