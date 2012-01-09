@@ -1,4 +1,6 @@
-package de.questor.poc.jsarch.renderer;
+package de.questor.poc.jsarch.renderer.compass;
+
+import de.questor.poc.jsarch.renderer.OnChoiceListener;
 
 
 public interface StationView {

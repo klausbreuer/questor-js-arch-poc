@@ -25,7 +25,6 @@ import com.google.android.maps.GeoPoint;
 
 import de.questor.poc.jsarch.GeoUtils;
 import de.questor.poc.jsarch.renderer.OnChoiceListener;
-import de.questor.poc.jsarch.renderer.StationView;
 
 
 
