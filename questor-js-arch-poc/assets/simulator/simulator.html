@@ -1,35 +1,7 @@
 <html>
 <head>
 
-<script type="text/javascript">
-       String.prototype.format = function() {
-           var formatted = this;
-           for (arg = 0; arg < arguments.length; arg++) {
-               formatted = formatted.replace("{" + arg + "}", arguments[arg]);
-           }
-           return formatted;
-       };
-
-	function createNewScript(newscript) {
-	    var ss = document.createElement("script");
-		var scr = newscript;
-	    var tt = document.createTextNode(scr);
-	    ss.appendChild(tt);
-	    var hh = document.getElementsByTagName('head')[0];
-	    hh.appendChild(ss);
-	}
-	
-	function checkSimulator() {
-		if (simulator != null) {
-			logger.i("simulator ready");
-		} else {
-			logger.e("simulator instance does not exist. Check constructor!"); 
-		}
-	}
-	
-	// Global variable to be initialized by the runtime.
-	var simulator;
-</script>
+<script type="text/javascript" src="file:///android_asset/simulator/common.js"/>
 
 <script type="text/javascript" src="file:///android_asset/simulator/simulator.js" />
 
@@ -38,9 +10,7 @@
 <script type="text/javascript" src="file:///android_asset/simulator/compassstation.js" />
 <script type="text/javascript" src="file:///android_asset/simulator/endstation.js" />
 
-<script type="text/javascript">
-	runtime.finished();
-</script>
+<script type="text/javascript" src="file:///android_asset/simulator/environment.js" />
 
 </head>
 <body>
