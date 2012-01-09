@@ -24,7 +24,7 @@
     android:layout_height="fill_parent"
     android:gravity="center_vertical"
     >
-	<de.questor.poc.jsarch.renderer.CompassMultiView 
+	<de.questor.poc.jsarch.renderer.compass.CompassMultiView 
 		android:id="@+id/compass"
 		android:layout_width="320dip" 
 	    android:layout_height="320dip"

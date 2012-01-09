@@ -1,4 +1,4 @@
-package de.questor.poc.jsarch.renderer;
+package de.questor.poc.jsarch.renderer.compass;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +25,8 @@ import android.widget.TextView;
 import com.google.android.maps.GeoPoint;
 
 import de.questor.poc.jsarch.GeoUtils;
+import de.questor.poc.jsarch.renderer.OnChoiceListener;
+import de.questor.poc.jsarch.renderer.StationView;
 
 
 

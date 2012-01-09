@@ -1,4 +1,4 @@
-package de.questor.poc.jsarch.renderer;
+package de.questor.poc.jsarch.renderer.compass;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -30,6 +30,9 @@ import android.widget.TextView;
 import com.google.android.maps.GeoPoint;
 
 import de.questor.poc.jsarch.R;
+import de.questor.poc.jsarch.renderer.Choice;
+import de.questor.poc.jsarch.renderer.LocationService;
+import de.questor.poc.jsarch.renderer.OnChoiceListener;
 
 /**
  * Simple Activity wrapper that hosts a {@link CompassView}
@@ -37,6 +40,10 @@ import de.questor.poc.jsarch.R;
  */
 @SuppressWarnings("serial")
 public class CompassActivity extends Activity implements OnChoiceListener {
+
+	static final String UPDATE_PLAYER_POSITION_INTENT = "de.questor.poc.jsarch.UpdatePlayerPosition";
+
+	static final String UPDATE_POI_POSITION_INTENT = "de.questor.poc.jsarch.UpdatePoiPosition";
 
 	private static final String IMG_NAME_BACKGROUND = "background";
 
@@ -134,31 +141,30 @@ public class CompassActivity extends Activity implements OnChoiceListener {
 	private final BroadcastReceiver poiReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent i) {
-			
 			GeoPoint myPoint;
 			
-			poiPos = (String) i.getSerializableExtra("poiPos");
+			String id = i.getStringExtra("id");
+			int lonE6 = i.getIntExtra("lonE6", -1);
+			int latE6 = i.getIntExtra("latE6", -1);
+			int color = i.getIntExtra("color", -1);
 
-			String[] values = poiPos.split(",");
-			myPoint = new GeoPoint(Integer.parseInt(values[1]), Integer.parseInt(values[2]));
-			mCompass.updateTarget(1, values[0], myPoint, (int) Long.parseLong("FFFF0000", 16));
-
+			myPoint = new GeoPoint(lonE6, latE6);
+			mCompass.updateTarget(1, id, myPoint, color);
 		}
 	};
 
 	private final BroadcastReceiver playerReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent i) {
-			
 			GeoPoint myPoint;
 			
-			String pos = (String) i.getSerializableExtra("playerPos");
+			String id = i.getStringExtra("id");
+			int lonE6 = i.getIntExtra("lonE6", -1);
+			int latE6 = i.getIntExtra("latE6", -1);
+			int color = i.getIntExtra("color", -1);
 
-			String[] values = pos.split(",");
-			myPoint = new GeoPoint(Integer.parseInt(values[1]), Integer.parseInt(values[2]));
-			
-			mCompass.updateTarget(2, values[0], myPoint, (int) Long.parseLong("0000FF", 16));
-
+			myPoint = new GeoPoint(lonE6, latE6);
+			mCompass.updateTarget(2, id, myPoint, color);
 		}
 	};
 
@@ -207,9 +213,8 @@ public class CompassActivity extends Activity implements OnChoiceListener {
 	protected void onResume() {
 		super.onResume();
 
-		registerReceiver(poiReceiver, new IntentFilter("de.questor.poc.jsarch.poiPos"));
-		
-		registerReceiver(playerReceiver, new IntentFilter("de.questor.poc.jsarch.playerPos"));
+		registerReceiver(poiReceiver, new IntentFilter(UPDATE_POI_POSITION_INTENT));
+		registerReceiver(playerReceiver, new IntentFilter(UPDATE_PLAYER_POSITION_INTENT));
 
 		mSensorManager.registerListener(mCompass, SensorManager.SENSOR_ORIENTATION, SensorManager.SENSOR_DELAY_GAME);
 		// mSensorManager.registerListener(mCompass, mAccelerometer,

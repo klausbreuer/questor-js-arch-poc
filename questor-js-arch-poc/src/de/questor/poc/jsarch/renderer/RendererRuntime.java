@@ -1,6 +1,7 @@
 package de.questor.poc.jsarch.renderer;
 
-import com.google.android.maps.GeoPoint;
+import java.util.Iterator;
+import java.util.Map;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -14,6 +15,8 @@ import de.questor.poc.jsarch.Logger;
 import de.questor.poc.jsarch.MessageService;
 import de.questor.poc.jsarch.QWebView;
 import de.questor.poc.jsarch.QuestorContext;
+import de.questor.poc.jsarch.renderer.compass.CompassActivity;
+import de.questor.poc.jsarch.renderer.compass.CompassDelegate;
 
 public class RendererRuntime {
 
@@ -30,6 +33,8 @@ public class RendererRuntime {
 	
 	private LocationService locationService;
 	
+	private DelegateManager delegateManager;
+	
 	private BroadcastReceiver br = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent i) {
@@ -42,7 +47,13 @@ public class RendererRuntime {
 	public RendererRuntime(Context pContext) {
 		INSTANCE = this;
 		mContext = pContext;
-
+		
+		// Implementation note: This would be done elsewhere through a central
+		// registry file or whatever
+		delegateManager = new DelegateManager();
+		delegateManager.registerDelegate("compassDelegate", new CompassDelegate(mContext));		
+		// End of registration
+		
 		QWebView mWebView = new QWebView(mContext);
 		interpreter = new Interpreter(mWebView);
 		
@@ -50,6 +61,13 @@ public class RendererRuntime {
 		mWebView.setWebChromeClient(new WebChromeClient());
 		mWebView.addJavascriptInterface(new Logger(TAG), "logger");
 		mWebView.addJavascriptInterface(this, "runtime");
+		
+		// delegate registration
+		Iterator<Map.Entry<String, Object>> it = delegateManager.iterator();
+		while (it.hasNext()) {
+			Map.Entry<String, Object> e = it.next();
+			mWebView.addJavascriptInterface(e.getValue(), e.getKey());
+		}
 
 		// Creates location service which can receive and distribute location information
 		locationService = new LocationService(interpreter);
@@ -113,13 +131,6 @@ public class RendererRuntime {
 		Log.i(TAG, "showCompassStation");
 		Intent i = new Intent(mContext, CompassActivity.class);
 		mContext.startActivity(i);
-	}
-
-	public void sendMessageToCompassStation(String pType, String pMsg) {
-		//Log.i(TAG, "sendMessageToCompassStation: " + pType + " / " + pMsg);		
-		Intent i = new Intent("de.questor.poc.jsarch." + pType);
-		i.putExtra(pType, pMsg);
-		mContext.sendBroadcast(i);
 	}
 	
 	/**

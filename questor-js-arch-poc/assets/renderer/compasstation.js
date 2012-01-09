@@ -6,6 +6,13 @@
  */
 
 Renderer.CompassStation = function () {
+	if (compassDelegate == null) {
+		logger.e("CompassDelegate not initialized. CompassStation *WILL NOT* work!");
+	}
+	
+	// Implementation note: Assume this has been loaded from some data file.
+	this.playerColor = 0x0000FF;
+	this.poiColor = 0xFFFF0000;
 };
 
 Renderer.CompassStation.prototype.onLocationChanged = function(lon, lat) {
@@ -30,22 +37,32 @@ Renderer.CompassStation.prototype.show = function () {
 };
 
 Renderer.CompassStation.prototype.onMessage = function (type, msg) {
+	
+	var updateFunction = null;
+	if (type == "playerPos") {
+		updateFunction = function(station, pos, lon, lat) {
+			compassDelegate.updatePlayerPosition(pos, lon, lat, station.playerColor);
+		};
+	} else if (type == "poiPos") {
+		updateFunction = function(station, pos, lon, lat) {
+			compassDelegate.updatePoiPosition(pos, lon, lat, station.poiColor);
+		};
+	} else {
+		logger.e("Unknown message type: " + type);
+		return;
+	}
+	
 	// As the format for player and poi position is identical we can use the same
 	// parsing code.
-	if (type == "poiPos" || type == "playerPos") {
-		try {
-			var list = JSON.parse(msg);
-			for (var i in list) {
-				var pos = list[i];
-				
-				// TODO: Find a way to send to CompassStation directly, so that we do not
-				// have to transform the values again into something
-				var formatted = "{0},{1},{2}".format(pos.id, pos.lon, pos.lat);
-				runtime.sendMessageToCompassStation(type, formatted);
-			}
-		} catch (e) {
-			logger.e("error parsing message to object: " + e);
+	try {
+		var list = JSON.parse(msg);
+		for (var i in list) {
+			var pos = list[i];
+			
+			updateFunction(station, pos.id, pos.lon, pos.lat);
 		}
+	} catch (e) {
+		logger.e("error parsing message to object: " + e);
 	}
 	
 }
