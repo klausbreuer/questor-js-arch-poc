@@ -1,5 +1,7 @@
 package de.questor.simulatorserver;
 
+import java.util.logging.Level;
+
 
 /**
  * Logging class which can be used for Javascript debugging using Android's logging
@@ -13,6 +15,7 @@ public class Logger {
 	private static java.util.logging.Logger log = java.util.logging.Logger.getLogger(Logger.class.getName());
 	
 	public Logger() {
+		log.setLevel(Level.ALL);
 	}
 	
 	public void v(String msg) {

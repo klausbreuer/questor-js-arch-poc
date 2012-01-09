@@ -27,18 +27,24 @@ public class Main {
 		scope.put("logger", scope, Context.javaToJS(new Logger(), scope));
 		scope.put("runtime", scope, Context.javaToJS(runtime, scope));
 	    
-		eval(context, scope, getReader("rhino.js"));
-		eval(context, scope, getReader("json2.js"));
+		// Load scripts which make the non-Browser JavaScript environment
+		// more compatible to one (JSON.parse(), setInterval(), ...)
+		eval(context, scope, getReader("lib/rhino.js"));
+		eval(context, scope, getReader("lib/json2.js"));
 		
+		// Load the set of default functions.
 	    eval(context, scope, getReader("common.js"));
+	    
+	    // Load the simulator definition.
 	    eval(context, scope, getReader("simulator.js"));
 	    
-	    // Station code
+	    // Load the station code.
 	    eval(context, scope, getReader("compassstation.js"));
 	    eval(context, scope, getReader("endstation.js"));
 	    eval(context, scope, getReader("htmlstation.js"));
 	    eval(context, scope, getReader("quizstation.js"));
 
+	    // Load the final environment code.
 	    eval(context, scope, getReader("environment.js"));
 	    
 	    if (runtime.isInitialized()) {
@@ -52,9 +58,7 @@ public class Main {
 
 	    eval(context, scope, "checkSimulator();");
 	    
-	    eval(context, scope, "logger.i('hello world');");
-	    
-	    context.exit();
+	    eval(context, scope, "logger.w('simulator object: ' + simulator);");
 	}
 	
 	private static void eval(Context ctx, Scriptable scope, String s) {
