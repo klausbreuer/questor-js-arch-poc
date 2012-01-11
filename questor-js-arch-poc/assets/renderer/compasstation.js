@@ -45,12 +45,12 @@ CompassStation.prototype.onMessage = function(data) {
 	case 'playerPos':
 		updateFunction = function(station, pos, lon, lat) {
 			compassDelegate.updatePlayerPosition(pos, lon, lat,
-					station.playerColor);
+					renderer.station.playerColor);
 		};
 		break;
 	case 'poiPos':
 		updateFunction = function(station, pos, lon, lat) {
-			compassDelegate.updatePoiPosition(pos, lon, lat, station.poiColor);
+			compassDelegate.updatePoiPosition(pos, lon, lat, renderer.station.poiColor);
 		};
 		break;
 	default:
