@@ -45,12 +45,12 @@ CompassStation.prototype.onMessage = function(data) {
 	case 'playerPos':
 		updateFunction = function(station, pos, lon, lat) {
 			compassDelegate.updatePlayerPosition(pos, lon, lat,
-					renderer.station.playerColor);
+					station.playerColor);
 		};
 		break;
 	case 'poiPos':
 		updateFunction = function(station, pos, lon, lat) {
-			compassDelegate.updatePoiPosition(pos, lon, lat, renderer.station.poiColor);
+			compassDelegate.updatePoiPosition(pos, lon, lat, station.poiColor);
 		};
 		break;
 	default:
@@ -66,7 +66,7 @@ CompassStation.prototype.onMessage = function(data) {
 		for ( var i in list) {
 			var pos = list[i];
 
-			updateFunction(station, pos.id, pos.lon, pos.lat);
+			updateFunction(this, pos.id, pos.lon, pos.lat);
 		}
 	} catch (e) {
 		logger.e("error parsing message to object: " + e);
