@@ -33,10 +33,11 @@ public class Main {
 		eval(context, scope, getReader("lib/json2.js"));
 		
 		// Load the set of default functions.
-	    eval(context, scope, getReader("common.js"));
+		eval(context, scope, getReader("common.js"));
 	    
 	    // Load the simulator definition.
 	    eval(context, scope, getReader("simulator.js"));
+		eval(context, scope, getReader("attendeelist.js"));
 	    
 	    // Load the station code.
 	    eval(context, scope, getReader("compassstation.js"));

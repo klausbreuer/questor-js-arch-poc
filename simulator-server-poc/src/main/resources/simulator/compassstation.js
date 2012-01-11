@@ -10,52 +10,67 @@ CompassStation = function(pStationSuccess, pStationFail) {
 	station = this;
 	this.stationSuccess = pStationSuccess;
 	this.stationFail = pStationFail;
-	
-	// Keeps the player sessions and their locations
-	this.attendees = new Object();
-	
-	this.amount = 0;
-	this.updateCount = 0;
 
 	var helper = this;
+
 	this.updateFunction = function() {
 		try {
 			helper.sendAttendeePositions();
-	
+
 			// TEST CODE: Send random positions to all players.
-			for (var i in helper.attendees) {
-				var a = helper.attendees[i];
+			for ( var i in helper.attendees.entries) {
+				var a = helper.attendees.entries[i];
 				if (a != null) {
-							helper.sendPoiPosition(a.session);
+					helper.sendPoiPosition(a.session);
 				}
 			}
 		} catch (e) {
 			logger.e("Failed update function: " + e);
 		}
-	}; 
-	
+	};
+
+	// Keeps the player sessions and their locations
+	this.attendees = new AttendeeList(function() {
+		try {
+			clearInterval(helper.interval);
+		} catch (e) {
+			logger.e("when zero function failed: " + e);
+		}
+	}, function() {
+		try {
+			setInterval(helper.updateFunction, 5000);
+		} catch (e) {
+			logger.e("when one function failed: " + e);
+		}
+	});
+
 };
 
-
 CompassStation.prototype.onEnter = function(session) {
-	var obj = { };
+	var obj = {};
 	simulator.sendCreateMessage(session, "CompassStation", obj);
-	
-	this.addAttendee(session);
-	
+
+	this.attendees.add(session);
+
 	// Testcode: Hardcodes another 2 players who are in this station as well.
 	try {
 		var testsession = new Session("testsession1");
 		testsession.station = this;
 		testsession.stationId = "test";
-		this.addAttendee(testsession);
-		this.updateAttendee(testsession, 4921875, 45644768);
+		this.attendees.add(testsession);
+		this.attendees.update(testsession, {
+			lon : 4921875,
+			lat : 45644768
+		});
 
 		testsession = new Session("testsession2");
 		testsession.station = this;
 		testsession.stationId = "test";
-		this.addAttendee(testsession);
-		this.updateAttendee(testsession, 4921875, 56365250);
+		this.attendees.add(testsession);
+		this.attendees.update(testsession, {
+			lon : 4921875,
+			lat : 56365250
+		});
 	} catch (e) {
 		logger.i("exception: " + e);
 	}
@@ -64,138 +79,96 @@ CompassStation.prototype.onEnter = function(session) {
 
 CompassStation.prototype.sendPoiPosition = function(session) {
 	// testing: sends random positions for up to four POIs:
-	
+
 	// helping function to generate a random number:
-	function randomFromTo(from, to){
+	function randomFromTo(from, to) {
 		return Math.floor(Math.random() * (to - from + 1) + from);
-	}	
-	
-	var amount  = randomFromTo(1, 4);
-	
+	}
+
+	var amount = randomFromTo(1, 4);
+
 	var list = new Array();
-	for (var i = 0; i < amount; i++) {
+	for ( var i = 0; i < amount; i++) {
 		var lon = randomFromTo(4921875, 15732422);
 		var lat = randomFromTo(45644768, 56365250);
-		
+
 		var obj = {
-				id:i,
-				lon:lon,
-				lat:lat
+			id : i,
+			lon : lon,
+			lat : lat
 		};
-		
+
 		list.push(obj);
 	}
-	
+
 	if (list.length > 0) {
 		var data = {
-				type: "poiPos",
-				list: list
+			type : "poiPos",
+			list : list
 		};
-		
+
 		simulator.sendStationMessage(session, data);
 	}
-	
-};
 
+};
 
 CompassStation.prototype.onMessage = function(session, data) {
 	switch (data.type) {
 	case 'cheatOut':
-		this.removeAttendee(session);
+		this.attendees.remove(session);
 		simulator.performTransition(session, this.stationSuccess);
 		break;
 	case 'playerPos':
-		this.updateAttendee(session, data.lon, data.lat);
+		this.attendees.update(session, {
+			lon : data.lon,
+			lat : data.lat
+		});
 		break;
 	default:
 		logger.e("Unknown message type: " + data.type);
 		return;
 	}
-	
-};
 
+};
 
 CompassStation.prototype.sendAttendeePositions = function() {
 	var h = this;
 	var helper = function(attendees, current) {
 		var list = new Array();
-		
-		for (i in attendees) {
-			a = attendees[i];
-			if (a != null && a != current) {
+
+		for ( var i in attendees.entries) {
+			var a = attendees.entries[i];
+			if (a != null && a != current && a.data != null) {
 				var obj = {
-						id:a.session.playerId,
-						lon:a.lon,
-						lat:a.lat
+					id : a.session.playerId,
+					lon : a.data.lon,
+					lat : a.data.lat
 				};
-				
+
 				list.push(obj);
 			}
 		}
-		
+
 		if (list.length > 0) {
 			var data = {
-				type: "playerPos",
-				list: list
+				type : "playerPos",
+				list : list
 			};
-			
+
 			simulator.sendStationMessage(current.session, data);
 		}
 
 	}
-	
-	for (i in this.attendees) {
-		a = this.attendees[i];
-		
-		if (a != null) {
-			helper(this.attendees, a);
-		}
-	}
-};
 
-CompassStation.prototype.addAttendee = function(session) {
-	if (this.attendees[session.playerId] == null) {
-		logger.i("new player attending compassstation '{0}': {1}".format(session.stationId, session.playerId));
-		this.amount++;
-		if (this.amount == 1) {
-			logger.i("starting interval");
-			this.interval = setInterval (this.updateFunction, 5000);
-		}
-	} else {
-		logger.i("new player attending compassstation '{0}' but was already in attendee list".format(session.stationId));
-	}
-	
-	var newattendee = this.attendees[session.playerId] = new Object();
-	newattendee.session = session;
-	newattendee.lon = null;
-	newattendee.lat = null;
-	
-};
+	try {
+		for ( var i in this.attendees.entries) {
+			var a = this.attendees.entries[i];
 
-CompassStation.prototype.updateAttendee = function(session, lon, lat) {
-	if (this.attendees[session.playerId] == null) {
-		logger.i("updating player attending compass station '{0}' but did not enter before".format(session.stationId));
-		return;
-	} else {
-		logger.i("updating player attending compass station '{0}'".format(session.stationId));
-	}
-	
-	var attendee = this.attendees[session.playerId];
-	attendee.lon = lon;
-	attendee.lat = lat;
-};
-
-CompassStation.prototype.removeAttendee = function(session, lat, lon) {
-	if (this.attendees[session.playerId] == null) {
-		logger.i("removing player attending compass station '{0}' but did not enter before".format(session.sessionId));
-		return;
-	} else {
-		logger.i("removing player attending compass station '{0}'".format(session.sessionId));
-		this.amount--;
-		if (this.amount == 0) {
-			clearInterval(this.interval);
+			if (a != null) {
+				helper(this.attendees, a);
+			}
 		}
+	} catch (e) {
+		logger.i("error: " + e);
 	}
-	
-	this.attendees[session.playerId] = null;
 };
