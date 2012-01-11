@@ -1,10 +1,12 @@
 package de.questor.poc.jsarch.simulator;
 
+import java.io.IOException;
+
 import android.content.Context;
 import android.opengl.GLSurfaceView.Renderer;
-import android.util.Log;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
+import de.questor.poc.jsarch.Interpreter;
 import de.questor.poc.jsarch.Logger;
 import de.questor.poc.jsarch.MessageService;
 
@@ -18,12 +20,13 @@ public class SimulatorRuntime {
 	
 	MessageService messageService;
 	
-	private WebView wv;
+	private Interpreter interpreter;
 	
 	private Runnable runnable;
 	
-	public SimulatorRuntime(Context ctx) {
-		wv = new WebView(ctx);
+	public SimulatorRuntime(final Context ctx) {
+		WebView wv = new WebView(ctx);
+		interpreter = new Interpreter(wv);
 
 		wv.getSettings().setJavaScriptEnabled(true);
 		wv.setWebChromeClient(new WebChromeClient());
@@ -33,10 +36,16 @@ public class SimulatorRuntime {
 		// Initializes the global simulator instance in Javascript.
 		runnable = new Runnable() {
 			public void run() {
-				wv.loadUrl("javascript:(function() { simulator = new Simulator(); })()");
+				interpreter.eval("simulator = new Simulator();");
+				
+				try {
+					interpreter.eval(ctx.getAssets().open("simulator/game1.js"));
+				} catch (IOException e) {
+					throw new IllegalStateException(e);
+				}
 				
 				// Makes sure that everything has been initialized correctly.
-				wv.loadUrl("javascript:checkSimulator()");
+				interpreter.eval("checkSimulator();");
 			}
 		};
 
@@ -100,7 +109,7 @@ public class SimulatorRuntime {
 			throw new IllegalStateException("Message contains single-quotes. You need to fix that!");
 		}
 		
-		wv.loadUrl(String.format("javascript:simulator.onMessage('%s', '%s', '%s')", type, (String) ctx, msg));
+		interpreter.eval(String.format("simulator.onMessage('%s', '%s', '%s');", type, (String) ctx, msg));
 	}
 
 	public void setMessageService(MessageService messageService) {
