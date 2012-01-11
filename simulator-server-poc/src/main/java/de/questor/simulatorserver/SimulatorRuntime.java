@@ -1,9 +1,7 @@
 package de.questor.simulatorserver;
 
-import javax.script.ScriptEngine;
-import javax.script.ScriptException;
-
 import org.mozilla.javascript.Context;
+import org.mozilla.javascript.ContextFactory;
 import org.mozilla.javascript.Scriptable;
 
 /*
@@ -19,6 +17,8 @@ public class SimulatorRuntime {
 	private Context context;
 
 	private Scriptable scope;
+	
+	private MessageService messageService;
 	
 	public SimulatorRuntime(Context context, Scriptable scope) {
 		this.context = context;
@@ -62,9 +62,8 @@ public class SimulatorRuntime {
 	 * @param contextKey
 	 * @param msg
 	 */
-	public void sendToRenderer(String type, String contextKey, String msg) {
-//		if (messageService != null)
-//			messageService.sendToRenderer(type, (Object) contextKey, msg);
+	public void sendToRenderer(String contextKey, String msg) {
+		messageService.sendToRenderer((Object) contextKey, msg);
 	}
 	
 	/** This method is being called by the {@link MessageService} each time there is a
@@ -74,15 +73,23 @@ public class SimulatorRuntime {
 	 * @param ctx
 	 * @param msg
 	 */
-	public void onMessage(String type, Object ctx, String msg) {
+	public void onMessage(Object ctx, String msg) {
+		Context context = ContextFactory.getGlobal().enterContext();
+		
 		// msg is not supposed to contain ' (single quote) chars otherwise
 		// the call is not going to work.
 		if (msg.contains("'")) {
 			throw new IllegalStateException("Message contains single-quotes. You need to fix that!");
 		}
 		
-		String code = String.format("simulator.onMessage('%s', '%s', '%s')", type, (String) ctx, msg);
+		String code = String.format("simulator.onMessage('%s', '%s')", (String) ctx, msg);
 		context.evaluateString(scope, code, "custom", 0, null);
+		
+		Context.exit();
+	}
+
+	public void setMessageService(MessageService messageService) {
+		this.messageService = messageService;
 	}
 
 }

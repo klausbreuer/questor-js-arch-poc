@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
+import de.questor.poc.jsarch.net.RemoteMessageServiceClient;
+import de.questor.poc.jsarch.net.RemoteMessageServiceServer;
 import de.questor.poc.jsarch.renderer.RendererRuntime;
 import de.questor.poc.jsarch.simulator.SimulatorRuntime;
 
@@ -78,5 +80,15 @@ public class QuestorJsArchPocActivity extends Activity {
 			ms.sendToSimulator(null, "{ \"type\":\"join\", \"playerId\":\"testspieler\" }");
 		}
 		
+		public void netTest() {
+			RemoteMessageServiceServer rmss = new RemoteMessageServiceServer(simulator, 15000);
+			simulator.setMessageService(rmss);
+			
+			RemoteMessageServiceClient rmsc = new RemoteMessageServiceClient(mRenderer, "localhost", 15000);
+			mRenderer.setMessageService(rmsc);
+
+			try { Thread.sleep(3000); } catch (Exception e){ }
+			rmsc.sendToSimulator(null, "{ \"type\":\"join\", \"playerId\":\"testspieler\" }");
+		}
 	}
 }

@@ -9,6 +9,8 @@ import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ContextFactory;
 import org.mozilla.javascript.Scriptable;
 
+import de.questor.simulatorserver.net.RemoteMessageServiceServer;
+
 public class Main {
 	
 	public static void main(String... args) throws Exception {
@@ -16,13 +18,15 @@ public class Main {
 	}
 
 	public static void main2(String... args) throws Exception {
-
+		
 	    // initialization
 		Context context = ContextFactory.getGlobal().enterContext();
 		Scriptable scope = context.initStandardObjects();
 
 		SimulatorRuntime runtime = new SimulatorRuntime(context, scope);
-
+		RemoteMessageServiceServer rmss = new RemoteMessageServiceServer(runtime, 10000);
+		runtime.setMessageService(rmss);
+		
 	    // add bindings
 		scope.put("logger", scope, Context.javaToJS(new Logger(), scope));
 		scope.put("runtime", scope, Context.javaToJS(runtime, scope));
