@@ -61,15 +61,11 @@ CompassStation.prototype.onMessage = function(data) {
 	// As the format for player and poi position is identical we can use the
 	// same
 	// parsing code.
-	try {
-		var list = data.list;
-		for ( var i in list) {
-			var pos = list[i];
+	var list = data.list;
+	for ( var i in list) {
+		var pos = list[i];
 
-			updateFunction(this, pos.id, pos.lon, pos.lat);
-		}
-	} catch (e) {
-		logger.e("error parsing message to object: " + e);
+		updateFunction(this, pos.id, pos.lon, pos.lat);
 	}
 
 }

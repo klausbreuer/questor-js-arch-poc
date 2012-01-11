@@ -37,8 +37,7 @@ Renderer.prototype.onMessage = function(msg) {
 		break;
 	case 'station':
 		if (this.station == null) {
-			logger
-					.e("Message of type '{0}' received but no station instance exists."
+			logger.e("Message of type '{0}' received but no station instance exists."
 							.format(msgObj.type));
 			return;
 		}
