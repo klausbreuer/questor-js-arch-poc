@@ -56,6 +56,8 @@ public class Main {
 
 	    eval(context, scope, "simulator = new Simulator();");
 
+	    eval(context, scope, getReader("game1.js"));
+
 	    eval(context, scope, "checkSimulator();");
 	    
 	    eval(context, scope, "logger.w('simulator object: ' + simulator);");
