@@ -26,8 +26,8 @@ HtmlStation.prototype.onMessage = function(session, msg) {
 
 HtmlStation.prototype.generateJavascript = function() {
 	var generatorCode = 
-		("var h = new Renderer.HtmlStation ();"
-		+ "h.setContent('{0}'); "
+		("var h = new HtmlStation ();"
+		+ "h.setContent(\"{0}\"); "
 		+ "h.show();").format(this.content);
 	return generatorCode;
 };

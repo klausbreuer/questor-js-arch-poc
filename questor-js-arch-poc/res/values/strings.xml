@@ -9,7 +9,8 @@
     <!-- 
     <string name="weinreLink">http://192.168.2.103:8080/target/target-script-min.js#anonymous</string>
     <string name="weinreLink">http://172.26.2.155:8080/target/target-script-min.js#anonymous</string>
- 	-->
-    <string name="weinreLink"></string>
-
+ 	<string name="weinreLink"></string>
+    -->
+    <string name="weinreLink">http://172.26.2.155:8080/target/target-script-min.js#anonymous</string>
+    
 </resources>

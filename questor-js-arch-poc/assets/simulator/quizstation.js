@@ -38,9 +38,9 @@ QuizStation.prototype.onMessage = function(session, msg) {
 
 QuizStation.prototype.generateJavascript = function() {
 	var generatorCode = 
-		("var q = new Renderer.QuizStationHtml ();"
-		+ "q.setQuestion('{0}'); "
-		+ "q.setButtonText('{1}'); "
+		("var q = new QuizStationHtml ();"
+		+ "q.setQuestion(\"{0}\"); "
+		+ "q.setButtonText(\"{1}\"); "
 		+ "q.show();").format(this.question, this.buttonText);
 	return generatorCode;
 };

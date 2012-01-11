@@ -6,7 +6,7 @@
  */
 
 
-Renderer.QuizStationHtml = function () {
+QuizStationHtml = function () {
 	if (quizDelegate == null) {
 		logger.e("QuizDelegate not initialized. QuizStation *WILL NOT* work!");
 	}
@@ -19,19 +19,19 @@ Renderer.QuizStationHtml = function () {
 	this.native = true;
 };
 
-Renderer.QuizStationHtml.prototype.setNative = function (native) {    
+QuizStationHtml.prototype.setNative = function (native) {    
 	this.native = native;
 };
 
-Renderer.QuizStationHtml.prototype.setQuestion = function (pQuestion) {    
+QuizStationHtml.prototype.setQuestion = function (pQuestion) {    
 	this.question = pQuestion;
 };
 
-Renderer.QuizStationHtml.prototype.setButtonText = function (pButtonText) {    
+QuizStationHtml.prototype.setButtonText = function (pButtonText) {    
 	this.buttonText = pButtonText;
 };
 
-Renderer.QuizStationHtml.prototype.show = function () {
+QuizStationHtml.prototype.show = function () {
 	// Demonstration of a JavaScript implemented station which supports considerably
 	// different user-interface logic.
 	// However a better showcase would be a station which has different delegate implementations
@@ -55,3 +55,6 @@ Renderer.QuizStationHtml.prototype.show = function () {
 
 };
 
+QuizStationHtml.prototype.onLeave = function() {
+	// Intentionally empty.
+}

@@ -1,6 +1,10 @@
 <html>
 <head>
 
+<!--
+<script src="http://172.26.2.155:8080/target/target-script-min.js#anonymous" />
+-->
+
 <script type="text/javascript">
 	station = "notset";
 </script>
@@ -22,32 +26,39 @@
 	    var hh = document.getElementsByTagName('head')[0];
 	    hh.appendChild(ss);
 	}
-		
-/*
-	console.log("testing console.log()"); 
-	console.info("testing console.info()")
-	console.warn("testing console.warn()")	
-	console.error("testing console.error()");
 
-	console.trace();
-*/
+	function checkRenderer() {
+		if (logger == null) {
+			// This function is not supposed to be implemented.
+			LoggerIsNotAvailable_FixThisAndThisErrorWillGoAway();
+		}
+	
+		if (runtime == null) {
+			logger.e("runtime not available.");
+		}
+		
+		if (renderer != null) {
+			logger.i("renderer ready");
+		} else {
+			logger.e("renderer instance does not exist. Check constructor!"); 
+		}
+	}
+	
+	var renderer = null;		
 
 	/* A globally reachable function that make a station instance available
 	 * via the variable 'station'. This is in turn needed by the RendererRuntime
 	 * to make calls to the instance.
 	 */ 
 	function makeCurrent(s) {
-		station = s;
-		if (station != null) {
-			logger.i("station of type '" + station.toString() + "' is now current.");
+		renderer.station = s;
+		if (renderer.station != null) {
+			logger.i("station of type '" + renderer.station.toString() + "' is now current.");
 		} else {
 			logger.e("station instance is null!");
 		} 
 	}
 
-	// global station instance
-	var station;
-	
 </script>
 
 <script type="text/javascript" src="file:///android_asset/renderer/renderer.js" />

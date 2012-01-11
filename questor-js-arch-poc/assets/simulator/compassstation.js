@@ -113,7 +113,7 @@ CompassStation.prototype.onMessage = function(session, msg) {
 
 CompassStation.prototype.generateJavascript = function() {
 	var generatorCode = 
-		"var c = new Renderer.CompassStation ();"
+		"var c = new CompassStation ();"
 		+ "c.show();";
 	return generatorCode;
 };
@@ -123,7 +123,6 @@ CompassStation.prototype.sendAttendeePositions = function() {
 	var helper = function(attendees, current) {
 		var list = new Array();
 		
-		logger.i("sendAttendeePositions");
 		for (i in attendees) {
 			a = attendees[i];
 			if (a != null && a != current) {
@@ -155,7 +154,7 @@ CompassStation.prototype.sendAttendeePositions = function() {
 
 CompassStation.prototype.addAttendee = function(session) {
 	if (this.attendees[session.playerId] == null) {
-		logger.i("new player attending compassstation '{0}'".format(session.stationId));
+		logger.i("new player attending compassstation '{0}': {1}".format(session.stationId, session.playerId));
 	} else {
 		logger.i("new player attending compassstation '{0}' but was already in attendee list".format(session.stationId));
 	}

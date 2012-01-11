@@ -1,5 +1,6 @@
 package de.questor.poc.jsarch.renderer;
 
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -43,7 +44,9 @@ public class RendererRuntime {
 			
 			sendReply(msg);
 		}
-	}; 
+	};
+	
+	private Runnable runnable;
 	
 	public RendererRuntime(Context pContext) {
 		INSTANCE = this;
@@ -76,6 +79,18 @@ public class RendererRuntime {
 		locationService = new LocationService(interpreter);
 		mWebView.addJavascriptInterface(locationService, "locationService");
 		
+		// Initializes the global simulator instance in Javascript.
+		runnable = new Runnable() {
+			public void run() {
+				interpreter.eval("renderer = new Renderer();");
+				
+				// Makes sure that everything has been initialized correctly.
+				interpreter.eval("checkRenderer();");
+				
+				runnable = null;
+			}
+		};
+
 		mWebView.loadUrl("file:///android_asset/renderer/renderer.html");
 	}
 	
@@ -96,24 +111,19 @@ public class RendererRuntime {
 	}
 	
 	public void onMessage(String type, QuestorContext ctx, String msg) {
-		if ("create".equals(type)) {
-			mQuestorContext = ctx;
+		mQuestorContext = ctx;
 
-			// Runs the creation command.
-			Log.i(TAG, "creation: " + msg);
-			interpreter.eval(msg);
-		} else {
-			// Assume message is for current station
-			interpreter.eval(String.format("station.onMessage('%s', '%s');", type, msg)); 
+		// msg is not supposed to contain ' (single quote) chars otherwise
+		// the call is not going to work.
+		if (msg.contains("'")) {
+			throw new IllegalStateException("Message contains single-quotes. You need to fix that!");
 		}
+		
+		interpreter.eval(String.format("renderer.onMessage('%s', '%s');", type, msg));
 	}
 
 	public void setMessageService(MessageService messageService) {
 		this.messageService = messageService;
-	}
-
-	public void showToast(String toast) {
-		Toast.makeText(mContext, toast, Toast.LENGTH_SHORT).show();
 	}
 
 	/**
@@ -133,6 +143,7 @@ public class RendererRuntime {
 	}
 
 	public void finished() {
-		Log.i(TAG, "finished loading renderer.html");
+		runnable.run();
+		runnable = null;
 	}
 }

@@ -5,7 +5,7 @@
  * 
  */
 
-Renderer.CompassStation = function () {
+CompassStation = function () {
 	if (compassDelegate == null) {
 		logger.e("CompassDelegate not initialized. CompassStation *WILL NOT* work!");
 	}
@@ -15,7 +15,7 @@ Renderer.CompassStation = function () {
 	this.poiColor = 0xFFFF0000;
 };
 
-Renderer.CompassStation.prototype.onLocationChanged = function(lon, lat) {
+CompassStation.prototype.onLocationChanged = function(lon, lat) {
 	logger.i("CompassStation::onLocationChanged({0}, {1})".format(lon, lat));
 	
 	var pos = {
@@ -28,7 +28,7 @@ Renderer.CompassStation.prototype.onLocationChanged = function(lon, lat) {
 	runtime.sendReply(msg);
 }
 
-Renderer.CompassStation.prototype.show = function () {
+CompassStation.prototype.show = function () {
 	makeCurrent(this);
 	
 	locationService.addTarget("station");
@@ -36,7 +36,7 @@ Renderer.CompassStation.prototype.show = function () {
 	compassDelegate.show();
 };
 
-Renderer.CompassStation.prototype.onMessage = function (type, msg) {
+CompassStation.prototype.onMessage = function (type, msg) {
 	
 	var updateFunction = null;
 	if (type == "playerPos") {
@@ -67,7 +67,6 @@ Renderer.CompassStation.prototype.onMessage = function (type, msg) {
 	
 }
 
-Renderer.CompassStation.prototype.sendMessage = function (pType, pMsg) {
-	runtime.sendMessageToCompassStation(pType, pMsg);
-};
-
+CompassStation.prototype.onLeave = function () {
+	// Nothing to do yet.
+}

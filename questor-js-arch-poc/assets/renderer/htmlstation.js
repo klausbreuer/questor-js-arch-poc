@@ -6,7 +6,7 @@
  * 
  */
 
-Renderer.HtmlStation = function () {
+HtmlStation = function () {
 	if (htmlDelegate == null) {
 		logger.e("HtmlDelegate not initialized. HtmlStation *WILL NOT* work!");
 	}
@@ -14,11 +14,11 @@ Renderer.HtmlStation = function () {
 	this.content = "";
 };
 
-Renderer.HtmlStation.prototype.setContent = function (pContent) {    
+HtmlStation.prototype.setContent = function (pContent) {    
 	this.content = pContent;
 };
 
-Renderer.HtmlStation.prototype.show = function () {
+HtmlStation.prototype.show = function () {
 	
 	// We replace the <choice target="xx"> tags by a call to runtime.sendReply
 	// not finished yet...
@@ -65,3 +65,7 @@ Renderer.HtmlStation.prototype.show = function () {
 	makeCurrent(this);
 	htmlDelegate.show(new XMLSerializer().serializeToString(dom));
 };
+
+HtmlStation.prototype.onLeave = function() {
+	// Intentionally empty.
+}
