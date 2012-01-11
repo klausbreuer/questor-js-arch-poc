@@ -110,7 +110,7 @@ public class RendererRuntime {
 		return INSTANCE;
 	}
 	
-	public void onMessage(String type, QuestorContext ctx, String msg) {
+	public void onMessage(QuestorContext ctx, String msg) {
 		mQuestorContext = ctx;
 
 		// msg is not supposed to contain ' (single quote) chars otherwise
@@ -119,7 +119,7 @@ public class RendererRuntime {
 			throw new IllegalStateException("Message contains single-quotes. You need to fix that!");
 		}
 		
-		interpreter.eval(String.format("renderer.onMessage('%s', '%s');", type, msg));
+		interpreter.eval(String.format("renderer.onMessage('%s');", msg));
 	}
 
 	public void setMessageService(MessageService messageService) {
@@ -132,14 +132,24 @@ public class RendererRuntime {
 	 * 
 	 * @param msg
 	 */
-	public void sendReply(String msg) {
-		Log.i(TAG, "reply: " + msg);
+	public void sendReplyInternal(String msg) {
 		if (mQuestorContext == null) {
 			Log.i(TAG, "error: mQuestorContext is null!");
 		}
 		else {
 			mQuestorContext.sendMessage(msg);
 		}
+	}
+	
+	public void sendReply(String msg) {
+		// msg is not supposed to contain ' (single quote) chars otherwise
+		// the call is not going to work.
+		if (msg.contains("'")) {
+			throw new IllegalStateException("Message contains single-quotes. You need to fix that!");
+		}
+		
+		// Route the data through the renderer.
+		interpreter.eval(String.format("renderer.sendReply('%s')", msg));
 	}
 
 	public void finished() {

@@ -19,16 +19,13 @@ QuizStationHtml = function () {
 	this.native = true;
 };
 
+QuizStationHtml.prototype.init = function(obj) {
+	this.question = obj.question;
+	this.buttonText = obj.buttonText;
+}
+
 QuizStationHtml.prototype.setNative = function (native) {    
 	this.native = native;
-};
-
-QuizStationHtml.prototype.setQuestion = function (pQuestion) {    
-	this.question = pQuestion;
-};
-
-QuizStationHtml.prototype.setButtonText = function (pButtonText) {    
-	this.buttonText = pButtonText;
 };
 
 QuizStationHtml.prototype.show = function () {
@@ -37,7 +34,6 @@ QuizStationHtml.prototype.show = function () {
 	// However a better showcase would be a station which has different delegate implementations
 	// that are chosen by the environment.
 	if (this.native) {
-		makeCurrent(this);
 		quizDelegate.showNative(this.question);
 	} else {
 		var content;
@@ -49,11 +45,14 @@ QuizStationHtml.prototype.show = function () {
 		content += ' onClick="runtime.sendReply(document.getElementById(\'inputAnswer\').value);">';
 		content += '</div>';
 		
-		makeCurrent(this);
 		quizDelegate.showHtml(content);
 	}
 
 };
+
+QuizStationHtml.prototype.onMessage = function(data) {
+	// Intentionally empty.
+}
 
 QuizStationHtml.prototype.onLeave = function() {
 	// Intentionally empty.

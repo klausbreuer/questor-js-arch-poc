@@ -14,8 +14,8 @@ HtmlStation = function () {
 	this.content = "";
 };
 
-HtmlStation.prototype.setContent = function (pContent) {    
-	this.content = pContent;
+HtmlStation.prototype.init = function (obj) {    
+	this.content = obj.content;
 };
 
 HtmlStation.prototype.show = function () {
@@ -62,9 +62,12 @@ HtmlStation.prototype.show = function () {
 		
 	}
 
-	makeCurrent(this);
 	htmlDelegate.show(new XMLSerializer().serializeToString(dom));
 };
+
+HtmlStation.prototype.onMessage = function(data) {
+	// Intentionally empty.
+}
 
 HtmlStation.prototype.onLeave = function() {
 	// Intentionally empty.

@@ -55,12 +55,13 @@ public class QuestorJsArchPocActivity extends Activity {
 		public void testKlaus() {
 			Log.i("questor", "testKlaus");
 			
+			// TODO: If this is still needed it needs to be converted to JSON syntax.
 			//mRenderer.onMessage("create", null, "alert('buh!');showToast('hihi');");
 			//mRenderer.onMessage("create", null, "var q = new Renderer.QuizStation ('wie hiess die tarent frueher, als alles noch viel frueher war?'); q.onSubmit('cic');");
 			//mRenderer.onMessage("create", null, "var q = new Renderer.QuizStation ('wie hiess die tarent frueher, als alles noch viel frueher war?');");
 			//mRenderer.onMessage("create", null, "var q = new Renderer.QuizStationHtml (); q.setQuestion('wie spaet ist es?'); q.setButtonText('und los gehts....'); q.show();");
 			//mRenderer.onMessage("create", null, "var q = new Renderer.QuizStationHtml (); q.setQuestion('QuizStationHtml: wie spaet ist es?'); q.setButtonText('push me!'); q.show();");
-			mRenderer.onMessage("create", null, "var q = new Renderer.HtmlStation (); q.setContent('<p>At the foot of the hill, the path splits into two directions, both leading into a large wood. You can take the <choice target=\"20\">right</choice> or <choice target=\"30\">left</choice> or <choice target=\"40\">up</choice> or <choice target=\"50\">down</choice> track into the wood.</p>'); q.show();");			
+			//mRenderer.onMessage(null, "var q = new Renderer.HtmlStation (); q.setContent('<p>At the foot of the hill, the path splits into two directions, both leading into a large wood. You can take the <choice target=\"20\">right</choice> or <choice target=\"30\">left</choice> or <choice target=\"40\">up</choice> or <choice target=\"50\">down</choice> track into the wood.</p>'); q.show();");			
 			
 		}
 
@@ -74,7 +75,7 @@ public class QuestorJsArchPocActivity extends Activity {
 			MessageService ms = new LocalMessageService(simulator, mRenderer);
 			
 			// Starts a game by letting a player join the game ... 
-			ms.sendToSimulator("join", null, "testspieler");
+			ms.sendToSimulator(null, "{ \"type\":\"join\", \"playerId\":\"testspieler\" }");
 		}
 		
 	}

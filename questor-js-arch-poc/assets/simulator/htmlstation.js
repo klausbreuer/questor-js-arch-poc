@@ -17,17 +17,13 @@ HtmlStation = function(pContent) {
 };
 
 HtmlStation.prototype.onEnter = function(session) {
-	simulator.sendCreateStation(session, this.generateJavascript());
+	var obj = {
+			content: this.content
+	};
+	
+	simulator.sendCreateMessage(session, "HtmlStation", obj);
 };
 
-HtmlStation.prototype.onMessage = function(session, msg) {
-	simulator.performTransition(session, msg);
-};
-
-HtmlStation.prototype.generateJavascript = function() {
-	var generatorCode = 
-		("var h = new HtmlStation ();"
-		+ "h.setContent(\"{0}\"); "
-		+ "h.show();").format(this.content);
-	return generatorCode;
+HtmlStation.prototype.onMessage = function(session, data) {
+	simulator.performTransition(session, data);
 };

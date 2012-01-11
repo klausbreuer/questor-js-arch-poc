@@ -27,14 +27,14 @@ public class LocalMessageService implements MessageService {
 	}
 	
 	@Override
-	public void sendToRenderer(String type, Object contextKey, String msg) {
+	public void sendToRenderer(Object contextKey, String msg) {
 		QuestorContext ctx = new AnswerContext(contextKey);
-		renderer.onMessage(type, ctx, msg);
+		renderer.onMessage(ctx, msg);
 	}
 	
 	@Override
-	public void sendToSimulator(String type, Object contextKey, String msg) {
-		simulator.onMessage(type, contextKey, msg);
+	public void sendToSimulator(Object contextKey, String msg) {
+		simulator.onMessage(contextKey, msg);
 	}
 	
 	/**
@@ -58,7 +58,7 @@ public class LocalMessageService implements MessageService {
 
 		@Override
 		public void sendMessage(String msg) {
-			LocalMessageService.this.sendToSimulator("reply", contextKey, msg);
+			LocalMessageService.this.sendToSimulator(contextKey, msg);
 		}
 		
 	}

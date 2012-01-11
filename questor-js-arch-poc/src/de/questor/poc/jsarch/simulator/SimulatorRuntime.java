@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView.Renderer;
+import android.util.Log;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import de.questor.poc.jsarch.Interpreter;
@@ -83,7 +84,7 @@ public class SimulatorRuntime {
 	 * @param contextKey
 	 * @param msg
 	 */
-	public void sendToRenderer(String type, String contextKey, String msg) {
+	public void sendToRenderer(String contextKey, String msg) {
 		// player names starting with 'testsession' are fake only and should not result
 		// in real data being send.
 		if (contextKey.startsWith("testsession"))
@@ -92,7 +93,7 @@ public class SimulatorRuntime {
 		}
 		
 		if (messageService != null)
-			messageService.sendToRenderer(type, (Object) contextKey, msg);
+			messageService.sendToRenderer((Object) contextKey, msg);
 	}
 	
 	/** This method is being called by the {@link MessageService} each time there is a
@@ -102,14 +103,15 @@ public class SimulatorRuntime {
 	 * @param ctx
 	 * @param msg
 	 */
-	public void onMessage(String type, Object ctx, String msg) {
+	public void onMessage(Object ctx, String msg) {
 		// msg is not supposed to contain ' (single quote) chars otherwise
 		// the call is not going to work.
 		if (msg.contains("'")) {
+			Log.e("Simulator", "Unable to process message: " + msg);
 			throw new IllegalStateException("Message contains single-quotes. You need to fix that!");
 		}
 		
-		interpreter.eval(String.format("simulator.onMessage('%s', '%s', '%s');", type, (String) ctx, msg));
+		interpreter.eval(String.format("simulator.onMessage('%s', '%s');", (String) ctx, msg));
 	}
 
 	public void setMessageService(MessageService messageService) {
