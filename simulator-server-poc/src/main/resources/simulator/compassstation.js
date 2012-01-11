@@ -1,10 +1,9 @@
 /**
  * The CompassStation
- *
- * Elements to customize:
- * - a list of POIs to be shown as crosses in the compass
- * - the positions of the other players
- * - a station for success and a station for fail 
+ * 
+ * Elements to customize: - a list of POIs to be shown as crosses in the compass -
+ * the positions of the other players - a station for success and a station for
+ * fail
  * 
  */
 CompassStation = function(pStationSuccess, pStationFail) {
@@ -15,9 +14,34 @@ CompassStation = function(pStationSuccess, pStationFail) {
 	// Keeps the player sessions and their locations
 	this.attendees = new Object();
 	
+	this.amount = 0;
 	this.updateCount = 0;
 
 	var helper = this;
+	this.updateFunction = function() {
+		try {
+			helper.sendAttendeePositions();
+	
+			// TEST CODE: Send random positions to all players.
+			for (var i in helper.attendees) {
+				var a = helper.attendees[i];
+				if (a != null) {
+							helper.sendPoiPosition(a.session);
+				}
+			}
+		} catch (e) {
+			logger.e("Failed update function: " + e);
+		}
+	}; 
+	
+};
+
+
+CompassStation.prototype.onEnter = function(session) {
+	var obj = { };
+	simulator.sendCreateMessage(session, "CompassStation", obj);
+	
+	this.addAttendee(session);
 	
 	// Testcode: Hardcodes another 2 players who are in this station as well.
 	try {
@@ -35,32 +59,13 @@ CompassStation = function(pStationSuccess, pStationFail) {
 	} catch (e) {
 		logger.i("exception: " + e);
 	}
-	
-	this.interval = setInterval (
-			function() {
-				helper.sendAttendeePositions();
 
-				// TEST CODE: Send random positions to all players.
-				for (var i in helper.attendees) {
-					var a = helper.attendees[i];
-					if (a != null) {
-						helper.sendPoiPosition(a.session);
-					}
-				}
-			}, 5000 );
-};
-
-
-CompassStation.prototype.onEnter = function(session) {
-	simulator.sendCreateStation(session, this.generateJavascript());
-	
-	this.addAttendee(session);
 };
 
 CompassStation.prototype.sendPoiPosition = function(session) {
 	// testing: sends random positions for up to four POIs:
 	
-	//helping function to generate a random number:
+	// helping function to generate a random number:
 	function randomFromTo(from, to){
 		return Math.floor(Math.random() * (to - from + 1) + from);
 	}	
@@ -82,48 +87,39 @@ CompassStation.prototype.sendPoiPosition = function(session) {
 	}
 	
 	if (list.length > 0) {
-		var msg = JSON.stringify(list);
-		simulator.sendMessage("poiPos", session, msg);
+		var data = {
+				type: "poiPos",
+				list: list
+		};
+		
+		simulator.sendStationMessage(session, data);
 	}
 	
 };
 
-CompassStation.prototype.onMessage = function(session, msg) {
-	var msgObj = null;
-	try {
-		// Unpack the message string and make a JavaScript object
-		// out of it before handing it over to the station
-		msgObj = JSON.parse(msg);
-	} catch (e) {
-		logger.e("some problem: " + e);
+
+CompassStation.prototype.onMessage = function(session, data) {
+	switch (data.type) {
+	case 'cheatOut':
+		this.removeAttendee(session);
+		simulator.performTransition(session, this.stationSuccess);
+		break;
+	case 'playerPos':
+		this.updateAttendee(session, data.lon, data.lat);
+		break;
+	default:
+		logger.e("Unknown message type: " + data.type);
 		return;
 	}
 	
-	if (msgObj.type == "cheatOut") {
-		
-		this.removeAttendee(session);
-		clearInterval(this.interval);
-		simulator.performTransition(session, this.stationSuccess);
-		
-	} else if(msgObj.type == "playerPos") {
-		this.updateAttendee(session, msgObj.lon, msgObj.lat);
-	}
-	
 };
 
-CompassStation.prototype.generateJavascript = function() {
-	var generatorCode = 
-		"var c = new Renderer.CompassStation ();"
-		+ "c.show();";
-	return generatorCode;
-};
 
 CompassStation.prototype.sendAttendeePositions = function() {
 	var h = this;
 	var helper = function(attendees, current) {
 		var list = new Array();
 		
-		logger.i("sendAttendeePositions");
 		for (i in attendees) {
 			a = attendees[i];
 			if (a != null && a != current) {
@@ -138,8 +134,12 @@ CompassStation.prototype.sendAttendeePositions = function() {
 		}
 		
 		if (list.length > 0) {
-			var msg = JSON.stringify(list);
-			simulator.sendMessage("playerPos", current.session, msg);
+			var data = {
+				type: "playerPos",
+				list: list
+			};
+			
+			simulator.sendStationMessage(current.session, data);
 		}
 
 	}
@@ -155,7 +155,12 @@ CompassStation.prototype.sendAttendeePositions = function() {
 
 CompassStation.prototype.addAttendee = function(session) {
 	if (this.attendees[session.playerId] == null) {
-		logger.i("new player attending compassstation '{0}'".format(session.stationId));
+		logger.i("new player attending compassstation '{0}': {1}".format(session.stationId, session.playerId));
+		this.amount++;
+		if (this.amount == 1) {
+			logger.i("starting interval");
+			this.interval = setInterval (this.updateFunction, 5000);
+		}
 	} else {
 		logger.i("new player attending compassstation '{0}' but was already in attendee list".format(session.stationId));
 	}
@@ -164,6 +169,7 @@ CompassStation.prototype.addAttendee = function(session) {
 	newattendee.session = session;
 	newattendee.lon = null;
 	newattendee.lat = null;
+	
 };
 
 CompassStation.prototype.updateAttendee = function(session, lon, lat) {
@@ -185,6 +191,10 @@ CompassStation.prototype.removeAttendee = function(session, lat, lon) {
 		return;
 	} else {
 		logger.i("removing player attending compass station '{0}'".format(session.sessionId));
+		this.amount--;
+		if (this.amount == 0) {
+			clearInterval(this.interval);
+		}
 	}
 	
 	this.attendees[session.playerId] = null;

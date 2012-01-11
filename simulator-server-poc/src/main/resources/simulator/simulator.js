@@ -10,6 +10,7 @@ Session = function(playerId) {
  */
 Simulator = function() {
 	this.sessions = new Object();
+	this.stations = null;
 };
 
 Simulator.prototype.setGame = function(start, stations) {
@@ -19,30 +20,65 @@ Simulator.prototype.setGame = function(start, stations) {
 
 /** This method handles the messages send from the renderer.
 */	
-Simulator.prototype.onMessage = function(type, ctx, msg) {
-	logger.i("Simulator.onMessage('{0}', '{1}', '{2}'}".format(type, ctx, msg));
+Simulator.prototype.onMessage = function(ctx, msg) {
+	logger.i("Simulator.onMessage('{0}', '{1}'}".format(ctx, msg));
 	
-	if ("join" == type) {
-		var session = this.newSession(msg);
-		this.performTransition(session, this.start);
-	} else if ("reply" == type) {
-		var s = this.toSession(ctx);
-		s.station.onMessage(s, msg);
-	} else {
-		logger.i("Unexpected message type: " + type);
+	var msgObj = null;
+	try {
+		msgObj = JSON.parse(msg);
+	} catch (e) {
+		logger.e("Unable to parse message: " + e);
+		return;
 	}
+	
+	switch (msgObj.type) {
+		case 'join':
+			var session = this.newSession(msgObj.playerId);
+			this.performTransition(session, this.start);
+			break;
+		case 'reply':
+			var s = this.toSession(ctx);
+			if (s == null) {
+				logger.e("Could not find session for context: " + ctx);
+				return;
+			};
+			
+			s.station.onMessage(s, msgObj.data);
+			break;
+		default:
+			logger.i("Unexpected message type: " + msgObj.type);
+			break;
+	}
+	
 };
 
-Simulator.prototype.sendCreateStation = function(session, msg) {
-		runtime.sendToRenderer("create", this.toContext(session), msg);
+Simulator.prototype.sendCreateMessage = function(session, stationClass, data) {
+	var obj = {
+			type: "create",
+			stationClass: stationClass,
+			data: data
+	};
+
+	this.sendMessageObject(session, obj);
 };
 
-
-Simulator.prototype.sendMessage = function(type, session , msg) {
-	runtime.sendToRenderer(type, this.toContext(session), msg);
+Simulator.prototype.sendStationMessage = function(session, data) {
+	var obj = {
+		type: "station",
+		data: data
+	};
+	
+	this.sendMessageObject(session, obj);
 };
 
-
+/** Sends a fully prepared message object. The caller is supposed to set
+ * the 'type' field which has to be understood by the Renderer instance.
+ */
+Simulator.prototype.sendMessageObject = function(session, obj) {
+	var newMsg = JSON.stringify(obj);
+	
+	runtime.sendToRenderer(this.toContext(session), newMsg);
+};
 
 Simulator.prototype.performTransition = function(session, newStationId) {
 	session.station = this.stations[newStationId];

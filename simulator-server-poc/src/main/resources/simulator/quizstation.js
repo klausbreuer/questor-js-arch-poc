@@ -25,22 +25,18 @@ QuizStation = function(pQuestion, pButtonText, pAnswer, pStationSuccess, pStatio
 };
 
 QuizStation.prototype.onEnter = function(session) {
-	simulator.sendCreateStation(session, this.generateJavascript());
+	var obj = {
+			question: this.question,
+			buttonText: this.buttonText
+	};
+	
+	simulator.sendCreateMessage(session, "QuizStationHtml", obj);
 };
 
-QuizStation.prototype.onMessage = function(session, msg) {
-	if (this.answer == msg) {
+QuizStation.prototype.onMessage = function(session, data) {
+	if (this.answer == data) {
 		simulator.performTransition(session, this.stationSuccess);
 	} else {
 		simulator.performTransition(session, this.stationFail);
 	}
-};
-
-QuizStation.prototype.generateJavascript = function() {
-	var generatorCode = 
-		("var q = new Renderer.QuizStationHtml ();"
-		+ "q.setQuestion('{0}'); "
-		+ "q.setButtonText('{1}'); "
-		+ "q.show();").format(this.question, this.buttonText);
-	return generatorCode;
 };
