@@ -31,18 +31,16 @@ CompassStation = function(pStationSuccess, pStationFail) {
 
 	// Keeps the player sessions and their locations
 	this.attendees = new AttendeeList(function() {
-		logger.i("when zero");
 		try {
 			clearInterval(helper.interval);
 		} catch (e) {
-			logger.e("when zero function: " + e);
+			logger.e("when zero function failed: " + e);
 		}
 	}, function() {
-		logger.i("when one");
 		try {
 			setInterval(helper.updateFunction, 5000);
 		} catch (e) {
-			logger.e("when one function: " + e);
+			logger.e("when one function failed: " + e);
 		}
 	});
 
@@ -150,8 +148,6 @@ CompassStation.prototype.sendAttendeePositions = function() {
 				list.push(obj);
 			}
 		}
-
-		logger.i("sendAttendeePosition(): " + list.length);
 
 		if (list.length > 0) {
 			var data = {
