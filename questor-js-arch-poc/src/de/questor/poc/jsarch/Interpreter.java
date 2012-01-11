@@ -16,7 +16,7 @@ public class Interpreter {
 	}
 
 	public void eval(String javaScript) {
-		webView.loadUrl("javascript:(function() { " + javaScript + "})()");
+		webView.loadUrl("javascript:(function() { try { " + javaScript + "} catch(e) { logger.e('JavaScript execution failed: ' + e); } })()");
 	}
 
 	public void eval(InputStream is) {
