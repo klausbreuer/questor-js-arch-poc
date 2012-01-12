@@ -1,6 +1,5 @@
 package de.questor.poc.jsarch.renderer;
 
-import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -10,7 +9,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.util.Log;
 import android.webkit.WebChromeClient;
-import android.widget.Toast;
 import de.questor.poc.jsarch.Interpreter;
 import de.questor.poc.jsarch.Logger;
 import de.questor.poc.jsarch.MessageService;

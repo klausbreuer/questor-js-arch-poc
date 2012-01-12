@@ -85,9 +85,7 @@ public class SimulatorRuntime {
 	 * @param msg
 	 */
 	public void sendToRenderer(String contextKey, String msg) {
-		// player names starting with 'testsession' are fake only and should not result
-		// in real data being send.
-		if (contextKey.startsWith("testsession"))
+		if (contextKey.equals("fake"))
 		{
 			return;
 		}
