@@ -8,6 +8,7 @@ import java.io.Reader;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ContextFactory;
 import org.mozilla.javascript.Scriptable;
+import org.mozilla.javascript.tools.shell.Global;
 
 import de.questor.simulatorserver.net.RemoteMessageServiceServer;
 
@@ -21,10 +22,17 @@ public class Main {
 		
 	    // initialization
 		Context context = ContextFactory.getGlobal().enterContext();
+		context.setOptimizationLevel(-1);
+		context.setLanguageVersion(Context.VERSION_1_5);
+		
+		// Makes available 'print' and friends.
+		Global global = new Global();
+		global.init(context);
+		
 		Scriptable scope = context.initStandardObjects();
 
 		SimulatorRuntime runtime = new SimulatorRuntime(context, scope);
-		RemoteMessageServiceServer rmss = new RemoteMessageServiceServer(runtime, 10000);
+		RemoteMessageServiceServer rmss = new RemoteMessageServiceServer(runtime, null, 10000);
 		runtime.setMessageService(rmss);
 		
 	    // add bindings
@@ -35,6 +43,7 @@ public class Main {
 		// more compatible to one (JSON.parse(), setInterval(), ...)
 		eval(context, scope, getReader("lib/rhino.js"));
 		eval(context, scope, getReader("lib/json2.js"));
+//		eval(context, scope, getReader("lib/env.rhino.1.2.js"));
 		
 		// Load the set of default functions.
 		eval(context, scope, getReader("common.js"));
@@ -61,7 +70,7 @@ public class Main {
 
 	    eval(context, scope, "simulator = new Simulator();");
 
-	    eval(context, scope, getReader("game1.js"));
+	    eval(context, scope, getReader("game2.js"));
 
 	    eval(context, scope, "checkSimulator();");
 	    
