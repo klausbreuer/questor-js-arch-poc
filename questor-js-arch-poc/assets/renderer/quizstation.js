@@ -16,16 +16,16 @@ QuizStationHtml = function () {
 	
 	// Implementation note: This could either be read from a data file or could have
 	// been set by the simulator.
-	this.native = true;
+	this.nativeImpl = true;
 };
 
 QuizStationHtml.prototype.init = function(obj) {
 	this.question = obj.question;
 	this.buttonText = obj.buttonText;
-}
+};
 
-QuizStationHtml.prototype.setNative = function (native) {    
-	this.native = native;
+QuizStationHtml.prototype.setNative = function (nativeImpl) {    
+	this.nativeImpl = nativeImpl;
 };
 
 QuizStationHtml.prototype.show = function () {
@@ -33,7 +33,7 @@ QuizStationHtml.prototype.show = function () {
 	// different user-interface logic.
 	// However a better showcase would be a station which has different delegate implementations
 	// that are chosen by the environment.
-	if (this.native) {
+	if (this.nativeImpl) {
 		quizDelegate.showNative(this.question);
 	} else {
 		var content;
@@ -52,8 +52,8 @@ QuizStationHtml.prototype.show = function () {
 
 QuizStationHtml.prototype.onMessage = function(data) {
 	// Intentionally empty.
-}
+};
 
 QuizStationHtml.prototype.onLeave = function() {
 	// Intentionally empty.
-}
+};
