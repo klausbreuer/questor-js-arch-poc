@@ -22,13 +22,14 @@ public class Main {
 		
 	    // initialization
 		Context context = ContextFactory.getGlobal().enterContext();
+		/*
 		context.setOptimizationLevel(-1);
 		context.setLanguageVersion(Context.VERSION_1_5);
 		
 		// Makes available 'print' and friends.
 		Global global = new Global();
 		global.init(context);
-		
+		*/
 		Scriptable scope = context.initStandardObjects();
 
 		SimulatorRuntime runtime = new SimulatorRuntime(context, scope);
@@ -70,7 +71,7 @@ public class Main {
 
 	    eval(context, scope, "simulator = new Simulator();");
 
-	    eval(context, scope, getReader("game2.js"));
+	    eval(context, scope, getReader("game1.js"));
 
 	    eval(context, scope, "checkSimulator();");
 	    
