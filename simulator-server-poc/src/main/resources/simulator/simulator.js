@@ -1,7 +1,8 @@
 /** Session class
  * Holds the player and his/her current station.
  */
-Session = function(playerId) {
+Session = function(sessionId, playerId) {
+	this.sessionId = sessionId;
 	this.playerId = playerId;
 }
 
@@ -33,7 +34,7 @@ Simulator.prototype.onMessage = function(ctx, msg) {
 	
 	switch (msgObj.type) {
 		case 'join':
-			var session = this.newSession(msgObj.playerId);
+			var session = this.newSession(ctx, msgObj.playerId);
 			this.performTransition(session, this.start);
 			break;
 		case 'reply':
@@ -88,14 +89,14 @@ Simulator.prototype.performTransition = function(session, newStationId) {
 	session.station.onEnter(session);
 };
 
-Simulator.prototype.newSession = function(playerId) {
-	s = new Session(playerId);
-	this.sessions[playerId] = s;
+Simulator.prototype.newSession = function(sessionId, playerId) {
+	s = new Session(sessionId, playerId);
+	this.sessions[sessionId] = s;
 	return s;
 };
 
 Simulator.prototype.toContext = function(session) {
-	return session.playerId;
+	return session.sessionId;
 };
 
 Simulator.prototype.toSession = function(context) {

@@ -54,7 +54,7 @@ CompassStation.prototype.onEnter = function(session) {
 
 	// Testcode: Hardcodes another 2 players who are in this station as well.
 	try {
-		var testsession = new Session("testsession1");
+		var testsession = new Session("fake", "testsession1");
 		testsession.station = this;
 		testsession.stationId = "test";
 		this.attendees.add(testsession);
@@ -63,7 +63,7 @@ CompassStation.prototype.onEnter = function(session) {
 			lat : 45644768
 		});
 
-		testsession = new Session("testsession2");
+		testsession = new Session("fake", "testsession2");
 		testsession.station = this;
 		testsession.stationId = "test";
 		this.attendees.add(testsession);
