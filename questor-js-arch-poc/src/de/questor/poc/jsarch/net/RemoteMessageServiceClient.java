@@ -10,6 +10,8 @@ public class RemoteMessageServiceClient implements MessageService {
 	
 	RendererRuntime rendererRuntime;
 	
+	long connectionId;
+	
 	public RemoteMessageServiceClient(RendererRuntime rendererRuntime, final Runnable connectRunnable, String host, int port) {
 		this.rendererRuntime = rendererRuntime;
 		
@@ -18,7 +20,7 @@ public class RemoteMessageServiceClient implements MessageService {
 			new Thread() {
 				public void run() {
 					try {
-						snet.connect();
+						connectionId = snet.connect();
 						
 						System.err.println("connected");
 						if (connectRunnable != null)
@@ -26,7 +28,7 @@ public class RemoteMessageServiceClient implements MessageService {
 						
 						String[] strings = null;
 						
-						while ((strings = snet.receive()) != null) {
+						while ((strings = snet.receive(connectionId)) != null) {
 							sendToRenderer(strings[0], strings[1]);
 						}
 						
@@ -52,7 +54,7 @@ public class RemoteMessageServiceClient implements MessageService {
 	@Override
 	public void sendToSimulator(Object contextKey, String msg) {
 		try {
-			snet.send(new String[] { (String) contextKey, msg });
+			snet.send(connectionId, new String[] { (String) contextKey, msg });
 		} catch (Exception e) {
 			System.err.println("Failed: " + e);
 		}
