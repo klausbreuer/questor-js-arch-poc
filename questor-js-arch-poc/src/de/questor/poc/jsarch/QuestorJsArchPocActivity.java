@@ -6,6 +6,7 @@ import android.util.Log;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import de.questor.poc.jsarch.net.RemoteMessageServiceClient;
+import de.questor.poc.jsarch.net.RemoteMessageServiceServer;
 import de.questor.poc.jsarch.renderer.RendererRuntime;
 import de.questor.poc.jsarch.simulator.SimulatorRuntime;
 
@@ -71,7 +72,8 @@ public class QuestorJsArchPocActivity extends Activity {
 		public void exit() {
 			System.exit(0);
 		}
-		
+
+		/*
 		public void test() {
 			// Initializes a local message service and runs a game.
 			MessageService ms = new LocalMessageService(simulator, mRenderer);
@@ -79,18 +81,29 @@ public class QuestorJsArchPocActivity extends Activity {
 			// Starts a game by letting a player join the game ... 
 			ms.sendToSimulator("testspieler", "{ \"type\":\"join\", \"playerId\":\"testspieler\" }");
 		}
-		
-		public void netTest(String hostString, String portString, final String playerIdString) {
-			/*
+		*/
+
+		public void test() {
 			RemoteMessageServiceServer rmss = new RemoteMessageServiceServer(simulator, null, 15000);
 			simulator.setMessageService(rmss);
-			*/
 			
+			RemoteMessageServiceClient.Runnable r = new RemoteMessageServiceClient.Runnable() {
+				public void run(RemoteMessageServiceClient that) {
+					// Starts a game by letting a player join the game ... 
+					that.sendToSimulator(null, "{ \"type\":\"join\", \"playerId\":\"testspieler\" }");
+				}
+			};
+			
+			RemoteMessageServiceClient rmsc = new RemoteMessageServiceClient(mRenderer, r, "localhost", 15000);
+			mRenderer.setMessageService(rmsc);
+		}
+		
+		public void netTest(String hostString, String portString, final String playerIdString) {
 			int port = Integer.parseInt(portString);
 			
 			RemoteMessageServiceClient.Runnable r = new RemoteMessageServiceClient.Runnable() {
 				public void run(RemoteMessageServiceClient that) {
-					that.sendToSimulator(playerIdString, String.format("{ \"type\":\"join\", \"playerId\":\"%s\" }", playerIdString));
+					that.sendToSimulator(null, String.format("{ \"type\":\"join\", \"playerId\":\"%s\" }", playerIdString));
 				}
 			};
 			
