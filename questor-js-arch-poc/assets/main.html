@@ -5,6 +5,21 @@
 
 </head>
 <body>
+
+<script type="text/javascript">
+  function connectToGame() {
+  	try {
+	  	questor.netTest(
+	  		document.getElementById('hostField').value,
+	  		document.getElementById('portField').value,
+	  		document.getElementById('playerIdField').value);
+		} catch (e) {
+			logger.e("problem calling netTest: " + e);
+		}
+  }
+
+</script>
+
 <p>Willlkommen zum Questor Javascript Proof-Of-Concept!</p>
 
 <p><a href="javascript:questor.testKlaus();">Test Klaus</a></p>
@@ -17,7 +32,13 @@
 
 <p><a href="javascript:questor.test();">starte ein Spiel</a></p>
 
-<p><a href="javascript:questor.netTest();">starte ein Netzwerkspiel</a></p>
+<p>
+<input id="hostField" type="text" size="10" value="10.0.2.2"/>
+<input id="portField" type="text" size="10" value="10000"/>
+<input id="playerIdField" type="text" size="10" value="testspieler" />
+</p>
+
+<p><a href="javascript:connectToGame();">starte ein Netzwerkspiel</a></p>
 
 <script>
 

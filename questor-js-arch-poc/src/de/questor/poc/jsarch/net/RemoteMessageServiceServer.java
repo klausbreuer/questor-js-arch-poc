@@ -9,7 +9,7 @@ public class RemoteMessageServiceServer implements MessageService {
 	
 	SimulatorRuntime simulatorRuntime;
 	
-	public RemoteMessageServiceServer(SimulatorRuntime simulatorRuntime, int port) {
+	public RemoteMessageServiceServer(SimulatorRuntime simulatorRuntime, final Runnable listenRunnable, int port) {
 		this.simulatorRuntime = simulatorRuntime;
 		
 		try {
@@ -18,9 +18,11 @@ public class RemoteMessageServiceServer implements MessageService {
 				public void run() {
 					try {
 						snet.listen();
-
+						
 						System.err.println("listen successful");
-
+						if (listenRunnable != null)
+							listenRunnable.run(RemoteMessageServiceServer.this);
+						
 						String[] strings = null;
 						
 						while ((strings = snet.receive()) != null) {
@@ -55,4 +57,8 @@ public class RemoteMessageServiceServer implements MessageService {
 		simulatorRuntime.onMessage(contextKey, msg);
 	}
 
+	public static interface Runnable {
+		void run(RemoteMessageServiceServer rmss);
+	}
+	
 }

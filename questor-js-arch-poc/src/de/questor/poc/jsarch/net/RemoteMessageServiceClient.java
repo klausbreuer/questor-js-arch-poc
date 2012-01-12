@@ -1,6 +1,5 @@
 package de.questor.poc.jsarch.net;
 
-import android.opengl.GLSurfaceView.Renderer;
 import de.questor.poc.jsarch.MessageService;
 import de.questor.poc.jsarch.QuestorContext;
 import de.questor.poc.jsarch.renderer.RendererRuntime;
@@ -11,7 +10,7 @@ public class RemoteMessageServiceClient implements MessageService {
 	
 	RendererRuntime rendererRuntime;
 	
-	public RemoteMessageServiceClient(RendererRuntime rendererRuntime, String host, int port) {
+	public RemoteMessageServiceClient(RendererRuntime rendererRuntime, final Runnable connectRunnable, String host, int port) {
 		this.rendererRuntime = rendererRuntime;
 		
 		try {
@@ -22,6 +21,8 @@ public class RemoteMessageServiceClient implements MessageService {
 						snet.connect();
 						
 						System.err.println("connected");
+						if (connectRunnable != null)
+							connectRunnable.run(RemoteMessageServiceClient.this);
 						
 						String[] strings = null;
 						
@@ -81,5 +82,9 @@ public class RemoteMessageServiceClient implements MessageService {
 			RemoteMessageServiceClient.this.sendToSimulator(contextKey, msg);
 		}
 		
+	}
+	
+	public static interface Runnable {
+		void run(RemoteMessageServiceClient rmsc);
 	}
 }
