@@ -34,7 +34,6 @@ public class RemoteMessageServiceServer implements MessageService {
 						}
 					} catch (Exception e) {
 						System.err.println("Listen failed: " + e);
-						e.printStackTrace();
 
 						return;
 					}
@@ -79,12 +78,16 @@ public class RemoteMessageServiceServer implements MessageService {
 				// First message contains the information about our session.
 				if ((strings = snet.receive(connectionId)) != null) {
 					// Makes a link between a sessionName and the connection.
-					sessions.put(strings[0], connectionId);
+					String sessionId = "questorSession-" + String.valueOf(connectionId);
+					sessions.put(sessionId, connectionId);
 
-					sendToSimulator(strings[0], strings[1]);
+					sendToSimulator(sessionId, strings[1]);
 				}
 
 				while ((strings = snet.receive(connectionId)) != null) {
+					// NOTE: We could do a check whether this connection really belongs to the
+					// given session etc.
+					
 					sendToSimulator(strings[0], strings[1]);
 				}
 
