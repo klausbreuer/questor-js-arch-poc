@@ -65,10 +65,6 @@ public class SimulatorRuntime {
 	 * @param msg
 	 */
 	public void sendToRenderer(String contextKey, String msg) {
-		if ("fake".equals(contextKey)) {
-			return;
-		}
-		
 		messageService.sendToRenderer((Object) contextKey, msg);
 	}
 	

@@ -42,7 +42,7 @@ Simulator.prototype.onMessage = function(ctx, msg) {
 			break;
 		case 'invalidate':
 			var s = this.deleteSession(ctx);
-			if (s) {
+			if (!s) {
 				logger.e("Nothing to do. Session already invalid: " + ctx);
 				return;
 			}
@@ -51,12 +51,12 @@ Simulator.prototype.onMessage = function(ctx, msg) {
 			if (s.station) {
 				// Actually we need some kind of onCancel() as the player is not
 				// properly leaving this station.
-				s.station.onLeave();
+				s.station.onLeave(s);
 			}
 			break;
 		case 'reply':
 			var s = this.toSession(ctx);
-			if (s == null) {
+			if (!s) {
 				logger.e("Could not find session for context: " + ctx);
 				return;
 			};
@@ -82,6 +82,15 @@ Simulator.prototype.sendCreateMessage = function(session, stationClass, data) {
 };
 
 Simulator.prototype.sendStationMessage = function(session, data) {
+	// Suppressing quietly.
+	if (session.sessionId == "fake")
+		return;
+	
+	if (!this.sessionExists(session)) {
+		logger.e("Session expired. Suppressing 'send' for {0} (player: {1})".format(session.sessionId, session.playerId));
+		return;
+	}
+	
 	var obj = {
 		type: "station",
 		data: data
@@ -126,6 +135,10 @@ Simulator.prototype.deleteSession = function(sessionId) {
 	
 	return s;
 };
+
+Simulator.prototype.sessionExists = function(session) {
+	return (this.sessions[session.sessionId] != null);
+}
 
 Simulator.prototype.toContext = function(session) {
 	return session.sessionId;

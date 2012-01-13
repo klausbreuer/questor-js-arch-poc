@@ -25,7 +25,7 @@ CompassStation = function(pStationSuccess, pStationFail) {
 				}
 			}
 		} catch (e) {
-			logger.e("Failed update function: " + e);
+			logger.e("Failed update function: " + e.message);
 		}
 	};
 
