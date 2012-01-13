@@ -24,6 +24,9 @@ HtmlStation.prototype.onEnter = function(session) {
 	simulator.sendCreateMessage(session, "HtmlStation", obj);
 };
 
+HtmlStation.prototype.onLeave = function(session) {
+};
+
 HtmlStation.prototype.onMessage = function(session, data) {
 	simulator.performTransition(session, data);
 };

@@ -19,6 +19,8 @@ public class SimulatorRuntime {
 	private Scriptable scope;
 	
 	private MessageService messageService;
+
+	private String invalidationMessage;
 	
 	public SimulatorRuntime(Context context, Scriptable scope) {
 		this.context = context;
@@ -63,7 +65,15 @@ public class SimulatorRuntime {
 	 * @param msg
 	 */
 	public void sendToRenderer(String contextKey, String msg) {
+		if ("fake".equals(contextKey)) {
+			return;
+		}
+		
 		messageService.sendToRenderer((Object) contextKey, msg);
+	}
+	
+	public void setInvalidationMessage(String invalidationMessage) {
+		this.invalidationMessage = invalidationMessage;
 	}
 	
 	/** This method is being called by the {@link MessageService} each time there is a
@@ -76,9 +86,11 @@ public class SimulatorRuntime {
 	public void onMessage(Object ctx, String msg) {
 		Context context = ContextFactory.getGlobal().enterContext();
 		
-		// msg is not supposed to contain ' (single quote) chars otherwise
-		// the call is not going to work.
-		if (msg.contains("'")) {
+		if (msg == null) {
+			msg = invalidationMessage;
+		} else if (msg.contains("'")) {
+			// msg is not supposed to contain ' (single quote) chars otherwise
+			// the call is not going to work.
 			throw new IllegalStateException("Message contains single-quotes. You need to fix that!");
 		}
 		

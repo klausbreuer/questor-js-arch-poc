@@ -46,6 +46,10 @@ CompassStation = function(pStationSuccess, pStationFail) {
 
 };
 
+CompassStation.prototype.onLeave = function(session) {
+	this.attendees.remove(session);
+}
+
 CompassStation.prototype.onEnter = function(session) {
 	var obj = {};
 	simulator.sendCreateMessage(session, "CompassStation", obj);
@@ -115,7 +119,6 @@ CompassStation.prototype.sendPoiPosition = function(session) {
 CompassStation.prototype.onMessage = function(session, data) {
 	switch (data.type) {
 	case 'cheatOut':
-		this.attendees.remove(session);
 		simulator.performTransition(session, this.stationSuccess);
 		break;
 	case 'playerPos':
