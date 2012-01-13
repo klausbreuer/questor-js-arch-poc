@@ -34,6 +34,9 @@ QuizStation.prototype.onEnter = function(session) {
 	
 	simulator.sendCreateMessage(session, "QuizStationHtml", obj);
 
+	// Some code to tell players about a new player who enters the station
+	// but also to tell the new player about the players who were already waiting
+	// at the station.
 	for ( var i in this.attendees.entries) {
 		var a = this.attendees.entries[i];
 		var list = new Array();
@@ -68,7 +71,8 @@ QuizStation.prototype.onLeave = function(session) {
 		if (a != null) {
 			list.push(a.session.playerId);
 		
-			// Tells each existing player about the new one.
+			// Tells each existing player about the one that
+			// left the station.
 			var obj = {
 					type: "advancedPlayer",
 					playerId: session.playerId
