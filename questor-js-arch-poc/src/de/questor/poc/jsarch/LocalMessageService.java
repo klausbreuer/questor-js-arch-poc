@@ -27,14 +27,14 @@ public class LocalMessageService implements MessageService {
 	}
 	
 	@Override
-	public void sendToRenderer(Object contextKey, String msg) {
-		QuestorContext ctx = new AnswerContext(contextKey);
+	public void sendToRenderer(String sessionId, String msg) {
+		QuestorContext ctx = new AnswerContext(sessionId);
 		renderer.onMessage(ctx, msg);
 	}
 	
 	@Override
-	public void sendToSimulator(Object contextKey, String msg) {
-		simulator.onMessage(contextKey, msg);
+	public void sendToSimulator(String sessionId, String msg) {
+		simulator.onMessage(sessionId, msg);
 	}
 	
 	/**
@@ -50,15 +50,15 @@ public class LocalMessageService implements MessageService {
 	 */
 	private class AnswerContext implements QuestorContext {
 		
-		private Object contextKey;
+		private String sessionId;
 		
-		AnswerContext(Object contextKey) {
-			this.contextKey = contextKey;
+		AnswerContext(String sessionId) {
+			this.sessionId = sessionId;
 		}
 
 		@Override
 		public void sendMessage(String msg) {
-			LocalMessageService.this.sendToSimulator(contextKey, msg);
+			LocalMessageService.this.sendToSimulator(sessionId, msg);
 		}
 		
 	}

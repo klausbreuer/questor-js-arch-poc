@@ -47,14 +47,14 @@ public class RemoteMessageServiceClient implements MessageService {
 	}
 	
 	@Override
-	public void sendToRenderer(Object contextKey, String msg) {
-		rendererRuntime.onMessage(new AnswerContext(contextKey), msg);
+	public void sendToRenderer(String sessionId, String msg) {
+		rendererRuntime.onMessage(new AnswerContext(sessionId), msg);
 	}
 
 	@Override
-	public void sendToSimulator(Object contextKey, String msg) {
+	public void sendToSimulator(String sessionId, String msg) {
 		try {
-			snet.send(connectionId, new String[] { (String) contextKey, msg });
+			snet.send(connectionId, new String[] { sessionId, msg });
 		} catch (Exception e) {
 			System.err.println("Failed: " + e);
 		}
@@ -73,15 +73,15 @@ public class RemoteMessageServiceClient implements MessageService {
 	 */
 	private class AnswerContext implements QuestorContext {
 		
-		private Object contextKey;
+		private String sessionId;
 		
-		AnswerContext(Object contextKey) {
-			this.contextKey = contextKey;
+		AnswerContext(String sessionId) {
+			this.sessionId = sessionId;
 		}
 
 		@Override
 		public void sendMessage(String msg) {
-			RemoteMessageServiceClient.this.sendToSimulator(contextKey, msg);
+			RemoteMessageServiceClient.this.sendToSimulator(sessionId, msg);
 		}
 		
 	}

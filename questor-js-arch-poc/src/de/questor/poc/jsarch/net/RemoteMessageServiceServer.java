@@ -46,18 +46,18 @@ public class RemoteMessageServiceServer implements MessageService {
 	}
 
 	@Override
-	public void sendToRenderer(Object contextKey, String msg) {
-		long id = sessions.get((String) contextKey);
+	public void sendToRenderer(String sessionId, String msg) {
+		long id = sessions.get(sessionId);
 		try {
-			snet.send(id, new String[] { (String) contextKey, msg });
+			snet.send(id, new String[] { sessionId, msg });
 		} catch (Exception e) {
 			System.err.println("Failed send: " + e);
 		}
 	}
 
 	@Override
-	public void sendToSimulator(Object contextKey, String msg) {
-		simulatorRuntime.onMessage(contextKey, msg);
+	public void sendToSimulator(String sessionId, String msg) {
+		simulatorRuntime.onMessage(sessionId, msg);
 	}
 
 	public static interface Runnable {

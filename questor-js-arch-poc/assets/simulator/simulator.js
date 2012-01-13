@@ -24,8 +24,8 @@ Simulator.prototype.setGame = function(start, stations) {
 
 /** This method handles the messages send from the renderer.
 */	
-Simulator.prototype.onMessage = function(ctx, msg) {
-	logger.i("Simulator.onMessage('{0}', '{1}'}".format(ctx, msg));
+Simulator.prototype.onMessage = function(sessionId, msg) {
+	logger.i("Simulator.onMessage('{0}', '{1}'}".format(sessionId, msg));
 	
 	var msgObj = null;
 	try {
@@ -37,13 +37,13 @@ Simulator.prototype.onMessage = function(ctx, msg) {
 	
 	switch (msgObj.type) {
 		case 'join':
-			var session = this.newSession(ctx, msgObj.playerId);
+			var session = this.newSession(sessionId, msgObj.playerId);
 			this.performTransition(session, this.start);
 			break;
 		case 'invalidate':
-			var s = this.deleteSession(ctx);
+			var s = this.deleteSession(sessionId);
 			if (!s) {
-				logger.e("Nothing to do. Session already invalid: " + ctx);
+				logger.e("Nothing to do. Session already invalid: " + sessionId);
 				return;
 			}
 			
@@ -55,9 +55,9 @@ Simulator.prototype.onMessage = function(ctx, msg) {
 			}
 			break;
 		case 'reply':
-			var s = this.toSession(ctx);
+			var s = this.toSession(sessionId);
 			if (!s) {
-				logger.e("Could not find session for context: " + ctx);
+				logger.e("Could not find session for context: " + sessionId);
 				return;
 			};
 			
@@ -105,7 +105,7 @@ Simulator.prototype.sendStationMessage = function(session, data) {
 Simulator.prototype.sendMessageObject = function(session, obj) {
 	var newMsg = JSON.stringify(obj);
 	
-	runtime.sendToRenderer(this.toContext(session), newMsg);
+	runtime.sendToRenderer(this.toSessionId(session), newMsg);
 };
 
 Simulator.prototype.performTransition = function(session, newStationId) {
@@ -140,11 +140,11 @@ Simulator.prototype.sessionExists = function(session) {
 	return (this.sessions[session.sessionId] != null);
 }
 
-Simulator.prototype.toContext = function(session) {
+Simulator.prototype.toSessionId = function(session) {
 	return session.sessionId;
 };
 
-Simulator.prototype.toSession = function(context) {
+Simulator.prototype.toSession = function(sessionId) {
 	return this.sessions[context];
 };
 	

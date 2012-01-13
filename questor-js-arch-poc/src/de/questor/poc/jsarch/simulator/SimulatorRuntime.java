@@ -77,18 +77,13 @@ public class SimulatorRuntime {
 	/** This method is available to the Javascript environment in order to send
 	 * a message to the renderer.
 	 * 
-	 * <p>The <em>key</em> for the <code>contextKey</code> argument has to be generated
-	 * using the Javascript method <code>Simulator.toKey(Session)</code>. In the Java code
-	 * we are not interested what the actual value is. We only guarantee that upon a reply
-	 * from the {@link Renderer} we will use the same value.</p>
-	 * 
-	 * @param type
-	 * @param contextKey
+O	 * @param type
+	 * @param sessionId
 	 * @param msg
 	 */
-	public void sendToRenderer(String contextKey, String msg) {
+	public void sendToRenderer(String sessionId, String msg) {
 		if (messageService != null)
-			messageService.sendToRenderer((Object) contextKey, msg);
+			messageService.sendToRenderer(sessionId, msg);
 	}
 	
 	public void setInvalidationMessage(String invalidationMessage) {
@@ -99,10 +94,10 @@ public class SimulatorRuntime {
 	 * new message available.
 	 * 
 	 * @param type
-	 * @param ctx
+	 * @param sessionId
 	 * @param msg
 	 */
-	public void onMessage(Object ctx, String msg) {
+	public void onMessage(String sessionId, String msg) {
 		if (msg == null) {
 			msg = invalidationMessage;
 		} else if (msg.contains("'")) {
@@ -112,7 +107,7 @@ public class SimulatorRuntime {
 			throw new IllegalStateException("Message contains single-quotes. You need to fix that!");
 		}
 		
-		interpreter.eval(String.format("simulator.onMessage('%s', '%s');", (String) ctx, msg));
+		interpreter.eval(String.format("simulator.onMessage('%s', '%s');", sessionId, msg));
 	}
 
 	public void setMessageService(MessageService messageService) {
