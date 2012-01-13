@@ -7,6 +7,7 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 public class SimpleNet {
@@ -58,6 +59,10 @@ public class SimpleNet {
 	void send(long id, String[] rawMessage) throws Exception {
 		Connection c = connections.get(id);
 		
+		if (c == null) {
+			throw new IllegalStateException("Send attempt with unknown connection: '" + id + "'");
+		}
+		
 		c.sender.println("START");
 		for (String s : rawMessage)
 			c.sender.println(s);
@@ -68,6 +73,10 @@ public class SimpleNet {
 	String[] receive(long id) throws Exception {
 		Connection c = connections.get(id);
 		
+		if (c == null) {
+			throw new IllegalStateException("Receive attempt with unknown connection: '" + id + "'");
+		}
+		
 		String r = null;
 		
 		while ("START".equals(r != c.receiver.readLine())) {
@@ -77,6 +86,12 @@ public class SimpleNet {
 		ArrayList<String> strings = new ArrayList<String>();
 		
 		while(!"END".equals(r = c.receiver.readLine())) {
+			if (r == null) {
+				System.err.println(String.format("Connection '%s' lost. Closing resources.", c.id));
+				close(c.id);
+				return null;
+			}
+
 			strings.add(r);
 		}
 		

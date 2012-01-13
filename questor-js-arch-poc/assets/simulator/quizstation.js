@@ -33,6 +33,9 @@ QuizStation.prototype.onEnter = function(session) {
 	simulator.sendCreateMessage(session, "QuizStationHtml", obj);
 };
 
+QuizStation.prototype.onLeave = function(session) {
+};
+
 QuizStation.prototype.onMessage = function(session, data) {
 	if (this.answer == data) {
 		simulator.performTransition(session, this.stationSuccess);

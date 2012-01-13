@@ -24,6 +24,8 @@ public class SimulatorRuntime {
 	private Interpreter interpreter;
 	
 	private Runnable runnable;
+
+	private String invalidationMessage;
 	
 	public SimulatorRuntime(final Context ctx) {
 		WebView wv = new WebView(ctx);
@@ -94,6 +96,10 @@ public class SimulatorRuntime {
 			messageService.sendToRenderer((Object) contextKey, msg);
 	}
 	
+	public void setInvalidationMessage(String invalidationMessage) {
+		this.invalidationMessage = invalidationMessage;
+	}
+	
 	/** This method is being called by the {@link MessageService} each time there is a
 	 * new message available.
 	 * 
@@ -102,9 +108,11 @@ public class SimulatorRuntime {
 	 * @param msg
 	 */
 	public void onMessage(Object ctx, String msg) {
-		// msg is not supposed to contain ' (single quote) chars otherwise
-		// the call is not going to work.
-		if (msg.contains("'")) {
+		if (msg == null) {
+			msg = invalidationMessage;
+		} else if (msg.contains("'")) {
+			// msg is not supposed to contain ' (single quote) chars otherwise
+			// the call is not going to work (yet).
 			Log.e("Simulator", "Unable to process message: " + msg);
 			throw new IllegalStateException("Message contains single-quotes. You need to fix that!");
 		}

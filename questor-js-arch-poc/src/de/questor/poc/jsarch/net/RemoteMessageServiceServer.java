@@ -12,7 +12,7 @@ public class RemoteMessageServiceServer implements MessageService {
 	SimulatorRuntime simulatorRuntime;
 
 	HashMap<String, Long> sessions = new HashMap<String, Long>();
-
+	
 	public RemoteMessageServiceServer(SimulatorRuntime simulatorRuntime,
 			final Runnable listenRunnable, int port) {
 		this.simulatorRuntime = simulatorRuntime;
@@ -51,7 +51,7 @@ public class RemoteMessageServiceServer implements MessageService {
 		try {
 			snet.send(id, new String[] { (String) contextKey, msg });
 		} catch (Exception e) {
-			System.err.println("Failed: " + e);
+			System.err.println("Failed send: " + e);
 		}
 	}
 
@@ -73,12 +73,13 @@ public class RemoteMessageServiceServer implements MessageService {
 
 		public void run() {
 			try {
+				String sessionId = null;
 				String[] strings = null;
 
 				// First message contains the information about our session.
 				if ((strings = snet.receive(connectionId)) != null) {
 					// Makes a link between a sessionName and the connection.
-					String sessionId = "questorSession-" + String.valueOf(connectionId);
+					sessionId = "questorSession-" + String.valueOf(connectionId);
 					sessions.put(sessionId, connectionId);
 
 					sendToSimulator(sessionId, strings[1]);
@@ -90,6 +91,11 @@ public class RemoteMessageServiceServer implements MessageService {
 					
 					sendToSimulator(strings[0], strings[1]);
 				}
+				
+				System.err.println("Receiving ended. Closing connection.");
+				sessions.remove(sessionId);
+				sendToSimulator(sessionId, null);
+				snet.close(connectionId);
 
 			} catch (Exception e) {
 				System.err.println("Listen failed: " + e);
@@ -99,4 +105,5 @@ public class RemoteMessageServiceServer implements MessageService {
 
 		}
 	}
+	
 }

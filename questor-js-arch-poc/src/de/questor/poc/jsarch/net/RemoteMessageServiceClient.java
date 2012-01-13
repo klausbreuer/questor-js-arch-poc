@@ -61,7 +61,7 @@ public class RemoteMessageServiceClient implements MessageService {
 	}
 
 	/**
-	 * By sending messages to the {@link Renderer} using this class the
+	 * By sending messages to the {@link RendererRuntime} using this class the
 	 * called service can reply without knowing the actual <code>contextKey</code>
 	 * instance.
 	 * 
@@ -89,4 +89,5 @@ public class RemoteMessageServiceClient implements MessageService {
 	public static interface Runnable {
 		void run(RemoteMessageServiceClient rmsc);
 	}
+
 }

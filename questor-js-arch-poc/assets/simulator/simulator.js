@@ -12,6 +12,9 @@ Session = function(sessionId, playerId) {
 Simulator = function() {
 	this.sessions = new Object();
 	this.stations = null;
+
+	// Sets the message that is to be send for 
+	runtime.setInvalidationMessage('{"type":"invalidate"}');
 };
 
 Simulator.prototype.setGame = function(start, stations) {
@@ -37,6 +40,20 @@ Simulator.prototype.onMessage = function(ctx, msg) {
 			var session = this.newSession(ctx, msgObj.playerId);
 			this.performTransition(session, this.start);
 			break;
+		case 'invalidate':
+			var s = this.deleteSession(ctx);
+			if (s) {
+				logger.e("Nothing to do. Session already invalid: " + ctx);
+				return;
+			}
+			
+			// Leave a potentially occupied station
+			if (s.station) {
+				// Actually we need some kind of onCancel() as the player is not
+				// properly leaving this station.
+				s.station.onLeave();
+			}
+			break;
 		case 'reply':
 			var s = this.toSession(ctx);
 			if (s == null) {
@@ -45,6 +62,7 @@ Simulator.prototype.onMessage = function(ctx, msg) {
 			};
 			
 			s.station.onMessage(s, msgObj.data);
+			
 			break;
 		default:
 			logger.i("Unexpected message type: " + msgObj.type);
@@ -82,16 +100,30 @@ Simulator.prototype.sendMessageObject = function(session, obj) {
 };
 
 Simulator.prototype.performTransition = function(session, newStationId) {
+	// Call leaving code.
+	if (session.station) {
+		session.station.onLeave(session);
+	}
+	
+	// Update session data
 	session.station = this.stations[newStationId];
 	session.stationId = newStationId;
 	
-	// TODO: Do this as a task in a general task queue
+	// Call enter code.
 	session.station.onEnter(session);
 };
 
 Simulator.prototype.newSession = function(sessionId, playerId) {
 	s = new Session(sessionId, playerId);
 	this.sessions[sessionId] = s;
+	return s;
+};
+
+Simulator.prototype.deleteSession = function(sessionId) {
+	s = this.sessions[sessionId];
+	
+	delete this.sessions[sessionId];
+	
 	return s;
 };
 

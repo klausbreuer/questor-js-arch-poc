@@ -48,5 +48,5 @@ AttendeeList.prototype.remove = function(session) {
 		}
 	}
 	
-	this.entries[session.playerId] = null;
+	delete this.entries[session.playerId];
 };
