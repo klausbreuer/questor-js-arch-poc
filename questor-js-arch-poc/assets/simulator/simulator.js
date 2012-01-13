@@ -57,7 +57,7 @@ Simulator.prototype.onMessage = function(sessionId, msg) {
 		case 'reply':
 			var s = this.toSession(sessionId);
 			if (!s) {
-				logger.e("Could not find session for context: " + sessionId);
+				logger.e("Could not find session for id: " + sessionId);
 				return;
 			};
 			
@@ -145,7 +145,7 @@ Simulator.prototype.toSessionId = function(session) {
 };
 
 Simulator.prototype.toSession = function(sessionId) {
-	return this.sessions[context];
+	return this.sessions[sessionId];
 };
 	
 
