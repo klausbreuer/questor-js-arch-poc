@@ -18,10 +18,10 @@ public interface MessageService {
 	 * <p>The <code>contextKey</code> argument allows the renderer
 	 * to send replies to the origin of this message.</p>
 	 * 
-	 * @param contextKey
+	 * @param sessionId
 	 * @param msg
 	 */
-	void sendToRenderer(Object contextKey, String msg);
+	void sendToRenderer(String sessionId, String msg);
 	
 	/**
 	 * Sends a message to the simulator.
@@ -29,9 +29,9 @@ public interface MessageService {
 	 * <p>The <code>contextKey</code> argument needs to valid in the
 	 * simulator for the message to have a meaningful effect.</p>
 	 * 
-	 * @param contextKey
+	 * @param sessionId
 	 * @param msg
 	 */
-	void sendToSimulator(Object contextKey, String msg);
+	void sendToSimulator(String sessionId, String msg);
 
 }

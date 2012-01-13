@@ -64,8 +64,8 @@ public class SimulatorRuntime {
 	 * @param contextKey
 	 * @param msg
 	 */
-	public void sendToRenderer(String contextKey, String msg) {
-		messageService.sendToRenderer((Object) contextKey, msg);
+	public void sendToRenderer(String sessionId, String msg) {
+		messageService.sendToRenderer(sessionId, msg);
 	}
 	
 	public void setInvalidationMessage(String invalidationMessage) {
@@ -79,7 +79,7 @@ public class SimulatorRuntime {
 	 * @param ctx
 	 * @param msg
 	 */
-	public void onMessage(Object ctx, String msg) {
+	public void onMessage(String sessionId, String msg) {
 		Context context = ContextFactory.getGlobal().enterContext();
 		
 		if (msg == null) {
@@ -90,7 +90,7 @@ public class SimulatorRuntime {
 			throw new IllegalStateException("Message contains single-quotes. You need to fix that!");
 		}
 		
-		String code = String.format("simulator.onMessage('%s', '%s')", (String) ctx, msg);
+		String code = String.format("simulator.onMessage('%s', '%s')", sessionId, msg);
 		context.evaluateString(scope, code, "custom", 0, null);
 		
 		Context.exit();
