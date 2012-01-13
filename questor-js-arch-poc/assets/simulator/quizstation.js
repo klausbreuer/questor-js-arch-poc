@@ -22,6 +22,8 @@ QuizStation = function(pQuestion, pButtonText, pAnswer, pStationSuccess, pStatio
 	this.answer = pAnswer;
 	this.stationSuccess = pStationSuccess;
 	this.stationFail = pStationFail;
+	
+	this.attendees = new AttendeeList(null, null);
 };
 
 QuizStation.prototype.onEnter = function(session) {
@@ -31,9 +33,49 @@ QuizStation.prototype.onEnter = function(session) {
 	};
 	
 	simulator.sendCreateMessage(session, "QuizStationHtml", obj);
+
+	for ( var i in this.attendees.entries) {
+		var a = this.attendees.entries[i];
+		var list = new Array();
+		if (a != null) {
+			list.push(a.session.playerId);
+		
+			// Tells each existing player about the new one.
+			var obj = {
+					type: "newPlayer",
+					playerId: session.playerId
+			};
+			simulator.sendStationMessage(a.session, obj);
+		}
+		
+		// Tells the new player about the existing ones.
+		if (list.length > 0) {
+			var obj = {
+					type: "attendingPlayers",
+					playerIds: list
+			};
+			simulator.sendStationMessage(session, obj);
+		}
+	}
+	this.attendees.add(session);
 };
 
 QuizStation.prototype.onLeave = function(session) {
+	this.attendees.remove(session);
+	for ( var i in this.attendees.entries) {
+		var a = this.attendees.entries[i];
+		var list = new Array();
+		if (a != null) {
+			list.push(a.session.playerId);
+		
+			// Tells each existing player about the new one.
+			var obj = {
+					type: "advancedPlayer",
+					playerId: session.playerId
+			};
+			simulator.sendStationMessage(a.session, obj);
+		}
+	}
 };
 
 QuizStation.prototype.onMessage = function(session, data) {

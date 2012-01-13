@@ -51,7 +51,23 @@ QuizStationHtml.prototype.show = function () {
 };
 
 QuizStationHtml.prototype.onMessage = function(data) {
-	// Intentionally empty.
+	switch (data.type) {
+	case 'newPlayer':
+		logger.i("A new player entered the QuizStation: " + data.playerId);
+		break;
+	case 'advancedPlayer':
+		logger.i("A player left the QuizStation: " + data.playerId);
+		break;
+	case 'attendingPlayers':
+		logger.i("The following players are already here: ");
+		for (var i in data.playerIds) {
+			logger.i("player: " + data.playerIds[i]);
+		}
+		break;
+	default:
+		logger.e("Unknown message type: " + data.type);
+		break;
+	}
 };
 
 QuizStationHtml.prototype.onLeave = function() {

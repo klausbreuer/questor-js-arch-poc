@@ -11,7 +11,7 @@ AttendeeList.prototype.add = function(session) {
 	if (this.entries[session.playerId] == null) {
 		logger.i("new player attending compassstation '{0}': {1}".format(session.stationId, session.playerId));
 		this.amount++;
-		if (this.amount == 1) {
+		if (this.amount == 1 && this.whenOneFunction) {
 			this.whenOneFunction();
 		}
 	} else {
@@ -43,7 +43,7 @@ AttendeeList.prototype.remove = function(session) {
 	} else {
 		logger.i("removing player attending compass station '{0}'".format(session.sessionId));
 		this.amount--;
-		if (this.amount == 0) {
+		if (this.amount == 0 && this.whenZeroFunction) {
 			this.whenZeroFunction();
 		}
 	}
