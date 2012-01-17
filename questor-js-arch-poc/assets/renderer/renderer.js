@@ -1,6 +1,22 @@
-Renderer = function() {
+Renderer = function(implementationId) {
+	this.implementationId = implementationId;
+	
 	this.station = null;
+	this.apiLevel = 1;
+	
+	this.sessionId = null;
 };
+
+Renderer.prototype.join = function(playerId) {
+	var obj = {
+			type: "join",
+			playerId: playerId,
+			implementationId: this.implementationId,
+			apiLevel: this.apiLevel
+	};
+	
+	runtime.sendReplyInternal(null, JSON.stringify(obj));
+}
 
 Renderer.prototype.onMessage = function(sessionId, msg) {
 	this.sessionId = sessionId;
@@ -17,6 +33,19 @@ Renderer.prototype.onMessage = function(sessionId, msg) {
 	}
 
 	switch (msgObj.type) {
+	case 'joinResponse':
+		logger.i("Connection attempt to Simulator: '{0}'".format(msgObj.implementationId));
+		
+		if (msgObj.success) {
+			logger.e("Simulator accepted us.");
+			runtime.sendReplyInternal(sessionId, JSON.stringify({ type: "start" }));
+		} else {
+			logger.e("Simulator did not accept us.");
+			// Provokes disconnect
+			runtime.sendReplyInternal(sessionId, null);
+		}
+		
+		break;
 	case 'create':
 		// a create message
 		if (this.station != null) {

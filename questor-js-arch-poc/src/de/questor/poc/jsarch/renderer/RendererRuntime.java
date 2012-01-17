@@ -80,7 +80,7 @@ public class RendererRuntime {
 		// Initializes the global simulator instance in Javascript.
 		runnable = new Runnable() {
 			public void run() {
-				interpreter.eval("renderer = new Renderer();");
+				interpreter.eval("renderer = new Renderer('Questor Android PoC 1.0');");
 				
 				// Makes sure that everything has been initialized correctly.
 				interpreter.eval("checkRenderer();");
@@ -106,6 +106,10 @@ public class RendererRuntime {
 		}
 		
 		return INSTANCE;
+	}
+	
+	public void join(String playerId) {
+		interpreter.eval(String.format("renderer.join('%s')", playerId));
 	}
 	
 	public void onMessage(String sessionId, String msg) {

@@ -9,9 +9,14 @@ Session = function(sessionId, playerId) {
 /** Simulator class
  * Keeps track of the stations and the sessions.
  */
-Simulator = function() {
+Simulator = function(implementationId) {
 	this.sessions = new Object();
 	this.stations = null;
+	
+	this.apiLevel = 1;
+	this.minRendererAPILevel = 1;
+	this.maxRendererAPILevel = 1;
+	this.implementationId = implementationId;
 	
 	// Sets the message that is to be send for 
 	runtime.setInvalidationMessage('{"type":"invalidate"}');
@@ -37,8 +42,34 @@ Simulator.prototype.onMessage = function(sessionId, msg) {
 	
 	switch (msgObj.type) {
 		case 'join':
+			logger.i("Connection attempt from Renderer: '{0}({1})'".format(msgObj.implementationId, msgObj.apiLevel));
+
 			var session = this.newSession(sessionId, msgObj.playerId);
-			this.performTransition(session, this.start);
+			var obj = {
+					type: "joinResponse",
+					apiLevel: this.apiLevel,
+					implementationId: this.implementationId
+			};
+			
+			if (this.minRendererAPILevel <= msgObj.apiLevel
+					&& this.maxRendererAPILevel >= msgObj.apiLevel) {
+				obj.success = true;
+			} else {
+				obj.success = false;
+				// TODO: Throw away session automatically ...
+			}
+			this.sendMessageObject(session, obj);
+			
+			break;
+		case 'start':
+			var s = this.toSession(sessionId);
+			
+			if (!s) {
+				logger.e("Could not find session for id: " + sessionId);
+				return;
+			};
+			
+			this.performTransition(s, this.start);
 			break;
 		case 'invalidate':
 			var s = this.deleteSession(sessionId);

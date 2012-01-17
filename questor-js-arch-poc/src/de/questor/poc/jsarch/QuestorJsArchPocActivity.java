@@ -90,7 +90,7 @@ public class QuestorJsArchPocActivity extends Activity {
 			RemoteMessageServiceClient.Runnable r = new RemoteMessageServiceClient.Runnable() {
 				public void run(RemoteMessageServiceClient that) {
 					// Starts a game by letting a player join the game ... 
-					that.sendToSimulator(null, "{ \"type\":\"join\", \"playerId\":\"testspieler\" }");
+					mRenderer.join("testspieler");
 				}
 			};
 			
@@ -103,7 +103,7 @@ public class QuestorJsArchPocActivity extends Activity {
 			
 			RemoteMessageServiceClient.Runnable r = new RemoteMessageServiceClient.Runnable() {
 				public void run(RemoteMessageServiceClient that) {
-					that.sendToSimulator(null, String.format("{ \"type\":\"join\", \"playerId\":\"%s\" }", playerIdString));
+					mRenderer.join(playerIdString);
 				}
 			};
 			

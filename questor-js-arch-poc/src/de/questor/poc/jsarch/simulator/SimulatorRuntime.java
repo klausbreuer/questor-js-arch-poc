@@ -39,7 +39,7 @@ public class SimulatorRuntime {
 		// Initializes the global simulator instance in Javascript.
 		runnable = new Runnable() {
 			public void run() {
-				interpreter.eval("simulator = new Simulator();");
+				interpreter.eval("simulator = new Simulator('Android PoC - Internal Simulator');");
 				
 				try {
 					interpreter.eval(ctx.getAssets().open("simulator/game1.js"));

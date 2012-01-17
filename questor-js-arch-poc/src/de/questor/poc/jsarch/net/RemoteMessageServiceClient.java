@@ -52,10 +52,15 @@ public class RemoteMessageServiceClient implements MessageService {
 
 	@Override
 	public void sendToSimulator(String sessionId, String msg) {
-		try {
-			snet.send(connectionId, new String[] { sessionId, msg });
-		} catch (Exception e) {
-			System.err.println("Failed: " + e);
+		if (msg == null) {
+			System.err.println("Message is null. Terminating connection.");
+			snet.close(connectionId);
+		} else {
+			try {
+				snet.send(connectionId, new String[] { sessionId, msg });
+			} catch (Exception e) {
+				System.err.println("Failed: " + e);
+			}
 		}
 	}
 	

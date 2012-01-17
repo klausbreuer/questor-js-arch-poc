@@ -69,7 +69,7 @@ public class Main {
 	    	System.out.println("Failed to set up runtime.");
 	    }
 
-	    eval(context, scope, "simulator = new Simulator();");
+	    eval(context, scope, "simulator = new Simulator('Standalone Simulator Server PoC - V1.0');");
 
 	    eval(context, scope, getReader("game1.js"));
 
