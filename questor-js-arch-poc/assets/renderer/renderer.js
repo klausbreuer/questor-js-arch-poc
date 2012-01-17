@@ -5,7 +5,7 @@ Renderer = function() {
 Renderer.prototype.onMessage = function(sessionId, msg) {
 	this.sessionId = sessionId;
 	
-	logger.i("Renderer.onMessage('{0}'}".format(msg));
+	logger.i("Renderer.onMessage('{0}', '{1}'}".format(sessionId, msg));
 
 	var msgObj = null;
 
