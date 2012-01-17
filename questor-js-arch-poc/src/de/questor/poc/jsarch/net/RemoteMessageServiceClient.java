@@ -1,7 +1,6 @@
 package de.questor.poc.jsarch.net;
 
 import de.questor.poc.jsarch.MessageService;
-import de.questor.poc.jsarch.QuestorContext;
 import de.questor.poc.jsarch.renderer.RendererRuntime;
 
 public class RemoteMessageServiceClient implements MessageService {
@@ -48,7 +47,7 @@ public class RemoteMessageServiceClient implements MessageService {
 	
 	@Override
 	public void sendToRenderer(String sessionId, String msg) {
-		rendererRuntime.onMessage(new AnswerContext(sessionId), msg);
+		rendererRuntime.onMessage(sessionId, msg);
 	}
 
 	@Override
@@ -58,32 +57,6 @@ public class RemoteMessageServiceClient implements MessageService {
 		} catch (Exception e) {
 			System.err.println("Failed: " + e);
 		}
-	}
-
-	/**
-	 * By sending messages to the {@link RendererRuntime} using this class the
-	 * called service can reply without knowing the actual <code>contextKey</code>
-	 * instance.
-	 * 
-	 * <p>In a real networked implementation this mechanism is also supposed to be
-	 * implemented on the client-side of the network.</p>
-	 * 
-	 * @author Robert Schuster <r.schuster@tarent.de>
-	 *
-	 */
-	private class AnswerContext implements QuestorContext {
-		
-		private String sessionId;
-		
-		AnswerContext(String sessionId) {
-			this.sessionId = sessionId;
-		}
-
-		@Override
-		public void sendMessage(String msg) {
-			RemoteMessageServiceClient.this.sendToSimulator(sessionId, msg);
-		}
-		
 	}
 	
 	public static interface Runnable {

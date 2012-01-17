@@ -2,7 +2,9 @@ Renderer = function() {
 	this.station = null;
 };
 
-Renderer.prototype.onMessage = function(msg) {
+Renderer.prototype.onMessage = function(sessionId, msg) {
+	this.sessionId = sessionId;
+	
 	logger.i("Renderer.onMessage('{0}'}".format(msg));
 
 	var msgObj = null;
@@ -57,5 +59,5 @@ Renderer.prototype.sendReply = function(data) {
 		data : data
 	};
 
-	runtime.sendReplyInternal(JSON.stringify(obj));
+	runtime.sendReplyInternal(this.sessionId, JSON.stringify(obj));
 }

@@ -1,6 +1,5 @@
 package de.questor.poc.jsarch;
 
-import android.opengl.GLSurfaceView.Renderer;
 import de.questor.poc.jsarch.renderer.RendererRuntime;
 import de.questor.poc.jsarch.simulator.SimulatorRuntime;
 
@@ -28,8 +27,7 @@ public class LocalMessageService implements MessageService {
 	
 	@Override
 	public void sendToRenderer(String sessionId, String msg) {
-		QuestorContext ctx = new AnswerContext(sessionId);
-		renderer.onMessage(ctx, msg);
+		renderer.onMessage(sessionId, msg);
 	}
 	
 	@Override
@@ -37,30 +35,4 @@ public class LocalMessageService implements MessageService {
 		simulator.onMessage(sessionId, msg);
 	}
 	
-	/**
-	 * By sending messages to the {@link Renderer} using this class the
-	 * called service can reply without knowing the actual <code>contextKey</code>
-	 * instance.
-	 * 
-	 * <p>In a real networked implementation this mechanism is also supposed to be
-	 * implemented on the client-side of the network.</p>
-	 * 
-	 * @author Robert Schuster <r.schuster@tarent.de>
-	 *
-	 */
-	private class AnswerContext implements QuestorContext {
-		
-		private String sessionId;
-		
-		AnswerContext(String sessionId) {
-			this.sessionId = sessionId;
-		}
-
-		@Override
-		public void sendMessage(String msg) {
-			LocalMessageService.this.sendToSimulator(sessionId, msg);
-		}
-		
-	}
-
 }
