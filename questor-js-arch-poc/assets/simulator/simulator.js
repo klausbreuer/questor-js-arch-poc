@@ -169,7 +169,7 @@ Simulator.prototype.deleteSession = function(sessionId) {
 
 Simulator.prototype.sessionExists = function(session) {
 	return (this.sessions[session.sessionId] != null);
-}
+};
 
 Simulator.prototype.toSessionId = function(session) {
 	return session.sessionId;
