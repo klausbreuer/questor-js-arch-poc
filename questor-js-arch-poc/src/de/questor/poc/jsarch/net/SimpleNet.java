@@ -56,7 +56,7 @@ public class SimpleNet {
 		return c.id;
 	}
 	
-	void send(long id, String[] rawMessage) throws Exception {
+	void send(long id, String... rawMessage) throws Exception {
 		Connection c = connections.get(id);
 		
 		if (c == null) {
