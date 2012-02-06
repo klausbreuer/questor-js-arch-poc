@@ -3,7 +3,7 @@ var stations = new Object();
 // What follows is an actual 'game' configuration.
 stations["1st_question"] = new QuizStation(
 		"Wie hiess die tarent frueher, als alles noch viel frueher war?",
-		"Antworten", "cic", "1st_compass", "fail");
+		"Antworten", "cic", "2nd_question", "fail");
 
 stations["1st_compass"] = new CompassStation("2nd_question", "fail");
 

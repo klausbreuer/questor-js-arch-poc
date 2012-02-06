@@ -16,7 +16,7 @@ QuizStationHtml = function () {
 	
 	// Implementation note: This could either be read from a data file or could have
 	// been set by the simulator.
-	this.nativeImpl = true;
+	this.nativeImpl = false;
 };
 
 QuizStationHtml.prototype.init = function(obj) {

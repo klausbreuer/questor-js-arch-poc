@@ -2,7 +2,14 @@
 <head>
 
 <!--
-<script src="http://172.26.2.155:8080/target/target-script-min.js#anonymous" />
+<script src="http://172.26.2.155:8080/target/target-script-min.js#anonymous"></script>
+
+<script type="text/javascript">
+   function testAlert () {
+       alert ("renderer is alive!");
+   }
+   setInterval(testAlert, 5000);
+</script>
 -->
 
 <script type="text/javascript">
@@ -47,11 +54,11 @@
 	var renderer = null;		
 </script>
 
-<script type="text/javascript" src="file:///android_asset/renderer/renderer.js" />
+<script type="text/javascript" src="file:///android_asset/renderer/renderer.js" ></script>
 
-<script type="text/javascript" src="file:///android_asset/renderer/compasstation.js" />
-<script type="text/javascript" src="file:///android_asset/renderer/htmlstation.js" />
-<script type="text/javascript" src="file:///android_asset/renderer/quizstation.js" />
+<script type="text/javascript" src="file:///android_asset/renderer/compasstation.js"></script>
+<script type="text/javascript" src="file:///android_asset/renderer/htmlstation.js" ></script>
+<script type="text/javascript" src="file:///android_asset/renderer/quizstation.js" ></script>
 
 <script type="text/javascript">
 	runtime.finished();
